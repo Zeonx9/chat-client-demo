@@ -54,6 +54,52 @@ public class RequestHandler {
         }
     }
 
+    // sends a POST request, it does not require mapping the result
+    // method only exists so private method can be not exposed
+    public String sendPOST(HttpRequest request) {
+        return sendRequestAndGetResponse(request);
+    }
+
+    // constructs a GET http request with parameters passed in a map
+    // path presents only a variable part of the path to end point
+    // for example "/user" in "http://localhost:8080/chat_api/v1/user"
+    // it should always start with the backslash
+    public HttpRequest GETRequest(String path, Map<String, String> params) {
+        return getPresetRequest(path, params).GET().build();
+    }
+
+    // constructs a GET http request without parameters
+    // path has the same requirements as another overloaded version
+    public HttpRequest GETRequest(String path) {
+        return GETRequest(path, Map.of());
+    }
+
+    // constructs a POST request with parameters and body parsed from string
+    public HttpRequest POSTRequest(String path, Map<String, String> params, String body) {
+        return getPresetRequest(path, params)
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
+    }
+
+    // constructs a POST request without parameters and a body from string
+    public HttpRequest POSTRequest(String path, String body) {
+        return POSTRequest(path, Map.of(), body);
+    }
+
+    // constructs a POST request with parameters and body parsed from an Object that can be serialized
+    public <T> HttpRequest POSTRequest(String path, Map<String, String> params, T bodyObj) {
+        try {
+            return POSTRequest(path, params, mapper.writeValueAsString(bodyObj));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // constructs a POST request without parameters and a body from Object
+    public <T> HttpRequest POSTRequest(String path, T bodyObj) {
+        return POSTRequest(path, Map.of(), bodyObj);
+    }
+
     // private method used internally to map response using Jackson
     private  <T> T mapResponse(HttpRequest request, Class<T> objClass, TypeReference<T> typeRef) {
         var response = sendRequestAndGetResponse(request);
@@ -70,20 +116,6 @@ public class RequestHandler {
             throw new RuntimeException(e);
         }
         return mappedObj;
-    }
-
-    // constructs a GET http request with parameters passed in a map
-    // path presents only a variable part of the path to end point
-    // for example "/user" in "http://localhost:8080/chat_api/v1/user"
-    // it should always start with the backslash
-    public HttpRequest GETRequest(String path, Map<String, String> params) {
-        return getPresetRequest(path, params).GET().build();
-    }
-
-    // constructs a GET http request without parameters
-    // path has the same requirements as another overloaded version
-    public HttpRequest GETRequest(String path) {
-        return getPresetRequest(path, Map.of()).GET().build();
     }
 
 
