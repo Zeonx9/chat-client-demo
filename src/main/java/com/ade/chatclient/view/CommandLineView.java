@@ -6,6 +6,8 @@ import lombok.Setter;
 import java.util.List;
 import java.util.Scanner;
 
+// this view handles user input and presents the information to user
+// view is bound with viewModel
 @Getter
 @Setter
 public class CommandLineView {

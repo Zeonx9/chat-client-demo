@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+// used to map chats as Java objects
 @Getter
 @Setter
 @ToString

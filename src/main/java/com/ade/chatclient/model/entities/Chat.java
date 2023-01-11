@@ -6,6 +6,8 @@ import lombok.ToString;
 
 import java.util.List;
 
+
+// entity used to map users as Java objects
 @Getter
 @Setter
 @ToString

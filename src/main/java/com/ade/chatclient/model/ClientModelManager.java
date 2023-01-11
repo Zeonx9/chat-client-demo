@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+// realization of Client model interface manages and manipulates the data
 public class ClientModelManager implements ClientModel{
     private final RequestHandler handler;
     private User self;
@@ -40,6 +41,8 @@ public class ClientModelManager implements ClientModel{
 
         // myChats is not initialized yet, so it needs to be requested
         if (myChats == null) {
+
+            // a request to server, made through RequestHandler
             myChats = handler.mapResponse(
                     handler.GETRequest(String.format("/users/%d/chats", self.getId())),
                     new TypeReference<>(){}

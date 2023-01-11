@@ -2,6 +2,7 @@ package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.model.ModelFactory;
 
+// factory that created viewModels linking them to models
 public class ViewModelFactory {
     private final ModelFactory modelFactory;
     private CommandLineViewModel viewModel;

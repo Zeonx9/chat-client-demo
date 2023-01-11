@@ -3,6 +3,7 @@ package com.ade.chatclient.view;
 import com.ade.chatclient.viewmodel.ViewModelFactory;
 
 // a class that manipulates the views
+// it also starts the first view routine
 public class ViewHandler {
     private final ViewModelFactory vmFactory;
     private CommandLineView view;
