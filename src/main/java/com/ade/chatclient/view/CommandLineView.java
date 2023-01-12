@@ -21,7 +21,6 @@ public class CommandLineView {
 
     public CommandLineView(CommandLineViewModel viewModel) {
         this.viewModel = viewModel;
-        viewModel.bindToView(this);
     }
 
     // here the view operates
@@ -32,7 +31,8 @@ public class CommandLineView {
 
         System.out.println("Logging you in ...");
         // notify the viewModel about changes, will be replaced by data binding
-        viewModel.namePropertyChanged();
+        bindBack();
+        bind();
 
         System.out.println("Logged successfully! your ID is: " + myId);
         System.out.println("\nFetching your chats ...");
@@ -43,5 +43,15 @@ public class CommandLineView {
             System.out.println("You have no chats, start a new one with somebody)");
 
         System.out.println("\nThat's all for now, thank you for trying our chat application!)");
+    }
+
+    public void bindBack() {
+        viewModel.setMyName(myName);
+    }
+
+    public void bind() {
+        myName = viewModel.getMyName();
+        myId = viewModel.getMyId();
+        myChats = viewModel.getMyChats();
     }
 }
