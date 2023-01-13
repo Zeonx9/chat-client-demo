@@ -17,8 +17,9 @@ public class ClientModelManager implements ClientModel{
     private User self;
     private List<Chat> myChats;
 
-
-    private List<Message> MyChatHistory;
+    private List<Long> chatIds;
+    private List<Message> selectedChatMessages;
+    private Long chatId;
 
 
     public ClientModelManager(RequestHandler handler) {
@@ -39,37 +40,24 @@ public class ClientModelManager implements ClientModel{
         return self.getName();
     }
 
-    //
-    @Override
-    public List<Long> getMyChatId() {
-        if (self == null)
-            throw new RuntimeException("attempt to get chats before log in");
-        if (myChats == null)
-            throw new RuntimeException("attempt to get chats before log in");
-
-        var chatsAsLong = new ArrayList<Long>();
-        myChats.forEach((chat) -> {
-            chatsAsLong.add(chat.getId());
-        });
-
-        return chatsAsLong;
-    }
-
     @Override
     public List<List<String>> getMyChats() {
         if (self == null)
             throw new RuntimeException("attempt to get chats before log in");
-
-        // myChats is not initialized yet, so it needs to be requested
         if (myChats == null) {
-
-            // a request to server, made through RequestHandler
-            myChats = handler.mapResponse(
-                    handler.GETRequest(String.format("/users/%d/chats", self.getId())),
-                    new TypeReference<>(){}
-            );
+            updateMyChats();
         }
+        return prepareChatList();
+    }
 
+    public void updateMyChats() {
+        myChats = handler.mapResponse(
+                handler.GETRequest(String.format("/users/%d/chats", self.getId())),
+                new TypeReference<>(){}
+        );
+    }
+
+    private List<List<String>> prepareChatList() {
         var chatsAsStrings = new ArrayList<List<String>>();
         myChats.forEach((chat) -> {
             // chat is represented by its ID and the members except self
@@ -84,38 +72,75 @@ public class ClientModelManager implements ClientModel{
         return chatsAsStrings;
     }
 
+    public List<Long> getMyChatId() {
+        if (self == null || myChats == null)
+            throw new RuntimeException("attempt to get chats before log in");
+
+        return prepareChatIdList();
+    }
+
+    private List<Long> prepareChatIdList() {
+        chatIds = new ArrayList<>();
+        myChats.forEach((chat) -> {
+            chatIds.add(chat.getId());
+        });
+
+        return chatIds;
+    }
+
     @Override
     public void Authorize(String login) {
+        if (self == null) {
         self = handler.mapResponse(
                 handler.GETRequest("/user", Map.of("name", login)),
                 User.class
         );
-    }
-
-    public void initChat(Long id, List<Long> chatsId) {
-        if (chatsId == null)
-            return;
-//            throw new RuntimeException("attempt to get chats before log in");
-        if (chatsId.contains(id)) ChatHistory(id);
-
-    }
-
-    public void ChatHistory(Long chatId) {
-
-        MyChatHistory = handler.mapResponse(
-                handler.GETRequest(String.format("/chats/%d/messages", chatId)),
-                new TypeReference<>() {
-                });
-        if (MyChatHistory==null){
-            MyChatHistory = handler.mapResponse(
-                handler.GETRequest("/chat",Map.of("isPrivate", "true")),
-                new TypeReference<>() {
-                }
-            );
         }
     }
 
-    public List<Message> getMyChatHistory() {
-        return MyChatHistory;
+    public void openChat(Long id) {
+        if (self == null) return;
+        chatId = id;
+        if (myChats == null)
+            /** need create a user request for new users and for select chats */
+            return;
+        if (chatIds.contains(chatId)) updateMessages();
+    }
+
+    //изменить на POST
+    public void createChat() {
+        selectedChatMessages = handler.mapResponse(
+                handler.GETRequest("/chat",Map.of("isPrivate", "true")),
+                new TypeReference<>() {
+                }
+        );
+    }
+
+    public void updateMessages() {
+        selectedChatMessages = handler.mapResponse(
+                handler.GETRequest(String.format("/chats/%d/messages", chatId)),
+                new TypeReference<>() {
+                });
+        if (selectedChatMessages ==null){
+            createChat();
+        }
+    }
+
+    public List<String[]> getSelectedChatMessages() {
+        return prepareListMessages();
+    }
+
+    private List<String[]> prepareListMessages() {
+        var messageAsStrings = new ArrayList<String[]>();
+        selectedChatMessages.forEach((mes) -> {
+            // chat is represented by its ID and the members except self
+            String[] message = new String[4];
+            message[0] = mes.getId().toString();
+            message[1] = mes.getText();
+            message[2] = mes.getDateTime().toString();
+            message[3] = mes.getAuthor().getName();
+            messageAsStrings.add(message);
+        });
+        return messageAsStrings;
     }
 }

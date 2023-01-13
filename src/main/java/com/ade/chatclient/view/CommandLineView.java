@@ -4,7 +4,6 @@ import com.ade.chatclient.viewmodel.CommandLineViewModel;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,10 +15,11 @@ public class CommandLineView {
     // fields that hold the current state of the view
     String myName;
     Long myId;
-    List<List<String>> myChats;
-    List<Long> myChatsId;
-    Long idChat;
-    List<Message> chatHistory;
+    List<List<String>> membersOfMyChats;
+    List<Long> myChatsIds;
+    Long selectedChatId;
+
+    List<String[]> selectedChatMessages;
     // reference to the VM
     private final CommandLineViewModel viewModel;
 
@@ -42,39 +42,45 @@ public class CommandLineView {
         System.out.println("\nFetching your chats ...");
         System.out.println("Every chat has its ID, please use it to select the chat you want\n");
 
-        myChats.forEach(System.out::println);
-        myChatsId.forEach(System.out::println);
-        if (myChats.isEmpty())
+        membersOfMyChats.forEach(System.out::println);
+        myChatsIds.forEach(System.out::println);
+        if (membersOfMyChats.isEmpty())
             System.out.println("You have no chats, start a new one with somebody)");
 
         System.out.println("\nEnter chat id: ");
-        idChat = scanner.nextLong();
+        selectedChatId = scanner.nextLong();
 
         bindBack();
         bind();
 
-        System.out.println("History of chart: " + idChat);
-        if (chatHistory != null) {
-            chatHistory.forEach(System.out::println);
-            if (chatHistory.isEmpty())
+        System.out.println("History of chart: " + selectedChatId);
+        if (selectedChatMessages != null) {
+            selectedChatMessages.forEach((s) -> {
+                System.out.println(s[1] + " by " + s[3]);
+            });
+            if (selectedChatMessages.isEmpty())
                 System.out.println("No messages here yet..");
         }
         else {
-            System.out.println("CANNNT");
+            System.out.println("didn't exist");
         }
         System.out.println("\nThat's all for now, thank you for trying our chat application!)");
     }
 
     public void bindBack() {
         viewModel.setMyName(myName);
-        viewModel.history(idChat, myChatsId);
+        viewModel.setSelectedChat(selectedChatId);
     }
 
     public void bind() {
-        myName = viewModel.getMyName();
-        myId = viewModel.getMyId();
-        myChats = viewModel.getMyChats();
-        myChatsId = viewModel.getMyChatId();
-        chatHistory = viewModel.getMyChatHistory();
+        if (myName == null) {
+            myName = viewModel.getMyName();
+            myId = viewModel.getMyId();
+        };
+        membersOfMyChats = viewModel.getMembersOfMyChats();
+        myChatsIds = viewModel.getMyChatsIds();
+        if (selectedChatId != null) {
+            selectedChatMessages = viewModel.getSelectedChatMessages();
+        }
     }
 }
