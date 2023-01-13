@@ -16,7 +16,7 @@ public class CommandLineView {
     // fields that hold the current state of the view
     String myName;
     Long myId;
-    List<ArrayList<String>> myChats;
+    List<List<String>> myChats;
     List<Long> myChatsId;
     Long idChat;
     List<Message> chatHistory;
@@ -54,13 +54,20 @@ public class CommandLineView {
         bind();
 
         System.out.println("History of chart: " + idChat);
-        chatHistory.forEach(System.out::println);
-
+        if (chatHistory != null) {
+            chatHistory.forEach(System.out::println);
+            if (chatHistory.isEmpty())
+                System.out.println("No messages here yet..");
+        }
+        else {
+            System.out.println("CANNNT");
+        }
         System.out.println("\nThat's all for now, thank you for trying our chat application!)");
     }
 
     public void bindBack() {
         viewModel.setMyName(myName);
+        viewModel.history(idChat, myChatsId);
     }
 
     public void bind() {
@@ -68,7 +75,6 @@ public class CommandLineView {
         myId = viewModel.getMyId();
         myChats = viewModel.getMyChats();
         myChatsId = viewModel.getMyChatId();
-        idChat = viewModel.getMyIdChat();
         chatHistory = viewModel.getMyChatHistory();
     }
 }

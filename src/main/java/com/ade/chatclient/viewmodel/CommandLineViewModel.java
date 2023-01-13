@@ -21,6 +21,10 @@ public class CommandLineViewModel {
         model.Authorize(name);
     }
 
+    public void history(Long id, List<Long> chatsId) {
+        model.initChat(id, chatsId);
+    }
+
     public String getMyName() {
         return model.getMyName();
     }
@@ -29,15 +33,12 @@ public class CommandLineViewModel {
         return model.getMyId();
     }
 
-    public List<ArrayList<String>> getMyChats() {
+    public List<List<String>> getMyChats() {
         return model.getMyChats();
     }
 
     public List<Long> getMyChatId() {
         return model.getMyChatId();
-    }
-    public Long getMyIdChat() {
-        return model.getMyIdChat();
     }
 
     public List<Message> getMyChatHistory() {

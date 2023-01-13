@@ -17,7 +17,7 @@ public class ClientModelManager implements ClientModel{
     private User self;
     private List<Chat> myChats;
 
-    private Long myChatId;
+
     private List<Message> MyChatHistory;
 
 
@@ -56,7 +56,7 @@ public class ClientModelManager implements ClientModel{
     }
 
     @Override
-    public List<ArrayList<String>> getMyChats() {
+    public List<List<String>> getMyChats() {
         if (self == null)
             throw new RuntimeException("attempt to get chats before log in");
 
@@ -70,7 +70,7 @@ public class ClientModelManager implements ClientModel{
             );
         }
 
-        var chatsAsStrings = new ArrayList<ArrayList<String>>();
+        var chatsAsStrings = new ArrayList<List<String>>();
         myChats.forEach((chat) -> {
             // chat is represented by its ID and the members except self
             var memberArray = new ArrayList<String>();
@@ -93,39 +93,29 @@ public class ClientModelManager implements ClientModel{
     }
 
     public void initChat(Long id, List<Long> chatsId) {
-        if (chatsId.contains(id)){
-            //histiry
-        }
-        else {
-            //create
-        }
-    }
-    public Long getMyIdChat() {
-        myChatId = (long)1;
-        return myChatId;
+        if (chatsId == null)
+            return;
+//            throw new RuntimeException("attempt to get chats before log in");
+        if (chatsId.contains(id)) ChatHistory(id);
+
     }
 
+    public void ChatHistory(Long chatId) {
 
-    public List<Message> getMyChatHistory() {
-        if (MyChatHistory == null) {
-
+        MyChatHistory = handler.mapResponse(
+                handler.GETRequest(String.format("/chats/%d/messages", chatId)),
+                new TypeReference<>() {
+                });
+        if (MyChatHistory==null){
             MyChatHistory = handler.mapResponse(
-                    handler.GETRequest(String.format("/chats/%d/messages", myChatId)),
-                    new TypeReference<>(){}
+                handler.GETRequest("/chat",Map.of("isPrivate", "true")),
+                new TypeReference<>() {
+                }
             );
         }
-        System.out.print(MyChatHistory);
-        var messagesAsStrings = new ArrayList<Message>();
-        return messagesAsStrings;
     }
 
-
-//    public void History(Long chat) {
-//        self = handler.mapResponse(
-//                handler.GETRequest("/chats", Map.of("name", )),
-//                User.class
-//        );
-//    }
-//}
-
+    public List<Message> getMyChatHistory() {
+        return MyChatHistory;
+    }
 }

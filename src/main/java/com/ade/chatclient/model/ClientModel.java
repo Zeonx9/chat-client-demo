@@ -14,16 +14,18 @@ public interface ClientModel {
     String getMyName();
 
     // returns a list of chats where user participates
-    List<ArrayList<String>> getMyChats();
+    List<List<String>> getMyChats();
 
     List<Long> getMyChatId();
-    Long getMyIdChat();
+
 
     List<Message> getMyChatHistory();
+
 
     // method that authorize the user with given login(name)
     void Authorize(String login);
 
     void initChat(Long id, List<Long> chatsId);
 
+    void ChatHistory(Long chatId);
 }
