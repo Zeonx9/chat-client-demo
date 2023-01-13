@@ -1,7 +1,9 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.model.entities.Message;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // middle layer between view and the model
@@ -27,7 +29,18 @@ public class CommandLineViewModel {
         return model.getMyId();
     }
 
-    public List<String> getMyChats() {
+    public List<ArrayList<String>> getMyChats() {
         return model.getMyChats();
+    }
+
+    public List<Long> getMyChatId() {
+        return model.getMyChatId();
+    }
+    public Long getMyIdChat() {
+        return model.getMyIdChat();
+    }
+
+    public List<Message> getMyChatHistory() {
+        return model.getMyChatHistory();
     }
 }

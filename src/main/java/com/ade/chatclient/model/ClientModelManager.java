@@ -2,6 +2,7 @@ package com.ade.chatclient.model;
 
 import com.ade.chatclient.application.RequestHandler;
 import com.ade.chatclient.model.entities.Chat;
+import com.ade.chatclient.model.entities.Message;
 import com.ade.chatclient.model.entities.User;
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -15,6 +16,10 @@ public class ClientModelManager implements ClientModel{
     private final RequestHandler handler;
     private User self;
     private List<Chat> myChats;
+
+    private Long myChatId;
+    private List<Message> MyChatHistory;
+
 
     public ClientModelManager(RequestHandler handler) {
         this.handler = handler;
@@ -34,8 +39,24 @@ public class ClientModelManager implements ClientModel{
         return self.getName();
     }
 
+    //
     @Override
-    public List<String> getMyChats() {
+    public List<Long> getMyChatId() {
+        if (self == null)
+            throw new RuntimeException("attempt to get chats before log in");
+        if (myChats == null)
+            throw new RuntimeException("attempt to get chats before log in");
+
+        var chatsAsLong = new ArrayList<Long>();
+        myChats.forEach((chat) -> {
+            chatsAsLong.add(chat.getId());
+        });
+
+        return chatsAsLong;
+    }
+
+    @Override
+    public List<ArrayList<String>> getMyChats() {
         if (self == null)
             throw new RuntimeException("attempt to get chats before log in");
 
@@ -49,19 +70,17 @@ public class ClientModelManager implements ClientModel{
             );
         }
 
-        var chatsAsStrings = new ArrayList<String>();
+        var chatsAsStrings = new ArrayList<ArrayList<String>>();
         myChats.forEach((chat) -> {
             // chat is represented by its ID and the members except self
-            String chatViewStr = chat.getId().toString() + " with: ";
             var memberArray = new ArrayList<String>();
             chat.getMembers().forEach((member) -> {
                 if (!Objects.equals(member.getName(), getMyName()))
                     memberArray.add(member.getName());
             });
-            chatViewStr += String.join(", ", memberArray);
-
-            chatsAsStrings.add(chatViewStr);
+            chatsAsStrings.add(memberArray);
         });
+
         return chatsAsStrings;
     }
 
@@ -72,4 +91,41 @@ public class ClientModelManager implements ClientModel{
                 User.class
         );
     }
+
+    public void initChat(Long id, List<Long> chatsId) {
+        if (chatsId.contains(id)){
+            //histiry
+        }
+        else {
+            //create
+        }
+    }
+    public Long getMyIdChat() {
+        myChatId = (long)1;
+        return myChatId;
+    }
+
+
+    public List<Message> getMyChatHistory() {
+        if (MyChatHistory == null) {
+
+            MyChatHistory = handler.mapResponse(
+                    handler.GETRequest(String.format("/chats/%d/messages", myChatId)),
+                    new TypeReference<>(){}
+            );
+        }
+        System.out.print(MyChatHistory);
+        var messagesAsStrings = new ArrayList<Message>();
+        return messagesAsStrings;
+    }
+
+
+//    public void History(Long chat) {
+//        self = handler.mapResponse(
+//                handler.GETRequest("/chats", Map.of("name", )),
+//                User.class
+//        );
+//    }
+//}
+
 }

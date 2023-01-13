@@ -1,8 +1,10 @@
 package com.ade.chatclient.view;
+import com.ade.chatclient.model.entities.Message;
 import com.ade.chatclient.viewmodel.CommandLineViewModel;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -14,8 +16,10 @@ public class CommandLineView {
     // fields that hold the current state of the view
     String myName;
     Long myId;
-    List<String> myChats;
-
+    List<ArrayList<String>> myChats;
+    List<Long> myChatsId;
+    Long idChat;
+    List<Message> chatHistory;
     // reference to the VM
     private final CommandLineViewModel viewModel;
 
@@ -39,8 +43,18 @@ public class CommandLineView {
         System.out.println("Every chat has its ID, please use it to select the chat you want\n");
 
         myChats.forEach(System.out::println);
+        myChatsId.forEach(System.out::println);
         if (myChats.isEmpty())
             System.out.println("You have no chats, start a new one with somebody)");
+
+        System.out.println("\nEnter chat id: ");
+        idChat = scanner.nextLong();
+
+        bindBack();
+        bind();
+
+        System.out.println("History of chart: " + idChat);
+        chatHistory.forEach(System.out::println);
 
         System.out.println("\nThat's all for now, thank you for trying our chat application!)");
     }
@@ -53,5 +67,8 @@ public class CommandLineView {
         myName = viewModel.getMyName();
         myId = viewModel.getMyId();
         myChats = viewModel.getMyChats();
+        myChatsId = viewModel.getMyChatId();
+        idChat = viewModel.getMyIdChat();
+        chatHistory = viewModel.getMyChatHistory();
     }
 }
