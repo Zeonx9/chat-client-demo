@@ -1,6 +1,7 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.model.entities.Message;
 
 import java.util.List;
 
@@ -19,6 +20,10 @@ public class CommandLineViewModel {
         model.Authorize(name);
     }
 
+    public void setSelectedChat(Long id) {
+        model.openChat(id);
+    }
+
     public String getMyName() {
         return model.getMyName();
     }
@@ -27,7 +32,15 @@ public class CommandLineViewModel {
         return model.getMyId();
     }
 
-    public List<String> getMyChats() {
+    public List<List<String>> getMembersOfMyChats() {
         return model.getMyChats();
+    }
+
+    public List<Long> getMyChatsIds() {
+        return model.getMyChatId();
+    }
+
+    public List<String[]> getSelectedChatMessages() {
+        return model.getSelectedChatMessages();
     }
 }

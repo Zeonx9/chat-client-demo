@@ -25,7 +25,10 @@ public class RequestHandler {
         this.url = url;
         this.client = client;
         mapper = new ObjectMapper();
+        mapper.findAndRegisterModules();
     }
+
+
 
     // private method used internally to pre-build the request
     private HttpRequest.Builder getPresetRequest(String path, Map<String, String> params) {
@@ -113,6 +116,7 @@ public class RequestHandler {
                 throw new IllegalStateException("wrong parameters given to mapping function");
 
         } catch (JsonProcessingException e) {
+            System.out.println("there is exception, response body looks like that:\n" + response);
             throw new RuntimeException(e);
         }
         return mappedObj;
