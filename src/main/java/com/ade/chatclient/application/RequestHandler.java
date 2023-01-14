@@ -116,6 +116,7 @@ public class RequestHandler {
                 throw new IllegalStateException("wrong parameters given to mapping function");
 
         } catch (JsonProcessingException e) {
+            System.out.println("there is exception, response body looks like that:\n" + response);
             throw new RuntimeException(e);
         }
         return mappedObj;
