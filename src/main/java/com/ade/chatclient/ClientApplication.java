@@ -1,7 +1,7 @@
 package com.ade.chatclient;
 
 import com.ade.chatclient.application.StartClientApp;
-import com.ade.chatclient.view.HelloController;
+import com.ade.chatclient.view.RegisterView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,9 +15,9 @@ public class ClientApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloController.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+        FXMLLoader fxmlLoader = new FXMLLoader(RegisterView.class.getResource("register-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 816, 446);
+        stage.setTitle("InTouch");
         stage.setScene(scene);
         stage.show();
 
