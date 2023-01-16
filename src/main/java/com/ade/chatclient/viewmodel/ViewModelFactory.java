@@ -4,17 +4,19 @@ import com.ade.chatclient.model.ModelFactory;
 
 // factory that created viewModels linking them to models
 public class ViewModelFactory {
-    private final ModelFactory modelFactory;
-    private CommandLineViewModel viewModel;
+    private final CommandLineViewModel viewModel;
+    private final LogInViewModel logInViewModel;
 
     public ViewModelFactory(ModelFactory modelFactory) {
-        this.modelFactory = modelFactory;
+        logInViewModel = new LogInViewModel(modelFactory.getModel());
+        viewModel = new CommandLineViewModel(modelFactory.getModel());
     }
 
-    public CommandLineViewModel getViewModel() {
-        if (viewModel == null)
-            viewModel = new CommandLineViewModel(modelFactory.getModel());
-
+    public CommandLineViewModel getCmdViewModel() {
         return viewModel;
+    }
+
+    public LogInViewModel getLogInViewModel() {
+        return logInViewModel;
     }
 }
