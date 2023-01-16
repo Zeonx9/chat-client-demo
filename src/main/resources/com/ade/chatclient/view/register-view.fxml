@@ -5,33 +5,29 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="446.0" prefWidth="816.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.RegisterView">
+<AnchorPane prefHeight="446.0" prefWidth="816.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.RegisterView">
    <opaqueInsets>
-      <Insets/>
+      <Insets />
    </opaqueInsets>
-   <Button layoutX="183.0" layoutY="332.0" mnemonicParsing="false" prefHeight="50.0"
-           prefWidth="450.0" text="Log In"/>
+   <Button layoutX="183.0" layoutY="332.0" mnemonicParsing="false" onAction="#registered" prefHeight="50.0" prefWidth="450.0" text="Log In" />
    <Label layoutX="180.0" layoutY="65.0" text="Welcome to InTouch">
       <font>
-         <Font name="Roboto Light" size="50.0"/>
+         <Font name="Roboto Light" size="50.0" />
       </font>
    </Label>
-   <Label layoutX="139.0" layoutY="135.0" prefHeight="34.0" prefWidth="537.0"
-          text="Corporate messenger for business communication" textAlignment="CENTER">
+   <Label layoutX="139.0" layoutY="135.0" prefHeight="34.0" prefWidth="537.0" text="Corporate messenger for business communication" textAlignment="CENTER">
       <font>
-         <Font name="Roboto Light" size="24.0"/>
+         <Font name="Roboto Light" size="24.0" />
       </font>
    </Label>
    <Label layoutX="227.0" layoutY="169.0" text="and planning of common projects!">
       <font>
-         <Font name="Roboto Light" size="24.0"/>
+         <Font name="Roboto Light" size="24.0" />
       </font>
    </Label>
-   <TextField layoutX="183.0" layoutY="257.0" prefHeight="50.0" prefWidth="450.0"
-              promptText="Please, enter your name to continue...">
+   <TextField fx:id="login" layoutX="183.0" layoutY="257.0" prefHeight="50.0" prefWidth="450.0" promptText="Please, enter your name to continue...">
       <font>
-         <Font size="17.0"/>
+         <Font size="17.0" />
       </font>
    </TextField>
 </AnchorPane>
