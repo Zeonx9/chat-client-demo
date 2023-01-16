@@ -1,7 +1,5 @@
 package com.ade.chatclient.model;
 
-import com.ade.chatclient.model.entities.Message;
-
 import java.util.List;
 
 // an interface that a model should implement, used to add flexibility to model structure
@@ -23,7 +21,7 @@ public interface ClientModel {
     List<Long> getMyChatId();
 
     // method that authorize the user with given login(name)
-    void Authorize(String login);
+    boolean Authorize(String login);
 
     List<String[]>  getSelectedChatMessages();
 }

@@ -6,6 +6,7 @@ import com.ade.chatclient.viewmodel.ViewModelFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URI;
@@ -50,14 +51,15 @@ public class StartClientApp {
 
         // check if tunnel exists
         if (tunnel == null) {
-            throw new RuntimeException("No accessible tunnels");
+            return "no tunnel";
+//            throw new RuntimeException("No accessible tunnels");
         }
 
         return tunnel.get("public_url").asText();
     }
 
     // calls necessary methods and initiates everything
-    public static void start() {
+    public static void start(Stage stage) throws IOException {
         System.out.println("Starting the application ...");
 
         var httpClient = HttpClient.newHttpClient();
@@ -70,7 +72,7 @@ public class StartClientApp {
         // create factories to manage layers
         ModelFactory modelFactory = new ModelFactory(handler);
         ViewModelFactory vmFactory = new ViewModelFactory(modelFactory);
-        ViewHandler viewHandler = new ViewHandler(vmFactory);
+        ViewHandler viewHandler = new ViewHandler(stage, vmFactory);
 
         // call a start method in viewHandler
         viewHandler.start();

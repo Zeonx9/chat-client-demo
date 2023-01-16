@@ -15,4 +15,13 @@ module com.ade.chatclient {
 
     exports com.ade.chatclient.model.entities;
     opens com.ade.chatclient.model.entities to javafx.fxml;
+
+    exports com.ade.chatclient.viewmodel;
+    opens com.ade.chatclient.viewmodel to javafx.fxml;
+
+    exports com.ade.chatclient.model;
+    opens com.ade.chatclient.model to javafx.fxml;
+
+    exports com.ade.chatclient.application;
+    opens com.ade.chatclient.application to javafx.fxml;
 }

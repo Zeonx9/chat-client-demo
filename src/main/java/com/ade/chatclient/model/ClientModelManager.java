@@ -81,28 +81,33 @@ public class ClientModelManager implements ClientModel{
 
     private List<Long> prepareChatIdList() {
         chatIds = new ArrayList<>();
-        myChats.forEach((chat) -> {
-            chatIds.add(chat.getId());
-        });
-
+        myChats.forEach((chat) -> chatIds.add(chat.getId()));
         return chatIds;
     }
 
     @Override
-    public void Authorize(String login) {
+    public boolean Authorize(String login) {
+        System.out.println("Authorize request: " + login);
         if (self == null) {
-        self = handler.mapResponse(
-                handler.GETRequest("/user", Map.of("name", login)),
-                User.class
-        );
+            try {
+                self = handler.mapResponse(
+                        handler.GETRequest("/user", Map.of("name", login)),
+                        User.class
+                );
+            }
+            catch (Exception e) {
+                System.out.println("Authorization failed");
+                System.out.println(e.getMessage());
+                return false;
+            }
         }
+        return true;
     }
 
     public void openChat(Long id) {
         if (self == null) return;
         chatId = id;
         if (myChats == null)
-            /** need create a user request for new users and for select chats */
             return;
         if (chatIds.contains(chatId)) updateMessages();
     }
