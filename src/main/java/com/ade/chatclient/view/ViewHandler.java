@@ -40,6 +40,11 @@ public class ViewHandler {
             LogInView view = fxmlLoader.getController();
             view.init(vmFactory.getLogInViewModel());
         }
+        else if (Objects.equals(viewName, "chatPage")) {
+            fxmlLoader.setLocation(getClass().getResource("chat-page.fxml"));
+            root = fxmlLoader.load();
+            Objects view = fxmlLoader.getController();
+        }
 
         assert root != null;
         Scene scene = new Scene(root);

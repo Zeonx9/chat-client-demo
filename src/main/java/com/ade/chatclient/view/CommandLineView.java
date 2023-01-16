@@ -1,5 +1,5 @@
 package com.ade.chatclient.view;
-import com.ade.chatclient.model.entities.Message;
+import com.ade.chatclient.model.entities.Chat;
 import com.ade.chatclient.viewmodel.CommandLineViewModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,11 +15,11 @@ public class CommandLineView {
     // fields that hold the current state of the view
     String myName;
     Long myId;
-    List<List<String>> membersOfMyChats;
-    List<Long> myChatsIds;
+    List<Chat> myChats;
     Long selectedChatId;
 
     List<String[]> selectedChatMessages;
+
     // reference to the VM
     private final CommandLineViewModel viewModel;
 
@@ -42,10 +42,7 @@ public class CommandLineView {
         System.out.println("\nFetching your chats ...");
         System.out.println("Every chat has its ID, please use it to select the chat you want\n");
 
-        membersOfMyChats.forEach(System.out::println);
-        myChatsIds.forEach(System.out::println);
-        if (membersOfMyChats.isEmpty())
-            System.out.println("You have no chats, start a new one with somebody)");
+        myChats.forEach(System.out::println);
 
         System.out.println("\nEnter chat id: ");
         selectedChatId = scanner.nextLong();
@@ -55,9 +52,7 @@ public class CommandLineView {
 
         System.out.println("History of chart: " + selectedChatId);
         if (selectedChatMessages != null) {
-            selectedChatMessages.forEach((s) -> {
-                System.out.println(s[1] + " by " + s[3]);
-            });
+            selectedChatMessages.forEach((s) -> System.out.println(s[1] + " by " + s[3]));
             if (selectedChatMessages.isEmpty())
                 System.out.println("No messages here yet..");
         }
@@ -76,9 +71,9 @@ public class CommandLineView {
         if (myName == null) {
             myName = viewModel.getMyName();
             myId = viewModel.getMyId();
-        };
-        membersOfMyChats = viewModel.getMembersOfMyChats();
-        myChatsIds = viewModel.getMyChatsIds();
+        }
+        myChats = viewModel.getMyChats();
+
         if (selectedChatId != null) {
             selectedChatMessages = viewModel.getSelectedChatMessages();
         }

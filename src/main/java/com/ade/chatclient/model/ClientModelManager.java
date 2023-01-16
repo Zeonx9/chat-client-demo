@@ -9,15 +9,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 // realization of Client model interface manages and manipulates the data
 public class ClientModelManager implements ClientModel{
     private final RequestHandler handler;
     private User self;
     private List<Chat> myChats;
-
-    private List<Long> chatIds;
     private List<Message> selectedChatMessages;
     private Long chatId;
 
@@ -41,13 +38,13 @@ public class ClientModelManager implements ClientModel{
     }
 
     @Override
-    public List<List<String>> getMyChats() {
+    public List<Chat> getMyChats() {
         if (self == null)
             throw new RuntimeException("attempt to get chats before log in");
         if (myChats == null) {
             updateMyChats();
         }
-        return prepareChatList();
+        return myChats;
     }
 
     public void updateMyChats() {
@@ -55,34 +52,6 @@ public class ClientModelManager implements ClientModel{
                 handler.GETRequest(String.format("/users/%d/chats", self.getId())),
                 new TypeReference<>(){}
         );
-    }
-
-    private List<List<String>> prepareChatList() {
-        var chatsAsStrings = new ArrayList<List<String>>();
-        myChats.forEach((chat) -> {
-            // chat is represented by its ID and the members except self
-            var memberArray = new ArrayList<String>();
-            chat.getMembers().forEach((member) -> {
-                if (!Objects.equals(member.getName(), getMyName()))
-                    memberArray.add(member.getName());
-            });
-            chatsAsStrings.add(memberArray);
-        });
-
-        return chatsAsStrings;
-    }
-
-    public List<Long> getMyChatId() {
-        if (self == null || myChats == null)
-            throw new RuntimeException("attempt to get chats before log in");
-
-        return prepareChatIdList();
-    }
-
-    private List<Long> prepareChatIdList() {
-        chatIds = new ArrayList<>();
-        myChats.forEach((chat) -> chatIds.add(chat.getId()));
-        return chatIds;
     }
 
     @Override
@@ -109,7 +78,17 @@ public class ClientModelManager implements ClientModel{
         chatId = id;
         if (myChats == null)
             return;
-        if (chatIds.contains(chatId)) updateMessages();
+        boolean hasSuchChat = false;
+        for (Chat chat : myChats) {
+            if (chat.getId().equals(id)) {
+                hasSuchChat = true;
+                break;
+            }
+        }
+        if (hasSuchChat)
+            updateMessages();
+        else
+            System.out.println("User does not has a chat with id: " + id);
     }
 
     //изменить на POST

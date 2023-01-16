@@ -25,7 +25,7 @@ public class LogInView {
 
     public void init(LogInViewModel logInViewModel) {
         this.viewModel = logInViewModel;
-        loginTextField.textProperty().bind(viewModel.getLoginProperty());
+        loginTextField.textProperty().bindBidirectional(viewModel.getLoginProperty());
         loginTextField.textProperty().addListener(viewModel::onTextChanged);
 
         errorMessageLabel.textProperty().bind(viewModel.getErrorMessageProperty());
