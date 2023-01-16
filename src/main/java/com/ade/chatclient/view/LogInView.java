@@ -1,14 +1,15 @@
 package com.ade.chatclient.view;
 
+import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
-public class RegisterView {
-    public TextField login;
+public class LogInView {
 
-    public String UserLogin;
+    @FXML
+    public TextField login_textfield;
 
-    public void registered() {
-        UserLogin = login.getText();
+    public void onLoginClick() {
         // there should be a transition to another screen after registration
+
     }
 }

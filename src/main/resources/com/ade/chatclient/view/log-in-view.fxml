@@ -5,11 +5,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="446.0" prefWidth="816.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.RegisterView">
+<AnchorPane prefHeight="446.0" prefWidth="816.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.LogInView">
    <opaqueInsets>
       <Insets />
    </opaqueInsets>
-   <Button layoutX="183.0" layoutY="332.0" mnemonicParsing="false" onAction="#registered" prefHeight="50.0" prefWidth="450.0" text="Log In" />
    <Label layoutX="180.0" layoutY="65.0" text="Welcome to InTouch">
       <font>
          <Font name="Roboto Light" size="50.0" />
@@ -25,9 +24,11 @@
          <Font name="Roboto Light" size="24.0" />
       </font>
    </Label>
-   <TextField fx:id="login" layoutX="183.0" layoutY="257.0" prefHeight="50.0" prefWidth="450.0" promptText="Please, enter your name to continue...">
+   <TextField fx:id="login_textfield" layoutX="183.0" layoutY="257.0" prefHeight="50.0" prefWidth="450.0" promptText="Please, enter your name to continue...">
       <font>
          <Font size="17.0" />
       </font>
    </TextField>
+   <Button layoutX="183.0" layoutY="332.0" mnemonicParsing="false" onAction="#onLoginClick" prefHeight="50.0" prefWidth="450.0" text="Log In" />
+   <Label fx:id="error_message" layoutX="394.0" layoutY="390.0" textAlignment="CENTER" />
 </AnchorPane>
