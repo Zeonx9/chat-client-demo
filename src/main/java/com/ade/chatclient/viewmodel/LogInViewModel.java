@@ -27,7 +27,7 @@ public class LogInViewModel {
             // here we should change the view
             // TODO make views switch
             errorMessage.set("Success!");
-            System.out.println("You have been authorized, your ID is:" + model.getMyId());
+            System.out.println("You have been authorized, your data:" + model.getMyself());
         }
         else
             errorMessage.set("Something went wrong!");

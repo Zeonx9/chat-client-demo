@@ -6,7 +6,7 @@ import com.ade.chatclient.model.entities.Message;
 import com.ade.chatclient.model.entities.User;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -16,25 +16,16 @@ public class ClientModelManager implements ClientModel{
     private User self;
     private List<Chat> myChats;
     private List<Message> selectedChatMessages;
-    private Long chatId;
-
+    private Chat selectedChat;
+    private List<User> users;
 
     public ClientModelManager(RequestHandler handler) {
         this.handler = handler;
     }
 
     @Override
-    public Long getMyId() {
-        if (self == null)
-            throw new RuntimeException("attempt to get Id of user before log in");
-        return self.getId();
-    }
-
-    @Override
-    public String getMyName() {
-        if (self == null)
-            throw new RuntimeException("attempt to get Id of user before log in");
-        return self.getName();
+    public User getMyself() {
+        return self;
     }
 
     @Override
@@ -47,6 +38,7 @@ public class ClientModelManager implements ClientModel{
         return myChats;
     }
 
+    @Override
     public void updateMyChats() {
         myChats = handler.mapResponse(
                 handler.GETRequest(String.format("/users/%d/chats", self.getId())),
@@ -73,14 +65,15 @@ public class ClientModelManager implements ClientModel{
         return true;
     }
 
-    public void openChat(Long id) {
-        if (self == null) return;
-        chatId = id;
-        if (myChats == null)
-            return;
+    @Override
+    public void selectChat(Chat chat) {
+        if (self == null || myChats == null)
+            throw new RuntimeException("attempt to get chats before log in or you don't have chats");
+        selectedChat = chat;
+
         boolean hasSuchChat = false;
-        for (Chat chat : myChats) {
-            if (chat.getId().equals(id)) {
+        for (Chat myChat : myChats) {
+            if (myChat.getId().equals(chat.getId())) {
                 hasSuchChat = true;
                 break;
             }
@@ -88,43 +81,61 @@ public class ClientModelManager implements ClientModel{
         if (hasSuchChat)
             updateMessages();
         else
-            System.out.println("User does not has a chat with id: " + id);
+            System.out.println("User does not has a chat with id: " + chat.getId());
     }
 
-    //изменить на POST
-    public void createChat() {
-        selectedChatMessages = handler.mapResponse(
-                handler.GETRequest("/chat",Map.of("isPrivate", "true")),
-                new TypeReference<>() {
-                }
-        );
-    }
 
+    @Override
     public void updateMessages() {
         selectedChatMessages = handler.mapResponse(
-                handler.GETRequest(String.format("/chats/%d/messages", chatId)),
+                handler.GETRequest(String.format("/chats/%d/messages", selectedChat.getId())),
                 new TypeReference<>() {
                 });
-        if (selectedChatMessages ==null){
-            createChat();
+    }
+
+    @Override
+    public List<Message> getSelectedChatMessages() {
+        return selectedChatMessages;
+    }
+
+    @Override
+    public void sendMessageToChat(String text) {
+        handler.sendPOST(
+                handler.POSTRequest(String.format("/users/%d/chats/%d/message", self.getId(), selectedChat.getId()),
+                prepareMessage(text)));
+    }
+
+    private String prepareMessage(String text) {
+        return String.format("{ \"text\": \"%s\" }", text);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        if (users == null) {
+            allUsers();
         }
+        return users;
     }
 
-    public List<String[]> getSelectedChatMessages() {
-        return prepareListMessages();
+    private void allUsers() {
+        if (self == null)
+            throw new RuntimeException("attempt to get chats before log in");
+        users = handler.mapResponse(
+                handler.GETRequest("/users"),
+                new TypeReference<>() {
+                });
     }
 
-    private List<String[]> prepareListMessages() {
-        var messageAsStrings = new ArrayList<String[]>();
-        selectedChatMessages.forEach((mes) -> {
-            // chat is represented by its ID and the members except self
-            String[] message = new String[4];
-            message[0] = mes.getId().toString();
-            message[1] = mes.getText();
-            message[2] = mes.getDateTime().toString();
-            message[3] = mes.getAuthor().getName();
-            messageAsStrings.add(message);
-        });
-        return messageAsStrings;
+    @Override
+    public void sendMessageToUser(String text, User user) {
+        handler.sendPOST(handler.POSTRequest(String.format("/users/%d/message/users/%d", self.getId(), user.getId()),
+                prepareMessage(text)));
     }
+
+    @Override
+    public void createDialog(User user) {
+        handler.sendPOST(handler.POSTRequest("/chat?isPrivate=true",
+                Arrays.asList(self.getId(), user.getId())));
+    }
+
 }
