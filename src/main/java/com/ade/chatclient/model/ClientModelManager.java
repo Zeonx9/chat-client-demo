@@ -6,7 +6,6 @@ import com.ade.chatclient.model.entities.Message;
 import com.ade.chatclient.model.entities.User;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -78,9 +77,7 @@ public class ClientModelManager implements ClientModel{
                 break;
             }
         }
-        if (hasSuchChat)
-            updateMessages();
-        else
+        if (!hasSuchChat)
             System.out.println("User does not has a chat with id: " + chat.getId());
     }
 
@@ -89,8 +86,8 @@ public class ClientModelManager implements ClientModel{
     public void updateMessages() {
         selectedChatMessages = handler.mapResponse(
                 handler.GETRequest(String.format("/chats/%d/messages", selectedChat.getId())),
-                new TypeReference<>() {
-                });
+                new TypeReference<>() {}
+        );
     }
 
     @Override
@@ -101,12 +98,15 @@ public class ClientModelManager implements ClientModel{
     @Override
     public void sendMessageToChat(String text) {
         handler.sendPOST(
-                handler.POSTRequest(String.format("/users/%d/chats/%d/message", self.getId(), selectedChat.getId()),
-                prepareMessage(text)));
+                handler.POSTRequest(
+                        String.format("/users/%d/chats/%d/message", self.getId(), selectedChat.getId()),
+                        makeBodyForMsgSending(text)
+                )
+        );
     }
 
-    private String prepareMessage(String text) {
-        return String.format("{ \"text\": \"%s\" }", text);
+    private String makeBodyForMsgSending(String text) {
+        return "{ \"text\": \"" + text + "\" }";
     }
 
     @Override
@@ -120,22 +120,31 @@ public class ClientModelManager implements ClientModel{
     private void allUsers() {
         if (self == null)
             throw new RuntimeException("attempt to get chats before log in");
+
         users = handler.mapResponse(
                 handler.GETRequest("/users"),
-                new TypeReference<>() {
-                });
+                new TypeReference<>() {}
+        );
     }
 
     @Override
     public void sendMessageToUser(String text, User user) {
-        handler.sendPOST(handler.POSTRequest(String.format("/users/%d/message/users/%d", self.getId(), user.getId()),
-                prepareMessage(text)));
+        handler.sendPOST(
+                handler.POSTRequest(
+                        String.format("/users/%d/message/users/%d", self.getId(), user.getId()),
+                        makeBodyForMsgSending(text)
+                )
+        );
     }
 
     @Override
     public void createDialog(User user) {
-        handler.sendPOST(handler.POSTRequest("/chat?isPrivate=true",
-                Arrays.asList(self.getId(), user.getId())));
+        handler.sendPOST(
+                handler.POSTRequest(
+                        "/chat?isPrivate=true",
+                        List.of(self.getId(), user.getId())
+                )
+        );
     }
 
 }
