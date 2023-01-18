@@ -7,28 +7,24 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 public class LogInView {
+    @FXML private TextField loginTextField;
+    @FXML private Label errorMessageLabel;
+    @FXML private Button loginButton;
+
     private LogInViewModel viewModel;
 
-    @FXML
-    private TextField loginTextField;
+    public void init(LogInViewModel logInViewModel) {
+        this.viewModel = logInViewModel;
 
-    @FXML
-    private Label errorMessageLabel;
+        loginTextField.textProperty().bindBidirectional(viewModel.getLoginTextProperty());
+        loginTextField.textProperty().addListener(viewModel::onTextChanged);
 
-    @FXML
-    private Button loginButton;
+        errorMessageLabel.textProperty().bind(viewModel.getErrorMessageProperty());
+        loginButton.disableProperty().bind(viewModel.getDisableButtonProperty());
+    }
 
     @FXML
     protected void onLoginClick() {
         viewModel.authorize();
-    }
-
-    public void init(LogInViewModel logInViewModel) {
-        this.viewModel = logInViewModel;
-        loginTextField.textProperty().bindBidirectional(viewModel.getLoginProperty());
-        loginTextField.textProperty().addListener(viewModel::onTextChanged);
-
-        errorMessageLabel.textProperty().bind(viewModel.getErrorMessageProperty());
-        loginButton.disableProperty().bind(viewModel.getDisableProperty());
     }
 }

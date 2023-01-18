@@ -1,51 +1,51 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.view.ViewHandler;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import lombok.Getter;
 
+import java.io.IOException;
+
+@Getter
 public class LogInViewModel {
+    private final StringProperty loginTextProperty;
+    private final StringProperty errorMessageProperty;
+    private final BooleanProperty disableButtonProperty;
+
     private final ClientModel model;
+    private final ViewHandler viewHandler;
 
-    private final StringProperty enteredLogin;
-    private final StringProperty errorMessage;
-    private final BooleanProperty buttonDisabled;
-
-    public LogInViewModel(ClientModel model) {
+    public LogInViewModel(ViewHandler viewHandler, ClientModel model) {
         this.model = model;
-        enteredLogin = new SimpleStringProperty();
-        errorMessage = new SimpleStringProperty();
-        buttonDisabled = new SimpleBooleanProperty(true);
+        this.viewHandler = viewHandler;
+        loginTextProperty = new SimpleStringProperty();
+        errorMessageProperty = new SimpleStringProperty();
+        disableButtonProperty = new SimpleBooleanProperty(true);
     }
 
     public void authorize() {
-        boolean success = model.Authorize(enteredLogin.get());
+        boolean success = model.Authorize(loginTextProperty.get());
         if (success) {
-            // here we should change the view
-            // TODO make views switch
-            errorMessage.set("Success!");
-            System.out.println("You have been authorized, your data:" + model.getMyself());
+            errorMessageProperty.set("Success!");
+            System.out.println("You have been authorized, your data:" + model.getMyself().getId());
+            try {
+                viewHandler.openChatPageView();
+            }
+            catch (IOException e) {
+                System.out.println(e.getMessage());
+                errorMessageProperty.set("cannot switch to another view!");
+            }
         }
         else
-            errorMessage.set("Something went wrong!");
-    }
-
-    public StringProperty getLoginProperty() {
-        return enteredLogin;
-    }
-
-    public StringProperty getErrorMessageProperty() {
-        return errorMessage;
-    }
-
-    public BooleanProperty getDisableProperty() {
-        return buttonDisabled;
+            errorMessageProperty.set("Something went wrong!");
     }
 
     public void onTextChanged(Observable obj, String oldValue, String newValue) {
-        buttonDisabled.set(newValue.isBlank());
+        disableButtonProperty.set(newValue.isBlank());
     }
 }

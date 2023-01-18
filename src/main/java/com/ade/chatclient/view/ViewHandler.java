@@ -1,6 +1,6 @@
 package com.ade.chatclient.view;
 
-import com.ade.chatclient.viewmodel.ViewModelFactory;
+import com.ade.chatclient.viewmodel.ViewModelProvider;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,41 +14,50 @@ import java.util.Objects;
 public class ViewHandler {
 
     private final Stage stage;
-    private final ViewModelFactory vmFactory;
+    private final ViewModelProvider viewModelProvider;
 
-    public ViewHandler(Stage stage, ViewModelFactory vmFactory) {
-        this.vmFactory = vmFactory;
+    public ViewHandler(Stage stage, ViewModelProvider viewModelProvider) {
+        this.viewModelProvider = viewModelProvider;
+        viewModelProvider.InstantiateViewModels(this);
         this.stage = stage;
     }
 
     // starts the command line view main loop
     public void start() throws IOException {
+        openLogInView();
+    }
+
+    public void openLogInView() throws IOException {
         openView("login");
+    }
+    public void openChatPageView() throws IOException {
+        openView("chatPage");
     }
 
     private void openView(String viewName) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = null;
+        boolean isFullScreen = false;
 
-        if (Objects.equals(viewName, "cmd")) {
-            CommandLineView view = new CommandLineView(vmFactory.getCmdViewModel());
-            view.runMainLoop();
-        }
-        else if (Objects.equals(viewName, "login")) {
+        if (Objects.equals(viewName, "login")) {
             fxmlLoader.setLocation(getClass().getResource("log-in-view.fxml"));
             root = fxmlLoader.load();
             LogInView view = fxmlLoader.getController();
-            view.init(vmFactory.getLogInViewModel());
+            view.init(viewModelProvider.getLogInViewModel());
         }
+
         else if (Objects.equals(viewName, "chatPage")) {
-            fxmlLoader.setLocation(getClass().getResource("chat-page.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("chat-page-view.fxml"));
             root = fxmlLoader.load();
-            Objects view = fxmlLoader.getController();
+            ChatPageView view = fxmlLoader.getController();
+            view.init(viewModelProvider.getChatPageViewModel());
+            isFullScreen = true;
         }
 
         assert root != null;
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.setFullScreen(isFullScreen);
         stage.show();
     }
 }

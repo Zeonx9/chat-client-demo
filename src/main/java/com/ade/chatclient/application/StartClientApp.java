@@ -2,7 +2,7 @@ package com.ade.chatclient.application;
 
 import com.ade.chatclient.model.ModelFactory;
 import com.ade.chatclient.view.ViewHandler;
-import com.ade.chatclient.viewmodel.ViewModelFactory;
+import com.ade.chatclient.viewmodel.ViewModelProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -71,8 +71,8 @@ public class StartClientApp {
 
         // create factories to manage layers
         ModelFactory modelFactory = new ModelFactory(handler);
-        ViewModelFactory vmFactory = new ViewModelFactory(modelFactory);
-        ViewHandler viewHandler = new ViewHandler(stage, vmFactory);
+        ViewModelProvider viewModelProvider = new ViewModelProvider(modelFactory);
+        ViewHandler viewHandler = new ViewHandler(stage, viewModelProvider);
 
         // call a start method in viewHandler
         viewHandler.start();
