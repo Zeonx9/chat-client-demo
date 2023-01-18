@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.ChatPageView">
+   <TextField fx:id="searchTextField" layoutX="125.0" layoutY="50.0" prefHeight="50.0" prefWidth="450.0"
+              promptText="Search">
+      <font>
+         <Font name="Roboto Light" size="17.0"/>
+      </font>
+   </TextField>
+   <Label layoutX="125.0" layoutY="120.0" text="All chats">
+      <font>
+         <Font name="Roboto Light" size="30.0"/>
+      </font>
+   </Label>
+   <ListView fx:id="chatListView" layoutX="125.0" layoutY="184.0" prefHeight="669.0" prefWidth="438.0"/>
+   <ListView fx:id="messageListView" layoutX="607.0" layoutY="52.0" prefHeight="717.0" prefWidth="789.0"/>
+   <TextField fx:id="messageTextField" layoutX="607.0" layoutY="796.0" prefHeight="57.0" prefWidth="539.0"
+              promptText="Enter your message . . ."/>
+   <Button fx:id="sendButton" layoutX="1183.0" layoutY="796.0" mnemonicParsing="false" onAction="#onSendButtonClicked"
+           prefHeight="57.0" prefWidth="213.0" text="SEND"/>
+</AnchorPane>
