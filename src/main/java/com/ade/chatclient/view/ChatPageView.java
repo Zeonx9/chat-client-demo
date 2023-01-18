@@ -1,27 +1,41 @@
 package com.ade.chatclient.view;
 
-import javafx.event.ActionEvent;
-import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
-import javafx.scene.layout.VBox;
 
-import java.util.List;
+import com.ade.chatclient.model.entities.Chat;
+import com.ade.chatclient.model.entities.Message;
+import com.ade.chatclient.viewmodel.ChatPageViewModel;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
 
 public class ChatPageView {
+    @FXML private TextField searchTextField;
 
-    public List<String> listChats = List.of("Egor", "Dasha", "Artem");
+    @FXML private ListView<Chat> chatListView;
+    @FXML private ListView<Message> messageListView;
+    @FXML private TextField messageTextField;
 
-    public VBox mainVBox = new VBox();
+    // disable button, if chat is not selected
+    @FXML private Button sendButton;
 
-    public void onShowClicked(ActionEvent actionEvent) {
-        mainVBox.getChildren().clear();
-        listChats.forEach(chat -> {
-            SplitPane nsp = new SplitPane();
-            Label nl = new Label(chat + '\n');
-            nl.setStyle("-fx-font-size:24");
-            nsp.getItems().add(new Label("chat:    "));
-            nsp.getItems().add(nl);
-            mainVBox.getChildren().add(nsp);
-        });
+    private ChatPageViewModel viewModel;
+
+    public void init(ChatPageViewModel viewModel) {
+        this.viewModel = viewModel;
+
+        chatListView.itemsProperty().bind(viewModel.getChatListProperty());
+        chatListView.setCellFactory(param -> viewModel.getChatListCellFactory());
+        chatListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
+        viewModel.updateChatList();
+
+        messageListView.itemsProperty().bind(viewModel.getMessageListProperty());
+        messageListView.setCellFactory(param -> viewModel.getMessageCellFactory());
+
+        messageTextField.textProperty().bindBidirectional(viewModel.getMessageTextProperty());
+    }
+
+    @FXML
+    protected void onSendButtonClicked(ActionEvent actionEvent) {
+        viewModel.sendMessage();
     }
 }
