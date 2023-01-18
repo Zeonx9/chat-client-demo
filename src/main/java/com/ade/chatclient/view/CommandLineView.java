@@ -1,5 +1,6 @@
 package com.ade.chatclient.view;
 import com.ade.chatclient.model.entities.Chat;
+import com.ade.chatclient.model.entities.Message;
 import com.ade.chatclient.viewmodel.CommandLineViewModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,9 @@ import java.util.Scanner;
 // view is bound with viewModel
 @Getter
 @Setter
+
+@Deprecated
+
 public class CommandLineView {
     // fields that hold the current state of the view
     String myName;
@@ -18,7 +22,7 @@ public class CommandLineView {
     List<Chat> myChats;
     Long selectedChatId;
 
-    List<String[]> selectedChatMessages;
+    List<Message> selectedChatMessages;
 
     // reference to the VM
     private final CommandLineViewModel viewModel;
@@ -35,7 +39,7 @@ public class CommandLineView {
 
         System.out.println("Logging you in ...");
         // notify the viewModel about changes, will be replaced by data binding
-        bindBack();
+//        bindBack();
         bind();
 
         System.out.println("Logged successfully! your ID is: " + myId);
@@ -47,12 +51,12 @@ public class CommandLineView {
         System.out.println("\nEnter chat id: ");
         selectedChatId = scanner.nextLong();
 
-        bindBack();
+//        bindBack();
         bind();
 
         System.out.println("History of chart: " + selectedChatId);
         if (selectedChatMessages != null) {
-            selectedChatMessages.forEach((s) -> System.out.println(s[1] + " by " + s[3]));
+            selectedChatMessages.forEach(System.out::println);
             if (selectedChatMessages.isEmpty())
                 System.out.println("No messages here yet..");
         }
@@ -62,16 +66,16 @@ public class CommandLineView {
         System.out.println("\nThat's all for now, thank you for trying our chat application!)");
     }
 
-    public void bindBack() {
-        viewModel.setMyName(myName);
-        viewModel.setSelectedChat(selectedChatId);
-    }
+//    public void bindBack() {
+//        viewModel.setMyName(myName);
+//        viewModel.setSelectedChat(selectedChatId);
+//    }
 
     public void bind() {
-        if (myName == null) {
-            myName = viewModel.getMyName();
-            myId = viewModel.getMyId();
-        }
+//        if (myName == null) {
+//            myName = viewModel.getMyName();
+//            myId = viewModel.getMyId();
+//        }
         myChats = viewModel.getMyChats();
 
         if (selectedChatId != null) {
