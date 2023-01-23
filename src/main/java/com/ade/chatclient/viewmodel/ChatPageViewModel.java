@@ -1,8 +1,8 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.model.entities.Chat;
-import com.ade.chatclient.model.entities.Message;
+import com.ade.chatclient.model.domain.Chat;
+import com.ade.chatclient.model.domain.Message;
 import com.ade.chatclient.view.ViewHandler;
 import javafx.beans.Observable;
 import javafx.beans.property.*;
@@ -14,6 +14,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+// TODO switch to logger instead of System.out.prinln
 
 @Getter
 public class ChatPageViewModel {

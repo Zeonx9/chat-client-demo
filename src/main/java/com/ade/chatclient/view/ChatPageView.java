@@ -1,8 +1,8 @@
 package com.ade.chatclient.view;
 
 
-import com.ade.chatclient.model.entities.Chat;
-import com.ade.chatclient.model.entities.Message;
+import com.ade.chatclient.model.domain.Chat;
+import com.ade.chatclient.model.domain.Message;
 import com.ade.chatclient.viewmodel.ChatPageViewModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

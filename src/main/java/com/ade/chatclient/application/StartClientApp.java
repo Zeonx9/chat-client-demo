@@ -14,6 +14,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+// TODO write documentation
+
 // this class configures the app before it is able to run
 public class StartClientApp {
 

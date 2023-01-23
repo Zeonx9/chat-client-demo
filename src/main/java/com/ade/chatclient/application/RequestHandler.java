@@ -1,8 +1,8 @@
 package com.ade.chatclient.application;
 
-import com.ade.chatclient.model.entities.Chat;
-import com.ade.chatclient.model.entities.Message;
-import com.ade.chatclient.model.entities.User;
+import com.ade.chatclient.model.domain.Chat;
+import com.ade.chatclient.model.domain.Message;
+import com.ade.chatclient.model.domain.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +15,8 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+// TODO write documentation
 
 
 // class that wraps HttpClient and forms HttpRequest, sends them and maps the responses

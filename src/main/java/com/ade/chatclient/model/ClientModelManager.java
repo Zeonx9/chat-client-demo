@@ -1,9 +1,9 @@
 package com.ade.chatclient.model;
 
 import com.ade.chatclient.application.RequestHandler;
-import com.ade.chatclient.model.entities.Chat;
-import com.ade.chatclient.model.entities.Message;
-import com.ade.chatclient.model.entities.User;
+import com.ade.chatclient.model.domain.Chat;
+import com.ade.chatclient.model.domain.Message;
+import com.ade.chatclient.model.domain.User;
 
 import java.util.List;
 import java.util.Map;
