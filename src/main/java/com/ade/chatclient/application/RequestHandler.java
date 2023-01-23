@@ -1,5 +1,8 @@
 package com.ade.chatclient.application;
 
+import com.ade.chatclient.model.entities.Chat;
+import com.ade.chatclient.model.entities.Message;
+import com.ade.chatclient.model.entities.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,11 +13,22 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
 // class that wraps HttpClient and forms HttpRequest, sends them and maps the responses
 public class RequestHandler {
+
+    /**
+     * Class that contains constant type references to use in mapResponse
+     */
+    public static class Types {
+        public static final TypeReference<List<Chat>> ListOfChat = new TypeReference<>() {};
+        public static final TypeReference<List<Message>> ListOfMessage = new TypeReference<>() {};
+        public static final TypeReference<List<User>> ListOfUser = new TypeReference<>() {};
+    }
+
     private final String url;
     private final HttpClient client;
     private final ObjectMapper mapper;
@@ -28,6 +42,12 @@ public class RequestHandler {
         mapper.findAndRegisterModules();
     }
 
+    /**
+     * @return not valid request, should be used in tests only
+     */
+    public static HttpRequest getEmptyReq() {
+        return HttpRequest.newBuilder().uri(URI.create("https://foo.com/bar")).GET().build();
+    }
 
 
     // private method used internally to pre-build the request

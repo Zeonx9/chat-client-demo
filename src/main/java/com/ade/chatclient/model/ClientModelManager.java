@@ -4,7 +4,6 @@ import com.ade.chatclient.application.RequestHandler;
 import com.ade.chatclient.model.entities.Chat;
 import com.ade.chatclient.model.entities.Message;
 import com.ade.chatclient.model.entities.User;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.List;
 import java.util.Map;
@@ -27,6 +26,10 @@ public class ClientModelManager implements ClientModel{
         return self;
     }
 
+    public void setMySelf(User user) {
+        self = user;
+    }
+
     @Override
     public List<Chat> getMyChats() {
         if (self == null)
@@ -41,7 +44,7 @@ public class ClientModelManager implements ClientModel{
     public void updateMyChats() {
         myChats = handler.mapResponse(
                 handler.GETRequest(String.format("/users/%d/chats", self.getId())),
-                new TypeReference<>(){}
+                RequestHandler.Types.ListOfChat
         );
     }
 
@@ -86,7 +89,7 @@ public class ClientModelManager implements ClientModel{
     public void updateMessages() {
         selectedChatMessages = handler.mapResponse(
                 handler.GETRequest(String.format("/chats/%d/messages", selectedChat.getId())),
-                new TypeReference<>() {}
+                RequestHandler.Types.ListOfMessage
         );
     }
 
@@ -123,7 +126,7 @@ public class ClientModelManager implements ClientModel{
 
         users = handler.mapResponse(
                 handler.GETRequest("/users"),
-                new TypeReference<>() {}
+                RequestHandler.Types.ListOfUser
         );
     }
 
