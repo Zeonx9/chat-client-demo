@@ -17,12 +17,17 @@ import java.util.Objects;
 
 @Getter
 public class ChatPageViewModel {
+    // первые 3 поля тоже должен был добавить Егор
     private final ListProperty<Chat> chatListProperty;
     private final ListProperty<Message> messageListProperty;
     private final StringProperty messageTextProperty;
 
+
     private final ClientModel model;
     private final ViewHandler viewHandler;
+
+
+    // конструктор тоже егор
 
     ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
         this.model = model;
@@ -32,6 +37,8 @@ public class ChatPageViewModel {
         messageListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
         messageTextProperty = new SimpleStringProperty();
     }
+
+    // методы до следующего коммента - это Даша делает
 
     public void updateChatList() {
         chatListProperty.clear();
@@ -59,6 +66,8 @@ public class ChatPageViewModel {
         messageTextProperty.set("");
         updateMessagesInSelectedChat();
     }
+
+    // все метод ниже должен был написать егор
 
     private String prepareChatToBeShown(Chat chat) {
         List<String> memberNames = new ArrayList<>();

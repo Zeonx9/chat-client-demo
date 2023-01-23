@@ -5,7 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import lombok.Getter;
 
+@Getter
 public class LogInView {
     @FXML private TextField loginTextField;
     @FXML private Label errorMessageLabel;
