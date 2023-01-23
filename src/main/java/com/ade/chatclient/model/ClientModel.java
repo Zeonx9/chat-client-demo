@@ -1,29 +1,38 @@
 package com.ade.chatclient.model;
 
+import com.ade.chatclient.model.entities.Chat;
 import com.ade.chatclient.model.entities.Message;
+import com.ade.chatclient.model.entities.User;
 
 import java.util.List;
 
 // an interface that a model should implement, used to add flexibility to model structure
 public interface ClientModel {
-    // returns the ID of authorized user
-    Long getMyId();
 
-    // returns the name of authorized user
-    String getMyName();
+    // returns the data of authorized user
+    User getMyself();
 
     // returns a list of chats where user participates
-    List<List<String>> getMyChats();
+    List<Chat> getMyChats();
 
     void updateMyChats();
 
-    void openChat(Long id);
-    void createChat();
+    //open chat
+    void selectChat(Chat chat);
+
     void updateMessages();
-    List<Long> getMyChatId();
 
     // method that authorize the user with given login(name)
-    void Authorize(String login);
+    boolean Authorize(String login);
 
-    List<String[]>  getSelectedChatMessages();
+    List<Message> getSelectedChatMessages();
+
+    void sendMessageToChat(String text);
+
+    // returns a list of all users
+    List<User> getAllUsers();
+
+    void sendMessageToUser(String text, User user);
+
+    void createDialog(User user);
 }

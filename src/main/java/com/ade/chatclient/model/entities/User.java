@@ -1,13 +1,10 @@
 package com.ade.chatclient.model.entities;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 // used to map chats as Java objects
-@Getter
-@Setter
-@ToString
+@Data
+@AllArgsConstructor
 public class User {
     private Long id;
     private String name;
