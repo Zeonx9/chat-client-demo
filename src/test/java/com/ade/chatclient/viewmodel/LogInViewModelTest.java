@@ -10,6 +10,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+/**
+ * простой тест Junit/Mock, который проверяет правильность работы методов во вью-модели
+ * Вью модель зависит от ViewHandler и от ClientModel, поэтому, чтобы тестировать наш класс в изоляции нужно
+ * использовать моки, чтобы создать вьюмодельку для изоляции
+ */
 @ExtendWith(MockitoExtension.class)
 class LogInViewModelTest {
     private LogInViewModel underTest;

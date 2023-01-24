@@ -1,8 +1,8 @@
 package com.ade.chatclient.application;
 
-import com.ade.chatclient.model.domain.Chat;
-import com.ade.chatclient.model.domain.Message;
-import com.ade.chatclient.model.domain.User;
+import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.domain.Message;
+import com.ade.chatclient.domain.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,14 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-// TODO write documentation
 
-
-// class that wraps HttpClient and forms HttpRequest, sends them and maps the responses
+/**
+ * Класс, который позволяет отправлять и получать http запросы на сервер
+ * Каждый класс модели использует свой RequestHandler, который ему предоставляет
+ * фабрика ModelFactory
+ */
 public class RequestHandler {
 
     /**
-     * Class that contains constant type references to use in mapResponse
+     * класс со статическими константами, используются для маппинга ответов от сервера в объекты домена (сущности)
      */
     public static class Types {
         public static final TypeReference<List<Chat>> ListOfChat = new TypeReference<>() {};
@@ -35,24 +37,24 @@ public class RequestHandler {
     private final HttpClient client;
     private final ObjectMapper mapper;
 
-    // url is a combination of tunnel address and the base of endpoint - a part that is the same for all of them
-    // in our application it is "/chat_api/v1"
-    public RequestHandler(String url, HttpClient client) {
+    /**
+     * создает новый экземпляр класса
+     * @param url - адресс сервера выданного ngrok
+     */
+    public RequestHandler(String url) {
         this.url = url;
-        this.client = client;
+        this.client = HttpClient.newHttpClient();
         mapper = new ObjectMapper();
         mapper.findAndRegisterModules();
     }
 
     /**
-     * @return not valid request, should be used in tests only
+     * метод, который помогает упростить сборку запросов
+     * метод не для внешнего использования
+     * @param params Map содержащий параметры для запроса в виде пар ключ-значение
+     * @param path путь до точки входа на сервере
+     * @return билдер запроса
      */
-    public static HttpRequest getEmptyReq() {
-        return HttpRequest.newBuilder().uri(URI.create("https://foo.com/bar")).GET().build();
-    }
-
-
-    // private method used internally to pre-build the request
     private HttpRequest.Builder getPresetRequest(String path, Map<String, String> params) {
         String uriStr = url + path;
         if (!params.isEmpty())
@@ -68,7 +70,12 @@ public class RequestHandler {
                 .header("ngrok-skip-browser-warning", "skip");
     }
 
-    // private method used internally to send the request and get the string from response body
+    /**
+     * отправляет запрос на сервер и возвращает ответ в виде строки
+     * @param request сфоримированный запрос
+     * @return строку ответа от сервера
+     * @throws IllegalStateException когда не удается отправить запрос
+     */
     private String sendRequestAndGetResponse(HttpRequest request) {
         try {
             var resp = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -79,39 +86,63 @@ public class RequestHandler {
         }
     }
 
-    // sends a POST request, it does not require mapping the result
-    // method only exists so private method can be not exposed
-    public String sendPOST(HttpRequest request) {
-        return sendRequestAndGetResponse(request);
+    /**
+     * @return пустой запрос, должен использоваться только для тестов
+     */
+    public static HttpRequest getEmptyReq() {
+        return HttpRequest.newBuilder().uri(URI.create("https://foo.com/bar")).GET().build();
     }
 
-    // constructs a GET http request with parameters passed in a map
-    // path presents only a variable part of the path to end point
-    // for example "/user" in "http://localhost:8080/chat_api/v1/user"
-    // it should always start with the backslash
+    /**
+     * строит GET запрос с параметрами
+     * @param path путь до точки входа на сервер
+     * @param params набор пар ключ-значение определяющих нужные параметры в запросе
+     * @return собранный запрос
+     */
     public HttpRequest GETRequest(String path, Map<String, String> params) {
         return getPresetRequest(path, params).GET().build();
     }
 
-    // constructs a GET http request without parameters
-    // path has the same requirements as another overloaded version
+    /**
+     * строит GET запрос без параметров
+     * @param path путь до точки входа на сервер
+     * @return собранный запрос
+     */
     public HttpRequest GETRequest(String path) {
         return GETRequest(path, Map.of());
     }
 
-    // constructs a POST request with parameters and body parsed from string
+    /**
+     * строит POST запрос с параметрами
+     * @param path путь до точки входа на сервер
+     * @param params набор пар ключ-значение определяющих нужные параметры в запросе
+     * @param body строка, которая представляет тело запроса, должна быть валидной строкой JSON
+     * @return собранный запрос
+     */
     public HttpRequest POSTRequest(String path, Map<String, String> params, String body) {
         return getPresetRequest(path, params)
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
     }
 
-    // constructs a POST request without parameters and a body from string
+    /**
+     * строит POST запрос без параметров
+     * @param path путь до точки входа на сервер
+     * @param body строка, которая представляет тело запроса, должна быть валидной строкой JSON
+     * @return собранный запрос
+     */
     public HttpRequest POSTRequest(String path, String body) {
         return POSTRequest(path, Map.of(), body);
     }
 
-    // constructs a POST request with parameters and body parsed from an Object that can be serialized
+    /**
+     * строит POST запрос с параметрами
+     * @param path путь до точки входа на сервер
+     * @param params набор пар ключ-значение определяющих нужные параметры в запросе
+     * @param bodyObj объект, который будет сериализован и послан на сервер, как JSON-строка
+     * @return собранный запрос
+     * @throws RuntimeException при невозможности сериализовать объект
+     */
     public <T> HttpRequest POSTRequest(String path, Map<String, String> params, T bodyObj) {
         try {
             return POSTRequest(path, params, mapper.writeValueAsString(bodyObj));
@@ -120,12 +151,25 @@ public class RequestHandler {
         }
     }
 
-    // constructs a POST request without parameters and a body from Object
+    /**
+     * строит POST запрос без параметров
+     * @param path путь до точки входа на сервер
+     * @param bodyObj объект, который будет сериализован и послан на сервер, как JSON-строка
+     * @return собранный запрос
+     */
     public <T> HttpRequest POSTRequest(String path, T bodyObj) {
         return POSTRequest(path, Map.of(), bodyObj);
     }
 
-    // private method used internally to map response using Jackson
+    /**
+     * общий метод маппинга ответа от вервера в объект из домена
+     * существует, чтобы не писать один и тот же код дважды
+     * @param request реквест, который нужно отправить
+     * @param objClass ссылка на класс объекта, в который нужно маппить
+     * @param typeRef ссылка на тип объекта, используется для коллекций других объектов
+     * @return объект заданного класса полученного из ответа от сервера
+     * @throws RuntimeException если не возможно десерелиазовать объект
+     */
     private  <T> T mapResponse(HttpRequest request, Class<T> objClass, TypeReference<T> typeRef) {
         var response = sendRequestAndGetResponse(request);
         T mappedObj;
@@ -144,14 +188,32 @@ public class RequestHandler {
         return mappedObj;
     }
 
-
-    // returns an object deserialized from json-string
+    /**
+     * @param request реквест, который нужно отправить
+     * @param objClass ссылка на класс объекта, в который нужно маппить
+     * @return объект заданного класса полученного из ответа от сервера
+     * @throws RuntimeException если не возможно десерелиазовать объект
+     */
     public <T> T mapResponse(HttpRequest request, Class<T> objClass) {
         return mapResponse(request, objClass, null);
     }
 
-    // returns an object deserialized from json-string
+    /**
+     * @param request реквест, который нужно отправить
+     * @param typeRef ссылка на тип объекта, используется для коллекций других объектов
+     * @return объект заданного класса полученного из ответа от сервера
+     * @throws RuntimeException если не возможно десерелиазовать объект
+     */
     public <T> T mapResponse(HttpRequest request, TypeReference<T> typeRef) {
         return mapResponse(request, null, typeRef);
+    }
+
+    /**
+     * отправляет POST запрос, если произойдет ошибка, то выпадет иселючение
+     * @param request реквест, который нужно отправить
+     * @throws IllegalStateException когда не удается отправить запрос
+     */
+    public void sendPOST(HttpRequest request) {
+        sendRequestAndGetResponse(request);
     }
 }

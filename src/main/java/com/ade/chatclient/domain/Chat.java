@@ -1,11 +1,12 @@
-package com.ade.chatclient.model.domain;
+package com.ade.chatclient.domain;
 
 import lombok.*;
 
 import java.util.List;
 
-
-// entity used to map users as Java objects
+/**
+ * Класс, который представляет чат между двумя пользователями или беседу
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

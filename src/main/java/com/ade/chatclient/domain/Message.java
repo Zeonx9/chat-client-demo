@@ -1,9 +1,12 @@
-package com.ade.chatclient.model.domain;
+package com.ade.chatclient.domain;
 
 import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Класс, который представляет сообщение
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

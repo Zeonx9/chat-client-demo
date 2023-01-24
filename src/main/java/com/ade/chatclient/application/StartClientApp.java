@@ -14,18 +14,22 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-// TODO write documentation
-
-// this class configures the app before it is able to run
+/**
+ * Вспомогательный класс, который помогает настроить приложение во время запуска
+ */
 public class StartClientApp {
 
-    // sends request to api.ngrok.com/tunnels and returns the url of tunnel if it is open
-    static String getTunnelUrl(HttpClient client) {
-
-        // ngrok auth token
+    /**
+     * метод, который обращается на сервер ngrok и запрашивает открытые туннели для аккаута Артёма
+     * @return реальный адрес сервера, если тунель открыт
+     *         Connection error если не удалось подключиться к сети
+     *         no tunnel если нет открытого туннеля
+     */
+    static String getTunnelUrl() {
+        // токен ngrok от аккаунта Артёма
         final String token = "2K8b1iawfqvJEWz8UhK7i9UOzml_36h3tWg7TzPSJbyRQSwpQ";
 
-        // configure a request to ngrok api
+        // настроить реквест для ngroka
         var request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.ngrok.com/tunnels"))
                 .header("Authorization", String.format("Bearer %s", token))
@@ -33,17 +37,18 @@ public class StartClientApp {
                 .GET()
                 .build();
 
-        // send a request and get a response
+        // отправить запрос и получить ответ
         HttpResponse<String> response;
         try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         }
         catch (IOException | InterruptedException e) {
             return "Connection error";
         }
 
         ObjectMapper mapper = new ObjectMapper();
-        // get a first tunnel from the response json
+
+        // получить адрес туннеля из ответа от сервера ngrok
         JsonNode tunnel;
         try {
             tunnel = mapper.readTree(response.body()).get("tunnels").get(0);
@@ -51,32 +56,31 @@ public class StartClientApp {
             throw new RuntimeException(e);
         }
 
-        // check if tunnel exists
+        // проверить, что туннель есть
         if (tunnel == null) {
             return "no tunnel";
-//            throw new RuntimeException("No accessible tunnels");
         }
 
         return tunnel.get("public_url").asText();
     }
 
-    // calls necessary methods and initiates everything
+    /**
+     * метод, который запрашивает адрес сервера приложения
+     * создает фабрики для компонентов приложения (модель, вью, вью-модель)
+     * передает управление на ViewHandler
+     * @param stage объект Stage, который получен от метода start в главном классе приложения
+     */
     public static void start(Stage stage) throws IOException {
         System.out.println("Starting the application ...");
-
-        var httpClient = HttpClient.newHttpClient();
-        var url = getTunnelUrl(httpClient);
-        var baseEndPoint = "/chat_api/v1";
-        var handler = new RequestHandler(url + baseEndPoint, httpClient);
-
+        var url = getTunnelUrl();
         System.out.println("Server is located at: " + url);
 
-        // create factories to manage layers
-        ModelFactory modelFactory = new ModelFactory(handler);
+        // создание фабрик для управления слоями приложения
+        ModelFactory modelFactory = new ModelFactory(url);
         ViewModelProvider viewModelProvider = new ViewModelProvider(modelFactory);
         ViewHandler viewHandler = new ViewHandler(stage, viewModelProvider);
 
-        // call a start method in viewHandler
+        // включает начальное вью
         viewHandler.start();
     }
 }

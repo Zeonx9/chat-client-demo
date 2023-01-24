@@ -16,7 +16,14 @@ import java.io.IOException;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
-
+/**
+ * реализует интеграционный тест между вью и вью-модел
+ * они зависят от модели и ViewHandler, чтобы тестировать в изоляции мы используем
+ * моки для этих двух зависимостей.
+ * Цель тестов - проверять, что взаимодействие между вью и вью-модел происходит правильно и
+ * все изменения правильно отражаются во вью
+ * тесты не запускают реальное приложение, но подключают платформу javafx, из-за чего тесты довольно долго запускаются
+ */
 @ExtendWith(MockitoExtension.class)
 class LogInViewTest {
     private static FXMLLoader loader;

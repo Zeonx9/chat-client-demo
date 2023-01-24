@@ -3,19 +3,26 @@ package com.ade.chatclient.viewmodel;
 import com.ade.chatclient.model.ModelFactory;
 import com.ade.chatclient.view.ViewHandler;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-// factory that created viewModels linking them to models
+/**
+ * Фабрика вью-моделей  требует ссылку на фабрику моделей.
+ * Инициализирует вью-модель только при наличии ссылки на ViewHandler, которая позволяет перевключиться на другое вью
+ */
 @Getter
+@RequiredArgsConstructor
 public class ViewModelProvider {
     private LogInViewModel logInViewModel;
     private ChatPageViewModel chatPageViewModel;
     private final ModelFactory modelFactory;
 
-    public ViewModelProvider(ModelFactory modelFactory) {
-        this.modelFactory = modelFactory;
-    }
 
-    public void InstantiateViewModels(ViewHandler viewHandler) {
+    /**
+     * метод передающий ссылку на ViewHandler в объекты вью-моделей
+     * инициализирует вью-модели
+     * @param viewHandler требуется для переключения между вью
+     */
+    public void instantiateViewModels(ViewHandler viewHandler) {
         logInViewModel = new LogInViewModel(viewHandler, modelFactory.getModel());
         chatPageViewModel = new ChatPageViewModel(viewHandler, modelFactory.getModel());
     }
