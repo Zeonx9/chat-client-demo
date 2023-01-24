@@ -1,8 +1,8 @@
 package com.ade.chatclient.model;
 
 import com.ade.chatclient.application.RequestHandler;
-import com.ade.chatclient.model.domain.Chat;
-import com.ade.chatclient.model.domain.User;
+import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +15,11 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
 
+/**
+ * класс, который реализует Mock/Junit тесты для Модели
+ * модель зависит от RequestHandler, нужно сделать мок для него
+ * тестирует поведение модели, при условии, что запросы прошли так, как мы хотели
+ */
 @ExtendWith(MockitoExtension.class)
 class ClientModelManagerTest {
     @Mock private RequestHandler handler;

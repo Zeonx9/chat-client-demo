@@ -1,8 +1,10 @@
-package com.ade.chatclient.model.domain;
+package com.ade.chatclient.domain;
 
 import lombok.*;
 
-// used to map chats as Java objects
+/**
+ * Класс, который представляет пользователя
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
