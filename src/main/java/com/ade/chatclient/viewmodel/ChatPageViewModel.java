@@ -1,8 +1,8 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.model.domain.Chat;
-import com.ade.chatclient.model.domain.Message;
+import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.view.ViewHandler;
 import javafx.beans.Observable;
 import javafx.beans.property.*;
@@ -14,8 +14,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-// TODO switch to logger instead of System.out.prinln
 
 @Getter
 public class ChatPageViewModel {
@@ -54,13 +52,11 @@ public class ChatPageViewModel {
     }
 
     public void onSelectedItemChange(Observable observable, Chat oldValue, Chat newValue) {
-        System.out.println("chat has been selected");
         model.selectChat(newValue);
         updateMessagesInSelectedChat();
     }
 
     public void sendMessage() {
-        System.out.println("sending message");
         if (messageTextProperty.get().isBlank())
             return;
 

@@ -34,7 +34,7 @@ public class LogInViewModel {
             errorMessageProperty.set("Success!");
             System.out.println("You have been authorized, your data:" + model.getMyself().getId());
             try {
-                viewHandler.openChatPageView();
+                viewHandler.openView(ViewHandler.Views.CHAT_PAGE_VIEW);
             }
             catch (IOException e) {
                 System.out.println(e.getMessage());

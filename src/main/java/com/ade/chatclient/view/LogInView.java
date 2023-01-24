@@ -15,6 +15,12 @@ public class LogInView {
 
     private LogInViewModel viewModel;
 
+    /**
+     * метод, который выполняет инициализацию вместо конструкора,
+     * так как объекты вью получаются при подключении не через констуктор, а из FXMLLoader
+     * выполняет байндинг модели и вью модели
+     * @param logInViewModel ссылка на вью-модель, которая управляет этим вью
+     */
     public void init(LogInViewModel logInViewModel) {
         this.viewModel = logInViewModel;
 

@@ -1,8 +1,8 @@
 package com.ade.chatclient.model;
 
 import com.ade.chatclient.application.RequestHandler;
-import com.ade.chatclient.model.domain.Chat;
-import com.ade.chatclient.model.domain.User;
+import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

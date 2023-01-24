@@ -1,8 +1,8 @@
 package com.ade.chatclient.view;
 
 
-import com.ade.chatclient.model.domain.Chat;
-import com.ade.chatclient.model.domain.Message;
+import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.viewmodel.ChatPageViewModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,12 +15,19 @@ public class ChatPageView {
     @FXML private ListView<Message> messageListView;
     @FXML private TextField messageTextField;
 
-    // disable button, if chat is not selected
     @FXML private Button sendButton;
 
     private ChatPageViewModel viewModel;
 
+
+    /**
+     * метод, который выполняет инициализацию вместо конструкора,
+     * так как объекты вью получаются при подключении не через констуктор, а из FXMLLoader
+     * выполняет байндинг модели и вью модели
+     * @param viewModel ссылка на вью-модель, которая управляет этим вью
+     */
     public void init(ChatPageViewModel viewModel) {
+        // егор, разберись здесь прям построчно, что происходит
         this.viewModel = viewModel;
 
         chatListView.itemsProperty().bind(viewModel.getChatListProperty());
