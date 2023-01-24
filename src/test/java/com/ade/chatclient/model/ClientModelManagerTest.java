@@ -15,6 +15,11 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
 
+/**
+ * класс, который реализует Mock/Junit тесты для Модели
+ * модель зависит от RequestHandler, нужно сделать мок для него
+ * тестирует поведение модели, при условии, что запросы прошли так, как мы хотели
+ */
 @ExtendWith(MockitoExtension.class)
 class ClientModelManagerTest {
     @Mock private RequestHandler handler;
