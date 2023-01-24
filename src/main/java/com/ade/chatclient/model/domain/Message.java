@@ -1,14 +1,12 @@
-package com.ade.chatclient.model.entities;
+package com.ade.chatclient.model.domain;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@ToString
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Message {
     private Long id;
     private String text;

@@ -14,6 +14,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+// TODO write documentation
+
 // this class configures the app before it is able to run
 public class StartClientApp {
 
@@ -37,7 +39,7 @@ public class StartClientApp {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         }
         catch (IOException | InterruptedException e) {
-            throw new RuntimeException("cannot send a request", e);
+            return "Connection error";
         }
 
         ObjectMapper mapper = new ObjectMapper();

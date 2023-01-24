@@ -1,0 +1,48 @@
+package com.ade.chatclient.viewmodel;
+
+import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.view.ViewHandler;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+@ExtendWith(MockitoExtension.class)
+class LogInViewModelTest {
+    private LogInViewModel underTest;
+    @Mock private ClientModel model;
+    @Mock private ViewHandler handler;
+
+    @BeforeEach
+    void setUp() {
+        underTest = new LogInViewModel(handler, model);
+    }
+
+    @Test
+    void authorize() {
+
+    }
+
+    @Test
+    void onTextChangedToNonBlank() {
+        //given
+        String newText = "text";
+        // when
+        underTest.onTextChanged(null, null, newText);
+        // then
+        assertThat(underTest.getDisableButtonProperty().get()).isFalse();
+    }
+
+    @Test
+    void onTextChangedWhenIsBlank() {
+        //given
+        String newText = "    ";
+        // when
+        underTest.onTextChanged(null, null, newText);
+        // then
+        assertThat(underTest.getDisableButtonProperty().get()).isTrue();
+    }
+}

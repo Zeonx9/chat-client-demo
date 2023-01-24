@@ -46,6 +46,8 @@ public class LogInViewModel {
     }
 
     public void onTextChanged(Observable obj, String oldValue, String newValue) {
+        if (newValue == null)
+            newValue = "";
         disableButtonProperty.set(newValue.isBlank());
     }
 }
