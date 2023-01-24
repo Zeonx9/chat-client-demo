@@ -5,30 +5,22 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="446.0" prefWidth="816.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.LogInView">
+<AnchorPane prefHeight="446.0" prefWidth="816.0" styleClass="background-login" stylesheets="@../styles/LoginViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.LogInView">
    <opaqueInsets>
       <Insets />
    </opaqueInsets>
-   <Label layoutX="180.0" layoutY="65.0" text="Welcome to InTouch">
+   <Label alignment="CENTER" contentDisplay="CENTER" layoutX="68.0" layoutY="64.0" prefHeight="70.0" prefWidth="678.0" styleClass="header" text="Welcome to InTouch" textAlignment="CENTER">
       <font>
          <Font name="Roboto Light" size="50.0" />
       </font>
    </Label>
-   <Label layoutX="139.0" layoutY="135.0" prefHeight="34.0" prefWidth="537.0" text="Corporate messenger for business communication" textAlignment="CENTER">
+   <Label alignment="CENTER" layoutX="88.0" layoutY="135.0" prefHeight="86.0" prefWidth="639.0" styleClass="subtitle" text="Corporate messenger for business communication and planning of common projects!" textAlignment="CENTER" wrapText="true">
       <font>
          <Font name="Roboto Light" size="24.0" />
       </font>
    </Label>
-   <Label layoutX="227.0" layoutY="169.0" text="and planning of common projects!">
-      <font>
-         <Font name="Roboto Light" size="24.0" />
-      </font>
-   </Label>
-   <TextField fx:id="loginTextField" layoutX="183.0" layoutY="257.0" prefHeight="50.0" prefWidth="450.0" promptText="Please, enter your name to continue...">
-      <font>
-         <Font size="17.0" />
-      </font>
+   <TextField fx:id="loginTextField" alignment="CENTER" focusTraversable="false" layoutX="183.0" layoutY="257.0" prefHeight="50.0" prefWidth="450.0" promptText="Please, enter your name to continue..." styleClass="text-input">
    </TextField>
-   <Button fx:id="loginButton" layoutX="183.0" layoutY="332.0" mnemonicParsing="false" onAction="#onLoginClick" prefHeight="50.0" prefWidth="450.0" text="Log In" />
-   <Label fx:id="errorMessageLabel" layoutX="394.0" layoutY="390.0" textAlignment="CENTER" />
+   <Button fx:id="loginButton" layoutX="183.0" layoutY="332.0" mnemonicParsing="false" onAction="#onLoginClick" prefHeight="50.0" prefWidth="450.0" styleClass="button" text="Log In" />
+   <Label fx:id="errorMessageLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="408.0" layoutY="408.0" textAlignment="CENTER" />
 </AnchorPane>
