@@ -1,3 +1,6 @@
+// этот файл нуже для того, чтобы подключить javafx к проекту, он говорит виртуальной машине java
+// чтобы она подключила необходимые библиотеки
+
 module com.ade.chatclient {
     requires javafx.controls;
     requires javafx.fxml;
@@ -13,8 +16,8 @@ module com.ade.chatclient {
     exports com.ade.chatclient.view;
     opens com.ade.chatclient.view to javafx.fxml;
 
-    exports com.ade.chatclient.model.domain;
-    opens com.ade.chatclient.model.domain to javafx.fxml;
+    exports com.ade.chatclient.domain;
+    opens com.ade.chatclient.domain to javafx.fxml;
 
     exports com.ade.chatclient.viewmodel;
     opens com.ade.chatclient.viewmodel to javafx.fxml;
