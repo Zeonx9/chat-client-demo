@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.ChatPageView">
-   <TextField fx:id="searchTextField" layoutX="125.0" layoutY="50.0" prefHeight="50.0" prefWidth="450.0"
-              promptText="Search">
-      <font>
-         <Font name="Roboto Light" size="17.0"/>
-      </font>
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../styles/ChatPageViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.ChatPageView">
+   <Pane layoutX="100.0" prefHeight="1080.0" prefWidth="500.0" styleClass="pane" />
+   <TextField fx:id="searchTextField" focusTraversable="false" layoutX="125.0" layoutY="50.0" prefHeight="50.0" prefWidth="450.0" promptText="Search">
+      <opaqueInsets>
+         <Insets />
+      </opaqueInsets>
+      <padding>
+         <Insets left="70.0" />
+      </padding>
    </TextField>
-   <Label layoutX="125.0" layoutY="120.0" text="All chats">
-      <font>
-         <Font name="Roboto Light" size="30.0"/>
-      </font>
+   <Label layoutX="125.0" layoutY="120.0" styleClass="header" text="All chats">
    </Label>
-   <ListView fx:id="chatListView" layoutX="125.0" layoutY="184.0" prefHeight="669.0" prefWidth="438.0"/>
-   <ListView fx:id="messageListView" layoutX="607.0" layoutY="52.0" prefHeight="717.0" prefWidth="789.0"/>
-   <TextField fx:id="messageTextField" layoutX="607.0" layoutY="796.0" prefHeight="57.0" prefWidth="539.0"
-              promptText="Enter your message . . ."/>
-   <Button fx:id="sendButton" layoutX="1183.0" layoutY="796.0" mnemonicParsing="false" onAction="#onSendButtonClicked"
-           prefHeight="57.0" prefWidth="213.0" text="SEND"/>
+   <ListView fx:id="chatListView" layoutX="125.0" layoutY="184.0" prefHeight="669.0" prefWidth="450.0" styleClass="listChats" />
+   <ListView fx:id="messageListView" layoutX="625.0" layoutY="50.0" prefHeight="717.0" prefWidth="789.0" />
+   <TextField fx:id="messageTextField" focusTraversable="false" layoutX="625.0" layoutY="796.0" prefHeight="50.0" prefWidth="790.0" promptText="Enter your message . . ." styleClass="messageInput">
+      <opaqueInsets>
+         <Insets />
+      </opaqueInsets>
+      <padding>
+         <Insets left="70.0" right="70.0" />
+      </padding></TextField>
+   <Button fx:id="sendButton" layoutX="1354.0" layoutY="796.0" mnemonicParsing="false" onAction="#onSendButtonClicked" prefHeight="50.0" prefWidth="50.0" styleClass="button" />
+   <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="147.0" layoutY="60.0" pickOnBounds="true" preserveRatio="true">
+      <Image url="@../img/search_icon.png" />
+   </ImageView>
 </AnchorPane>

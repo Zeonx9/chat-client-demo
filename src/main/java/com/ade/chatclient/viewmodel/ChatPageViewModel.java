@@ -1,5 +1,6 @@
 package com.ade.chatclient.viewmodel;
 
+import com.ade.chatclient.ClientApplication;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
@@ -8,6 +9,8 @@ import javafx.beans.Observable;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import lombok.Getter;
 
 import java.time.format.DateTimeFormatter;
@@ -85,13 +88,24 @@ public class ChatPageViewModel {
 
     public ListCell<Chat> getChatListCellFactory() {
         return new ListCell<>() {
+            private final ImageView imageView = new ImageView();
             @Override
             protected void updateItem(Chat item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null)
+                if (empty || item == null) {
                     setText(null);
-                else
+                    setGraphic(null);
+                }
+                else {
                     setText(prepareChatToBeShown(item));
+                    var imgStream = ClientApplication.class.getResourceAsStream("img/user_avatar_chat_icon.png");
+                    if (imgStream == null)
+                        throw new RuntimeException("image stream is null");
+                    imageView.setImage(
+                            new Image(imgStream));
+                    setGraphic(imageView);
+                }
+
             }
         };
     }
