@@ -10,14 +10,8 @@
       <Insets />
    </opaqueInsets>
    <Label alignment="CENTER" contentDisplay="CENTER" layoutX="68.0" layoutY="64.0" prefHeight="70.0" prefWidth="678.0" styleClass="header" text="Welcome to InTouch" textAlignment="CENTER">
-      <font>
-         <Font name="Roboto Light" size="50.0" />
-      </font>
    </Label>
    <Label alignment="CENTER" layoutX="88.0" layoutY="135.0" prefHeight="86.0" prefWidth="639.0" styleClass="subtitle" text="Corporate messenger for business communication and planning of common projects!" textAlignment="CENTER" wrapText="true">
-      <font>
-         <Font name="Roboto Light" size="24.0" />
-      </font>
    </Label>
    <TextField fx:id="loginTextField" alignment="CENTER" focusTraversable="false" layoutX="183.0" layoutY="257.0" prefHeight="50.0" prefWidth="450.0" promptText="Please, enter your name to continue..." styleClass="text-input">
    </TextField>

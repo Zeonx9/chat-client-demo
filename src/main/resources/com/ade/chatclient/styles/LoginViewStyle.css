@@ -4,11 +4,6 @@
 }
 
 @font-face {
-    font-family: 'Poppins Medium';
-    src: url('../fonts/Poppins-Medium.ttf');
-}
-
-@font-face {
     font-family: 'Poppins SemiBold';
     src: url('../fonts/Poppins-SemiBold.ttf');
 }
@@ -24,11 +19,19 @@
 }
 
 .button {
-    -fx-background-color: black;
+    -fx-background-color: #1D1E20;
     -fx-font-size: 17;
     -fx-text-fill: white;
     -fx-font-family: "Poppins Regular";
     -fx-background-radius: 15px;
+}
+
+.button:hover {
+    -fx-background-color: #383A3E;
+}
+
+.button:focused {
+    -fx-background-color: #585B62;
 }
 
 .text-input {
