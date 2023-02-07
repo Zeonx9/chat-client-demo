@@ -15,6 +15,7 @@ public class ViewModelProvider {
     private LogInViewModel logInViewModel;
     private ChatPageViewModel chatPageViewModel;
     private final ModelFactory modelFactory;
+    private AllUsersViewModel allUsersViewModel;
 
 
     /**
@@ -25,5 +26,6 @@ public class ViewModelProvider {
     public void instantiateViewModels(ViewHandler viewHandler) {
         logInViewModel = new LogInViewModel(viewHandler, modelFactory.getModel());
         chatPageViewModel = new ChatPageViewModel(viewHandler, modelFactory.getModel());
+        allUsersViewModel = new AllUsersViewModel(viewHandler, modelFactory.getModel());
     }
 }

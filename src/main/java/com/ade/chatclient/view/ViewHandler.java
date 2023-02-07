@@ -27,8 +27,8 @@ public class ViewHandler {
     @AllArgsConstructor
     public enum Views {
         LOG_IN_VIEW("log-in-view"),
-        CHAT_PAGE_VIEW("chat-page-view");
-
+        CHAT_PAGE_VIEW("chat-page-view"),
+        ALL_USERS_VIEW("all-users-view");
         final String fxmlFileName;
     }
 
@@ -75,10 +75,14 @@ public class ViewHandler {
             ChatPageView view = fxmlLoader.getController();
             view.init(viewModelProvider.getChatPageViewModel());
         }
+        else if (viewType == Views.ALL_USERS_VIEW) {
+            AllUsersView view = fxmlLoader.getController();
+            view.init(viewModelProvider.getAllUsersViewModel());
+        }
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        if (viewType == Views.CHAT_PAGE_VIEW) {
+        if (viewType == Views.CHAT_PAGE_VIEW || viewType == Views.ALL_USERS_VIEW) {
             stage.setFullScreen(true);
         }
         stage.show();
