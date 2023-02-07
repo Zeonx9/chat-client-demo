@@ -1,0 +1,29 @@
+.leftPane {
+    -fx-background-color: #1D1E20;
+}
+
+.showChatsBtn {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../img/chat_btn.png");
+}
+
+.showChatsBtn:hover {
+    -fx-opacity: 50%;
+}
+
+.showChatsBtn:focused {
+    -fx-opacity: 30%;
+}
+
+.ShowUsersBtn {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../img/all_users_btn.png");
+}
+
+.ShowUsersBtn:hover {
+    -fx-opacity: 50%;
+}
+
+.ShowUsersBtn:focused {
+    -fx-opacity: 30%;
+}
