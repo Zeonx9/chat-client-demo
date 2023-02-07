@@ -5,10 +5,12 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.view.ViewHandler;
+import javafx.beans.Observable;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
@@ -49,7 +51,7 @@ public class AllUsersViewModel {
         }
     }
     private String prepareUserToBeShown(User user) {
-        return String.join(user.getName());
+        return user.getName();
     }
 
     public ListCell<User> getUserListCellFactory() {
@@ -74,4 +76,15 @@ public class AllUsersViewModel {
             }
         };
     }
+
+    public void onSelectedItemChange(Observable observable, User oldValue, User newValue) {
+//        model.selectChat(newValue);
+        showChats();
+    }
+
+//    private void updateMessagesInSelectedChat() {
+//        model.updateMessages();
+//        messageListProperty.clear();
+//        messageListProperty.addAll(model.getSelectedChatMessages());
+//    }
 }

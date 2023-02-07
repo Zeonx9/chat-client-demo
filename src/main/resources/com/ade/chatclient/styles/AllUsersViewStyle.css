@@ -42,7 +42,7 @@
     -fx-background-insets: 10;
 }
 
-#chatListView .list-cell:hover{
+#userListView .list-cell:hover{
     -fx-background-color: #F2F2F2;
     -fx-opacity: 50%;
     -fx-font-family: "Poppins Medium";
@@ -50,7 +50,7 @@
     -fx-text-fill: #1D1E20;
 }
 
-#chatListView .list-cell:focused {
+#userListView .list-cell:focused {
     -fx-background-color: #F2F2F2;
     -fx-opacity: 100%;
     -fx-font-family: "Poppins Medium";
@@ -58,6 +58,10 @@
     -fx-text-fill: #1D1E20;
 }
 
-#chatListView .list-cell:empty {
+#userListView .list-cell:empty {
     -fx-background-color: transparent;
+}
+
+.mainPane {
+    -fx-background-color: #CCC1BE;
 }

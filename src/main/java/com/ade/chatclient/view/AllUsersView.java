@@ -15,11 +15,10 @@ public class AllUsersView {
     @FXML public ListView<User> userListView;
     private AllUsersViewModel viewModel;
     public void init(AllUsersViewModel allUsersViewModel) {
-        // егор, разберись здесь прям построчно, что происходит
         this.viewModel = allUsersViewModel;
         userListView.itemsProperty().bind(viewModel.getUsersListProperty());
         userListView.setCellFactory(param -> viewModel.getUserListCellFactory());
-//        userListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
+        userListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
         viewModel.getAllUsers();
 
     }
