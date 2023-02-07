@@ -56,6 +56,7 @@ public class ChatPageViewModel {
     }
 
     public void onSelectedItemChange(Observable observable, Chat oldValue, Chat newValue) {
+        // теории тут потока
         model.selectChat(newValue);
         updateMessagesInSelectedChat();
     }

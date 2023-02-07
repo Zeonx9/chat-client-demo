@@ -78,7 +78,7 @@ public class AllUsersViewModel {
     }
 
     public void onSelectedItemChange(Observable observable, User oldValue, User newValue) {
-//        model.selectChat(newValue);
+        model.createDialog(newValue);
         showChats();
     }
 
