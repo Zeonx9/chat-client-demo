@@ -1,16 +1,18 @@
 package com.ade.chatclient.view;
 
+import com.ade.chatclient.domain.User;
 import com.ade.chatclient.viewmodel.AllUsersViewModel;
 import com.ade.chatclient.viewmodel.ChatPageViewModel;
 import com.ade.chatclient.viewmodel.LogInViewModel;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 
 public class AllUsersView {
     public Button showChats;
     public Button ShowUsers;
-    public ListView userListView;
+    @FXML public ListView<User> userListView;
     private AllUsersViewModel viewModel;
     public void init(AllUsersViewModel allUsersViewModel) {
         // егор, разберись здесь прям построчно, что происходит
