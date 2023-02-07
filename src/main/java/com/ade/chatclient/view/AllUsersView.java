@@ -5,14 +5,20 @@ import com.ade.chatclient.viewmodel.ChatPageViewModel;
 import com.ade.chatclient.viewmodel.LogInViewModel;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 
 public class AllUsersView {
     public Button showChats;
     public Button ShowUsers;
+    public ListView userListView;
     private AllUsersViewModel viewModel;
     public void init(AllUsersViewModel allUsersViewModel) {
         // егор, разберись здесь прям построчно, что происходит
         this.viewModel = allUsersViewModel;
+        userListView.itemsProperty().bind(viewModel.getUsersListProperty());
+        userListView.setCellFactory(param -> viewModel.getUserListCellFactory());
+//        userListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
+        viewModel.getAllUsers();
 
     }
 

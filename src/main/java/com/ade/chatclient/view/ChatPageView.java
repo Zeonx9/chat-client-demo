@@ -50,12 +50,14 @@ public class ChatPageView {
     }
 
     public void createNewChatClicked(ActionEvent actionEvent) {
-    }
 
-    public void showAllChatsClicked(ActionEvent actionEvent) {
     }
 
     public void showAllUsersClicked(ActionEvent actionEvent) {
         viewModel.showUsers();
+    }
+
+    public void showAllChatsClicked(ActionEvent actionEvent) {
+
     }
 }
