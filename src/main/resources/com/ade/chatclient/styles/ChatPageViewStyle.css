@@ -26,26 +26,44 @@
     -fx-background-color: #F2F2F2;
 }
 
-.pane {
+.mainPane {
     -fx-background-color: #CCC1BE;
 }
 
-.button {
+.buttonSend {
     -fx-background-radius: 15px;
     -fx-background-color: transparent;
     -fx-background-image: url("../img/send_mes.png");
 }
 
-.button:hover {
+.buttonSend:hover {
     -fx-background-radius: 15px;
     -fx-background-color: transparent;
     -fx-background-image: url("../img/send_mes_hover.png");
 }
 
-.button:focused {
+.buttonSend:focused {
     -fx-background-radius: 15px;
     -fx-background-color: transparent;
     -fx-background-image: url("../img/send_mes_focused.png");
+}
+
+.buttonCreateNewChat {
+    -fx-background-radius: 15px;
+    -fx-background-color: #F2F2F2;
+    -fx-opacity: 20%;
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 24;
+}
+
+.buttonCreateNewChat:hover {
+    /*-fx-background-color: #F2F2F2;*/
+    -fx-opacity: 50%;
+}
+
+.buttonCreateNewChat:focused {
+    /*-fx-background-color: #F2F2F2;*/
+    -fx-opacity: 100%;
 }
 
 .messageInput {
@@ -89,4 +107,34 @@
 
 #chatListView .list-cell:empty {
     -fx-background-color: transparent;
+}
+
+.leftPane {
+    -fx-background-color: #1D1E20;
+}
+
+.showChatsBtn {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../img/chat_btn.png");
+}
+
+.showChatsBtn:hover {
+    -fx-opacity: 50%;
+}
+
+.showChatsBtn:focused {
+    -fx-opacity: 30%;
+}
+
+.ShowUsersBtn {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../img/all_users_btn.png");
+}
+
+.ShowUsersBtn:hover {
+    -fx-opacity: 50%;
+}
+
+.ShowUsersBtn:focused {
+    -fx-opacity: 30%;
 }

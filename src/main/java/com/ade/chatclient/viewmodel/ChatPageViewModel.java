@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import lombok.Getter;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,5 +122,15 @@ public class ChatPageViewModel {
                     setText(prepareMessageToBeShown(item));
             }
         };
+    }
+
+    public void showUsers() {
+        try {
+            viewHandler.openView(ViewHandler.Views.ALL_USERS_VIEW);
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+            messageTextProperty.set("cannot switch to another view!");
+        }
     }
 }

@@ -9,6 +9,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 public class ChatPageView {
+    public Button createChatBtn;
+    public Button showChats;
+    public Button ShowUsers;
     @FXML private TextField searchTextField;
 
     @FXML private ListView<Chat> chatListView;
@@ -44,5 +47,15 @@ public class ChatPageView {
     @FXML
     protected void onSendButtonClicked(ActionEvent actionEvent) {
         viewModel.sendMessage();
+    }
+
+    public void createNewChatClicked(ActionEvent actionEvent) {
+    }
+
+    public void showAllChatsClicked(ActionEvent actionEvent) {
+    }
+
+    public void showAllUsersClicked(ActionEvent actionEvent) {
+        viewModel.showUsers();
     }
 }

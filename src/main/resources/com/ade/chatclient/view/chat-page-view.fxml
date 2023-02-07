@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../styles/ChatPageViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.ChatPageView">
-   <Pane layoutX="100.0" prefHeight="1080.0" prefWidth="500.0" styleClass="pane" />
+   <Pane layoutX="100.0" prefHeight="1080.0" prefWidth="500.0" styleClass="mainPane" />
    <TextField fx:id="searchTextField" focusTraversable="false" layoutX="125.0" layoutY="50.0" prefHeight="50.0" prefWidth="450.0" promptText="Search">
       <opaqueInsets>
          <Insets />
@@ -26,8 +26,17 @@
       <padding>
          <Insets left="70.0" right="70.0" />
       </padding></TextField>
-   <Button fx:id="sendButton" layoutX="1354.0" layoutY="796.0" mnemonicParsing="false" onAction="#onSendButtonClicked" prefHeight="50.0" prefWidth="50.0" styleClass="button" />
+   <Button fx:id="sendButton" layoutX="1354.0" layoutY="796.0" mnemonicParsing="false" onAction="#onSendButtonClicked" prefHeight="50.0" prefWidth="50.0" styleClass="buttonSend" />
    <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="147.0" layoutY="60.0" pickOnBounds="true" preserveRatio="true">
       <Image url="@../img/search_icon.png" />
    </ImageView>
+   <Button fx:id="createChatBtn" layoutX="435.0" layoutY="116.0" mnemonicParsing="false" onAction="#createNewChatClicked" prefHeight="45.0" prefWidth="139.0" styleClass="buttonCreateNewChat" text="      new" />
+   <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="451.0" layoutY="128.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+         <Image url="@../img/plus.png" />
+      </image>
+   </ImageView>
+   <Pane prefHeight="1080.0" prefWidth="100.0" styleClass="leftPane" />
+   <Button fx:id="showChats" disable="true" layoutX="25.0" layoutY="565.0" mnemonicParsing="false" onAction="#showAllChatsClicked" prefHeight="50.0" prefWidth="50.0" styleClass="showChatsBtn" />
+   <Button fx:id="ShowUsers" layoutX="25.0" layoutY="465.0" mnemonicParsing="false" onAction="#showAllUsersClicked" prefHeight="50.0" prefWidth="50.0" styleClass="ShowUsersBtn" />
 </AnchorPane>
