@@ -5,6 +5,7 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ public class ClientModelManager implements ClientModel{
 
     public ClientModelManager(RequestHandler handler) {
         this.handler = handler;
+        this.myChats = new ArrayList<>();
     }
 
     @Override
@@ -30,16 +32,24 @@ public class ClientModelManager implements ClientModel{
         self = user;
     }
 
+    /**
+     * обновляет чаты пользователя
+     * @return все чаты пользователя
+     */
     @Override
     public List<Chat> getMyChats() {
         if (self == null)
             throw new RuntimeException("attempt to get chats before log in");
-        if (myChats == null) {
-            updateMyChats();
-        }
+
+        updateMyChats();
+
         return myChats;
     }
 
+    /**
+     * отправляет GET запрос на получение списка всех чатов авторизованного пользователя
+     * присваивает полученные чаты в myChats
+     */
     @Override
     public void updateMyChats() {
         myChats = handler.mapResponse(
@@ -48,6 +58,11 @@ public class ClientModelManager implements ClientModel{
         );
     }
 
+    /**
+     * отправляет GET запрос на существование пользователя
+     * @param login логин пользователя, который хочет авторизоваться
+     * @return true - если авторизацция прошла успешно, иначе false
+     */
     @Override
     public boolean Authorize(String login) {
         System.out.println("Authorize request: " + login);
@@ -67,11 +82,15 @@ public class ClientModelManager implements ClientModel{
         return true;
     }
 
+    /**
+     * присваивает selectedChat значение параметра
+     * если чат в есть в списке чатов пользователя
+     * @param chat чат, историю которого хотят получить
+     */
     @Override
     public void selectChat(Chat chat) {
         if (self == null || myChats == null)
             throw new RuntimeException("attempt to get chats before log in or you don't have chats");
-        selectedChat = chat;
 
         boolean hasSuchChat = false;
         for (Chat myChat : myChats) {
@@ -80,11 +99,16 @@ public class ClientModelManager implements ClientModel{
                 break;
             }
         }
-        if (!hasSuchChat)
+        if (!hasSuchChat) {
             System.out.println("User does not has a chat with id: " + chat.getId());
+        }
+        else setSelectedChat(chat);
     }
 
-
+    /**
+     *  отправляет GET запрос на историю, выбранного чата
+     *  присваивает полученные сообщения в selectedChatMessages
+     */
     @Override
     public void updateMessages() {
         selectedChatMessages = handler.mapResponse(
@@ -93,11 +117,22 @@ public class ClientModelManager implements ClientModel{
         );
     }
 
+    public void setSelectedChat(Chat chat) {
+        selectedChat = chat;
+    }
+
+    /**
+     * @return все сообщения из чата selectedChat
+     */
     @Override
     public List<Message> getSelectedChatMessages() {
         return selectedChatMessages;
     }
 
+    /**
+     * отправляет POST запрос с сообщением в selectedChat
+     * @param text сообщение
+     */
     @Override
     public void sendMessageToChat(String text) {
         handler.sendPOST(
@@ -108,10 +143,19 @@ public class ClientModelManager implements ClientModel{
         );
     }
 
+    /**
+     *
+     * @param text сообщение
+     * @return сообщение в нужной форме для отправки на сервер
+     */
     private String makeBodyForMsgSending(String text) {
         return "{ \"text\": \"" + text + "\" }";
     }
 
+    /**
+     * инициализирует список всех пользователей, если он пуст
+     * @return список всех пользователей
+     */
     @Override
     public List<User> getAllUsers() {
         if (users == null) {
@@ -120,6 +164,10 @@ public class ClientModelManager implements ClientModel{
         return users;
     }
 
+    /**
+     * отправляет GET запрос на получение списка всех пользователей
+     * присваивает полученных пользователей в users
+     */
     private void allUsers() {
         if (self == null)
             throw new RuntimeException("attempt to get chats before log in");
@@ -130,6 +178,11 @@ public class ClientModelManager implements ClientModel{
         );
     }
 
+    /**
+     * отправляет POST запрос с сообщением в чат с выбранным пользователем
+     * @param text сообщение
+     * @param user пользователь, в чат которому надо отправить сообщение
+     */
     @Override
     public void sendMessageToUser(String text, User user) {
         handler.sendPOST(
@@ -140,6 +193,10 @@ public class ClientModelManager implements ClientModel{
         );
     }
 
+    /**
+     * отправляет POST запрос на создание личного чата между авторизованными пользователем и выбранным
+     * @param user выбранный пользователь
+     */
     @Override
     public void createDialog(User user) {
         handler.sendPOST(

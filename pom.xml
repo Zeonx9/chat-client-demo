@@ -74,6 +74,11 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.github.ricall.junit5-wiremock</groupId>
+            <artifactId>junit5-wiremock</artifactId>
+            <version>2.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
