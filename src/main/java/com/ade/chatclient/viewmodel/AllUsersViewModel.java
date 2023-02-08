@@ -78,6 +78,10 @@ public class AllUsersViewModel {
     }
 
     public void onSelectedItemChange(Observable observable, User oldValue, User newValue) {
+        if (newValue == null) {
+            System.out.println("somehow selected User is null");
+            return;
+        }
         model.createDialog(newValue);
         showChats();
     }

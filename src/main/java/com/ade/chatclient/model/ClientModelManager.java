@@ -158,24 +158,11 @@ public class ClientModelManager implements ClientModel{
      */
     @Override
     public List<User> getAllUsers() {
-        if (users == null) {
-            allUsers();
-        }
-        return users;
-    }
-
-    /**
-     * отправляет GET запрос на получение списка всех пользователей
-     * присваивает полученных пользователей в users
-     */
-    private void allUsers() {
-        if (self == null)
-            throw new RuntimeException("attempt to get chats before log in");
-
         users = handler.mapResponse(
                 handler.GETRequest("/users"),
                 RequestHandler.Types.ListOfUser
         );
+        return users;
     }
 
     /**
