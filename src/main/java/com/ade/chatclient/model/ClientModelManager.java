@@ -22,8 +22,9 @@ public class ClientModelManager implements ClientModel{
     private Chat selectedChat;
     @Setter
     private List<Chat> myChats = new ArrayList<>();
-    @Getter
+    @Getter @Setter
     private List<Message> selectedChatMessages = new ArrayList<>();
+    @Setter
     private List<User> users = new ArrayList<>();
 
     /**
@@ -66,7 +67,7 @@ public class ClientModelManager implements ClientModel{
         System.out.println("Authorize request: " + login);
         if (myself == null) {
             try {
-                //TODO correct
+                //TODO correct тут поменялся енд-поинт, и вообще вот тут оч много че поменялось, надо разбираться
 //                myself = handler.mapResponse(
 //                        handler.GETRequest("/user", Map.of("name", login)),
 //                        User.class
@@ -110,11 +111,14 @@ public class ClientModelManager implements ClientModel{
      */
     @Override
     public void updateMessages() {
-        //TODO correct
 //        selectedChatMessages = handler.mapResponse(
 //                handler.GETRequest(String.format("/chats/%d/messages", selectedChat.getId())),
 //                RequestHandler.Types.ListOfMessage
 //        );
+        handler.sendGETAsync(String.format("/chats/%d/messages", selectedChat.getId()))
+                .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
+                .thenAccept(this::setSelectedChatMessages);
+
     }
 
     /**
@@ -123,13 +127,19 @@ public class ClientModelManager implements ClientModel{
      */
     @Override
     public void sendMessageToChat(String text) {
-        //TODO correct
 //        handler.sendPOST(
 //                handler.POSTRequest(
 //                        String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
 //                        makeBodyForMsgSending(text)
 //                )
 //        );
+        handler.sendPOSTAsync(
+                String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
+                makeBodyForMsgSending(text),
+                true)
+                .thenApply(AsyncRequestHandler.mapperOf(Message.class))
+                .thenAccept(System.out::println);
+
     }
 
     /**
@@ -161,11 +171,13 @@ public class ClientModelManager implements ClientModel{
         if (myself == null)
             throw new RuntimeException("attempt to get chats before log in");
 
-        //TODO correct
 //        users = handler.mapResponse(
 //                handler.GETRequest("/users"),
 //                RequestHandler.Types.ListOfUser
 //        );
+        handler.sendGETAsync("/users")
+                .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfUser))
+                .thenAccept(this::setUsers);
     }
 
     /**
@@ -175,13 +187,19 @@ public class ClientModelManager implements ClientModel{
      */
     @Override
     public void sendMessageToUser(String text, User user) {
-        //TODO correct
 //        handler.sendPOST(
 //                handler.POSTRequest(
 //                        String.format("/users/%d/message/users/%d", myself.getId(), user.getId()),
 //                        makeBodyForMsgSending(text)
 //                )
 //        );
+        handler.sendPOSTAsync(
+                String.format("/users/%d/message/users/%d", myself.getId(), user.getId()),
+                makeBodyForMsgSending(text),
+                true
+                )
+                .thenApply(AsyncRequestHandler.mapperOf(Message.class))
+                .thenAccept(System.out::println);
     }
 
     /**
@@ -190,13 +208,18 @@ public class ClientModelManager implements ClientModel{
      */
     @Override
     public void createDialog(User user) {
-        //TODO correct
 //        handler.sendPOST(
 //                handler.POSTRequest(
 //                        "/chat?isPrivate=true",
 //                        List.of(myself.getId(), user.getId())
 //                )
 //        );
+        handler.sendPOSTAsync(
+                "/chat?isPrivate=true",
+                List.of(myself.getId(), user.getId()),
+                true)
+                .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
+                .thenAccept(System.out::println);
     }
 
 }
