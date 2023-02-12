@@ -1,6 +1,7 @@
 package com.ade.chatclient.model;
 
 import com.ade.chatclient.application.RequestHandler;
+import lombok.NoArgsConstructor;
 
 /**
  * фабрика для моделей в приложении, на данный момент в приложении всего одна модель, но со временем она может
@@ -8,15 +9,17 @@ import com.ade.chatclient.application.RequestHandler;
  * этот класс будет предоставлять доступ к моделям для вью-моделей
  * так же зависит от строки адреса сервера (туннеля ngrok)
  */
+@NoArgsConstructor
 public class ModelFactory {
     private ClientModel clientModel;
-    private final String serverUrl;
+    private final RequestHandler handler = new RequestHandler();
 
     /**
-     * создает фабрику задавая адрес туннеля ngrok
+     * вставляет URL сервера в RequestHandler
+     * @param serverUrl - полученный url
      */
-    public ModelFactory(String serverUrl) {
-        this.serverUrl = serverUrl + "/chat_api/v1";
+    public void injectServerUrl(String serverUrl) {
+        handler.setUrl(serverUrl + "/chat_api/v1");
     }
 
     /**
@@ -26,10 +29,8 @@ public class ModelFactory {
      */
     public ClientModel getModel() {
         if (clientModel == null) {
-            RequestHandler handler = new RequestHandler(serverUrl);
             clientModel = new ClientModelManager(handler);
         }
-
         return clientModel;
     }
 }

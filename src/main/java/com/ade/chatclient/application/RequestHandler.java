@@ -6,6 +6,7 @@ import com.ade.chatclient.domain.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.net.URI;
@@ -33,7 +34,8 @@ public class RequestHandler {
         public static final TypeReference<List<User>> ListOfUser = new TypeReference<>() {};
     }
 
-    private final String url;
+    @Setter
+    private String url;
     private final HttpClient client;
     private final ObjectMapper mapper;
 
@@ -41,8 +43,7 @@ public class RequestHandler {
      * создает новый экземпляр класса
      * @param url - адресс сервера выданного ngrok
      */
-    public RequestHandler(String url) {
-        this.url = url;
+    public RequestHandler() {
         this.client = HttpClient.newHttpClient();
         mapper = new ObjectMapper();
         mapper.findAndRegisterModules();
@@ -56,6 +57,9 @@ public class RequestHandler {
      * @return билдер запроса
      */
     private HttpRequest.Builder getPresetRequest(String path, Map<String, String> params) {
+        if (url == null)
+            throw new IllegalStateException("URL of server is not set yet!");
+
         String uriStr = url + path;
         if (!params.isEmpty())
             uriStr += "?";
