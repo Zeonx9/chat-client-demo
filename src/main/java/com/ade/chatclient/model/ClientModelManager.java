@@ -1,8 +1,9 @@
 package com.ade.chatclient.model;
 
-import com.ade.chatclient.application.RequestHandler;
+import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
+import com.ade.chatclient.domain.TypeReferences;
 import com.ade.chatclient.domain.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,25 +11,20 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 // realization of Client model interface manages and manipulates the data
 @RequiredArgsConstructor
 public class ClientModelManager implements ClientModel{
-    private final RequestHandler handler ;
-    @Getter
+    private final AsyncRequestHandler handler ;
+    @Getter @Setter
     private User myself;
     @Setter
     private Chat selectedChat;
+    @Setter
     private List<Chat> myChats = new ArrayList<>();
     @Getter
     private List<Message> selectedChatMessages = new ArrayList<>();
     private List<User> users = new ArrayList<>();
-
-
-    public void setMySelf(User user) {
-        myself = user;
-    }
 
     /**
      * обновляет чаты пользователя
@@ -40,7 +36,6 @@ public class ClientModelManager implements ClientModel{
             throw new RuntimeException("attempt to get chats before log in");
 
         updateMyChats();
-
         return myChats;
     }
 
@@ -50,10 +45,15 @@ public class ClientModelManager implements ClientModel{
      */
     @Override
     public void updateMyChats() {
-        myChats = handler.mapResponse(
-                handler.GETRequest(String.format("/users/%d/chats", myself.getId())),
-                RequestHandler.Types.ListOfChat
-        );
+
+//        myChats = handler.mapResponse(
+//                handler.GETRequest(String.format("/users/%d/chats", myself.getId())),
+//                RequestHandler.Types.ListOfChat
+//        );
+
+        handler.sendGETAsync(String.format("/users/%d/chats", myself.getId()))
+                .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfChat))
+                .thenAccept(this::setMyChats);
     }
 
     /**
@@ -66,10 +66,11 @@ public class ClientModelManager implements ClientModel{
         System.out.println("Authorize request: " + login);
         if (myself == null) {
             try {
-                myself = handler.mapResponse(
-                        handler.GETRequest("/user", Map.of("name", login)),
-                        User.class
-                );
+                //TODO correct
+//                myself = handler.mapResponse(
+//                        handler.GETRequest("/user", Map.of("name", login)),
+//                        User.class
+//                );
             }
             catch (Exception e) {
                 System.out.println("Authorization failed");
@@ -109,10 +110,11 @@ public class ClientModelManager implements ClientModel{
      */
     @Override
     public void updateMessages() {
-        selectedChatMessages = handler.mapResponse(
-                handler.GETRequest(String.format("/chats/%d/messages", selectedChat.getId())),
-                RequestHandler.Types.ListOfMessage
-        );
+        //TODO correct
+//        selectedChatMessages = handler.mapResponse(
+//                handler.GETRequest(String.format("/chats/%d/messages", selectedChat.getId())),
+//                RequestHandler.Types.ListOfMessage
+//        );
     }
 
     /**
@@ -121,12 +123,13 @@ public class ClientModelManager implements ClientModel{
      */
     @Override
     public void sendMessageToChat(String text) {
-        handler.sendPOST(
-                handler.POSTRequest(
-                        String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
-                        makeBodyForMsgSending(text)
-                )
-        );
+        //TODO correct
+//        handler.sendPOST(
+//                handler.POSTRequest(
+//                        String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
+//                        makeBodyForMsgSending(text)
+//                )
+//        );
     }
 
     /**
@@ -158,10 +161,11 @@ public class ClientModelManager implements ClientModel{
         if (myself == null)
             throw new RuntimeException("attempt to get chats before log in");
 
-        users = handler.mapResponse(
-                handler.GETRequest("/users"),
-                RequestHandler.Types.ListOfUser
-        );
+        //TODO correct
+//        users = handler.mapResponse(
+//                handler.GETRequest("/users"),
+//                RequestHandler.Types.ListOfUser
+//        );
     }
 
     /**
@@ -171,12 +175,13 @@ public class ClientModelManager implements ClientModel{
      */
     @Override
     public void sendMessageToUser(String text, User user) {
-        handler.sendPOST(
-                handler.POSTRequest(
-                        String.format("/users/%d/message/users/%d", myself.getId(), user.getId()),
-                        makeBodyForMsgSending(text)
-                )
-        );
+        //TODO correct
+//        handler.sendPOST(
+//                handler.POSTRequest(
+//                        String.format("/users/%d/message/users/%d", myself.getId(), user.getId()),
+//                        makeBodyForMsgSending(text)
+//                )
+//        );
     }
 
     /**
@@ -185,12 +190,13 @@ public class ClientModelManager implements ClientModel{
      */
     @Override
     public void createDialog(User user) {
-        handler.sendPOST(
-                handler.POSTRequest(
-                        "/chat?isPrivate=true",
-                        List.of(myself.getId(), user.getId())
-                )
-        );
+        //TODO correct
+//        handler.sendPOST(
+//                handler.POSTRequest(
+//                        "/chat?isPrivate=true",
+//                        List.of(myself.getId(), user.getId())
+//                )
+//        );
     }
 
 }

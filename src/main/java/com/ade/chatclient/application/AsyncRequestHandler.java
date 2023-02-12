@@ -13,6 +13,7 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 @NoArgsConstructor
 public class AsyncRequestHandler {
@@ -199,6 +200,25 @@ public class AsyncRequestHandler {
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error during decoding response", e);
         }
+    }
+
+    /**
+     * предоставляет функцию, которая маппит ответ от сервера в указанный тип
+     * @param objectClass класс объекта, в который будет происходить отображение
+     * @return функцию маппинга
+     */
+    public static <T> Function<HttpResponse<String>, T> mapperOf(Class<T> objectClass) {
+        return response -> mapResponse(response, objectClass);
+    }
+
+    /**
+     * предоставляет функцию, которая маппит ответ от сервера в указанный тип
+     * @param typRef ссылка на тип (из констант класса *.domain.TypeReferences)
+     *               объекта, в который будет происходить отображение
+     * @return функцию маппинга
+     */
+    public static <T> Function<HttpResponse<String>, T> mapperOf(TypeReference<T> typRef) {
+        return response -> mapResponse(response, typRef);
     }
 }
 

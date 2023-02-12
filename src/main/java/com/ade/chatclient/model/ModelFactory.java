@@ -1,6 +1,6 @@
 package com.ade.chatclient.model;
 
-import com.ade.chatclient.application.RequestHandler;
+import com.ade.chatclient.application.AsyncRequestHandler;
 import lombok.NoArgsConstructor;
 
 /**
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ModelFactory {
     private ClientModel clientModel;
-    private final RequestHandler handler = new RequestHandler();
+    private final AsyncRequestHandler handler = new AsyncRequestHandler();
 
     /**
      * вставляет URL сервера в RequestHandler

@@ -25,15 +25,14 @@ import java.util.Map;
  * фабрика ModelFactory
  */
 @NoArgsConstructor
+@Deprecated
 public class RequestHandler {
 
     /**
      * класс со статическими константами, используются для маппинга ответов от сервера в объекты домена (сущности)
      */
     public static class Types {
-        public static final TypeReference<List<Chat>> ListOfChat = new TypeReference<>() {};
-        public static final TypeReference<List<Message>> ListOfMessage = new TypeReference<>() {};
-        public static final TypeReference<List<User>> ListOfUser = new TypeReference<>() {};
+
     }
 
     @Setter
