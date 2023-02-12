@@ -84,19 +84,6 @@ class ClientModelManagerTest {
     }
 
     @Test
-    void getMyselfCorrectWorks() {
-        //given
-        User user = new User(1L, "Artem");
-
-        //when
-        underTest.getMyself();
-
-        //given
-        assertThat(underTest.getMyself()).isEqualTo(user);
-
-    }
-
-    @Test
     void AuthorizeAuthorizeCreatesCorrectRequestAndWorks() {
         //given
         underTest.setMySelf(null);

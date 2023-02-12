@@ -6,6 +6,7 @@ import com.ade.chatclient.domain.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.util.Map;
  * Каждый класс модели использует свой RequestHandler, который ему предоставляет
  * фабрика ModelFactory
  */
+@NoArgsConstructor
 public class RequestHandler {
 
     /**
@@ -36,16 +38,10 @@ public class RequestHandler {
 
     @Setter
     private String url;
-    private final HttpClient client;
-    private final ObjectMapper mapper;
+    private final static HttpClient client = HttpClient.newHttpClient();
+    private final static ObjectMapper mapper = new ObjectMapper();
 
-    /**
-     * создает новый экземпляр класса
-     * @param url - адресс сервера выданного ngrok
-     */
-    public RequestHandler() {
-        this.client = HttpClient.newHttpClient();
-        mapper = new ObjectMapper();
+    static {
         mapper.findAndRegisterModules();
     }
 
@@ -72,6 +68,7 @@ public class RequestHandler {
                 .uri(URI.create(uriStr))
                 .header("Content-Type", "application/json")
                 .header("ngrok-skip-browser-warning", "skip");
+
     }
 
     /**
@@ -80,7 +77,7 @@ public class RequestHandler {
      * @return строку ответа от сервера
      * @throws IllegalStateException когда не удается отправить запрос
      */
-    private String sendRequestAndGetResponse(HttpRequest request) {
+    private static String sendRequestAndGetResponse(HttpRequest request) {
         try {
             var resp = client.send(request, HttpResponse.BodyHandlers.ofString());
             return resp.body();
@@ -174,7 +171,7 @@ public class RequestHandler {
      * @return объект заданного класса полученного из ответа от сервера
      * @throws RuntimeException если не возможно десерелиазовать объект
      */
-    private  <T> T mapResponse(HttpRequest request, Class<T> objClass, TypeReference<T> typeRef) {
+    private static  <T> T mapResponse(HttpRequest request, Class<T> objClass, TypeReference<T> typeRef) {
         var response = sendRequestAndGetResponse(request);
         T mappedObj;
         try {

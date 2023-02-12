@@ -4,32 +4,30 @@ import com.ade.chatclient.application.RequestHandler;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 // realization of Client model interface manages and manipulates the data
+@RequiredArgsConstructor
 public class ClientModelManager implements ClientModel{
-    private final RequestHandler handler;
-    private User self;
-    private List<Chat> myChats;
-    private List<Message> selectedChatMessages;
+    private final RequestHandler handler ;
+    @Getter
+    private User myself;
+    @Setter
     private Chat selectedChat;
-    private List<User> users;
+    private List<Chat> myChats = new ArrayList<>();
+    @Getter
+    private List<Message> selectedChatMessages = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
-    public ClientModelManager(RequestHandler handler) {
-        this.handler = handler;
-        this.myChats = new ArrayList<>();
-    }
-
-    @Override
-    public User getMyself() {
-        return self;
-    }
 
     public void setMySelf(User user) {
-        self = user;
+        myself = user;
     }
 
     /**
@@ -38,7 +36,7 @@ public class ClientModelManager implements ClientModel{
      */
     @Override
     public List<Chat> getMyChats() {
-        if (self == null)
+        if (myself == null)
             throw new RuntimeException("attempt to get chats before log in");
 
         updateMyChats();
@@ -53,7 +51,7 @@ public class ClientModelManager implements ClientModel{
     @Override
     public void updateMyChats() {
         myChats = handler.mapResponse(
-                handler.GETRequest(String.format("/users/%d/chats", self.getId())),
+                handler.GETRequest(String.format("/users/%d/chats", myself.getId())),
                 RequestHandler.Types.ListOfChat
         );
     }
@@ -66,9 +64,9 @@ public class ClientModelManager implements ClientModel{
     @Override
     public boolean Authorize(String login) {
         System.out.println("Authorize request: " + login);
-        if (self == null) {
+        if (myself == null) {
             try {
-                self = handler.mapResponse(
+                myself = handler.mapResponse(
                         handler.GETRequest("/user", Map.of("name", login)),
                         User.class
                 );
@@ -89,7 +87,7 @@ public class ClientModelManager implements ClientModel{
      */
     @Override
     public void selectChat(Chat chat) {
-        if (self == null || myChats == null)
+        if (myself == null)
             throw new RuntimeException("attempt to get chats before log in or you don't have chats");
 
         boolean hasSuchChat = false;
@@ -117,18 +115,6 @@ public class ClientModelManager implements ClientModel{
         );
     }
 
-    public void setSelectedChat(Chat chat) {
-        selectedChat = chat;
-    }
-
-    /**
-     * @return все сообщения из чата selectedChat
-     */
-    @Override
-    public List<Message> getSelectedChatMessages() {
-        return selectedChatMessages;
-    }
-
     /**
      * отправляет POST запрос с сообщением в selectedChat
      * @param text сообщение
@@ -137,7 +123,7 @@ public class ClientModelManager implements ClientModel{
     public void sendMessageToChat(String text) {
         handler.sendPOST(
                 handler.POSTRequest(
-                        String.format("/users/%d/chats/%d/message", self.getId(), selectedChat.getId()),
+                        String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
                         makeBodyForMsgSending(text)
                 )
         );
@@ -158,7 +144,7 @@ public class ClientModelManager implements ClientModel{
      */
     @Override
     public List<User> getAllUsers() {
-        if (users == null) {
+        if (users.isEmpty()) {
             allUsers();
         }
         return users;
@@ -169,7 +155,7 @@ public class ClientModelManager implements ClientModel{
      * присваивает полученных пользователей в users
      */
     private void allUsers() {
-        if (self == null)
+        if (myself == null)
             throw new RuntimeException("attempt to get chats before log in");
 
         users = handler.mapResponse(
@@ -187,7 +173,7 @@ public class ClientModelManager implements ClientModel{
     public void sendMessageToUser(String text, User user) {
         handler.sendPOST(
                 handler.POSTRequest(
-                        String.format("/users/%d/message/users/%d", self.getId(), user.getId()),
+                        String.format("/users/%d/message/users/%d", myself.getId(), user.getId()),
                         makeBodyForMsgSending(text)
                 )
         );
@@ -202,7 +188,7 @@ public class ClientModelManager implements ClientModel{
         handler.sendPOST(
                 handler.POSTRequest(
                         "/chat?isPrivate=true",
-                        List.of(self.getId(), user.getId())
+                        List.of(myself.getId(), user.getId())
                 )
         );
     }
