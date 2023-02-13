@@ -27,3 +27,41 @@
 .ShowUsersBtn:focused {
     -fx-opacity: 30%;
 }
+
+.listChats {
+    -fx-background-color: transparent;
+}
+
+.list-cell {
+    -fx-background-radius: 15px;
+    -fx-background-color: transparent;
+    -fx-padding: 25px;
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 20;
+    -fx-text-fill: #1D1E20;
+    -fx-background-insets: 10;
+}
+
+#userListView .list-cell:hover{
+    -fx-background-color: #F2F2F2;
+    -fx-opacity: 50%;
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 20;
+    -fx-text-fill: #1D1E20;
+}
+
+#userListView .list-cell:focused {
+    -fx-background-color: #F2F2F2;
+    -fx-opacity: 100%;
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 20;
+    -fx-text-fill: #1D1E20;
+}
+
+#userListView .list-cell:empty {
+    -fx-background-color: transparent;
+}
+
+.mainPane {
+    -fx-background-color: #CCC1BE;
+}

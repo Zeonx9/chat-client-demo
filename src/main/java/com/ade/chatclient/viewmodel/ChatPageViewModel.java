@@ -56,6 +56,11 @@ public class ChatPageViewModel {
     }
 
     public void onSelectedItemChange(Observable observable, Chat oldValue, Chat newValue) {
+        // теории тут потока
+        if (newValue == null) {
+            System.out.println("somehow selected chat is null");
+            return;
+        }
         model.selectChat(newValue);
         updateMessagesInSelectedChat();
     }

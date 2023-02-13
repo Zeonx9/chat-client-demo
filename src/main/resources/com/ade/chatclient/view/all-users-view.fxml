@@ -6,6 +6,7 @@
 <AnchorPane prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../styles/AllUsersViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.AllUsersView">
     <Pane prefHeight="1080.0" prefWidth="100.0" styleClass="leftPane" />
     <Button fx:id="showChats" layoutX="25.0" layoutY="565.0" mnemonicParsing="false" onAction="#showAllChatsClicked" prefHeight="50.0" prefWidth="50.0" styleClass="showChatsBtn" />
-    <Button fx:id="ShowUsers" disable="true" layoutX="25.0" layoutY="465.0" mnemonicParsing="false" onAction="#showAllUsersClicked" prefHeight="50.0" prefWidth="50.0" styleClass="ShowUsersBtn" />
-
+    <Button fx:id="ShowUsers" disable="true" layoutX="25.0" layoutY="465.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="ShowUsersBtn" />
+    <Pane layoutX="100.0" prefHeight="1080.0" prefWidth="500.0" styleClass="mainPane" />
+    <ListView fx:id="userListView" layoutX="125.0" layoutY="184.0" prefHeight="669.0" prefWidth="450.0" styleClass="listChats" />
 </AnchorPane>
