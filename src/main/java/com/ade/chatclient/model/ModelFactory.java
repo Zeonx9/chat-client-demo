@@ -29,7 +29,7 @@ public class ModelFactory {
      */
     public ClientModel getModel() {
         if (clientModel == null) {
-            clientModel = new ClientModelManager(handler);
+            clientModel = new ClientModelImpl(handler);
         }
         return clientModel;
     }

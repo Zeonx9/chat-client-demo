@@ -32,7 +32,7 @@ public class LogInViewModel {
         boolean success = model.Authorize(loginTextProperty.get());
         if (success) {
             errorMessageProperty.set("Success!");
-            System.out.println("You have been authorized, your data:" + model.getMyself().getId());
+//            System.out.println("You have been authorized, your data:" + model.getMyself().getId());
             try {
                 viewHandler.openView(ViewHandler.Views.CHAT_PAGE_VIEW);
             }

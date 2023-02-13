@@ -9,9 +9,15 @@ module com.ade.chatclient {
     requires com.fasterxml.jackson.datatype.jsr310;
     requires java.net.http;
     requires lombok;
+    requires java.desktop;
+
+
 
     exports com.ade.chatclient;
     opens com.ade.chatclient to javafx.fxml;
+
+    exports com.ade.chatclient.dtos;
+    opens com.ade.chatclient.dtos to javafx.fxml;
 
     exports com.ade.chatclient.view;
     opens com.ade.chatclient.view to javafx.fxml;

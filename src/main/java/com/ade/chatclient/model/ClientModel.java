@@ -4,6 +4,8 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
 
+import java.beans.PropertyChangeListener;
+
 import java.util.List;
 
 // an interface that a model should implement, used to add flexibility to model structure
@@ -35,4 +37,6 @@ public interface ClientModel {
     void sendMessageToUser(String text, User user);
 
     void createDialog(User user);
+
+    void addListener(String eventName, PropertyChangeListener listener);
 }

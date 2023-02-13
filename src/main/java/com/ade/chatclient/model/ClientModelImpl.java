@@ -5,16 +5,19 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.TypeReferences;
 import com.ade.chatclient.domain.User;
+import com.ade.chatclient.dtos.AuthResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+
 // realization of Client model interface manages and manipulates the data
 @RequiredArgsConstructor
-public class ClientModelManager implements ClientModel{
+public class ClientModelImpl implements ClientModel{
     private final AsyncRequestHandler handler ;
     @Getter @Setter
     private User myself;
@@ -26,6 +29,54 @@ public class ClientModelManager implements ClientModel{
     private List<Message> selectedChatMessages = new ArrayList<>();
     @Setter
     private List<User> users = new ArrayList<>();
+
+
+    /**
+     * отправляет POST запрос для регистрации/входа
+     * @param login логин пользователя, который хочет авторизоваться
+     * @return true - если авторизацция прошла успешно, иначе false
+     */
+    @Override
+    public boolean Authorize(String login) {
+        System.out.println("Authorize request: " + login);
+
+        //TODO добавить поле для ввода пароля
+        var password = "Dasha";
+
+        if (myself == null) {
+            if (!authorizeRequest(login, password, "login")) {
+                return authorizeRequest(login, password, "register");
+            }
+        }
+        return true;
+    }
+
+    private boolean authorizeRequest(String login, String password, String request) {
+        try {
+            AuthResponse auth = handler.sendPOSTAsync(
+                            "/auth/" + request,
+                            makeBodyForAuthSending(login, password),
+                            false)
+                    .thenApply(AsyncRequestHandler.mapperOf(AuthResponse.class))
+                    .get();
+
+            setMyself(auth.getUser());
+            handler.setAuthToken(auth.getToken());
+        }
+        catch (Exception e) {
+            System.out.println(request + " failed");
+            System.out.println(e.getMessage());
+            return false;
+        }
+        System.out.println(request + " OK");
+        return true;
+    }
+
+    private String makeBodyForAuthSending(String login, String password) {
+        return "{ \"login\": \"" + login  +"\",\n" + " \"password\": \"" + password + "\" }";
+    }
+
+
 
     /**
      * обновляет чаты пользователя
@@ -57,30 +108,6 @@ public class ClientModelManager implements ClientModel{
                 .thenAccept(this::setMyChats);
     }
 
-    /**
-     * отправляет GET запрос на существование пользователя
-     * @param login логин пользователя, который хочет авторизоваться
-     * @return true - если авторизацция прошла успешно, иначе false
-     */
-    @Override
-    public boolean Authorize(String login) {
-        System.out.println("Authorize request: " + login);
-        if (myself == null) {
-            try {
-                //TODO correct тут поменялся енд-поинт, и вообще вот тут оч много че поменялось, надо разбираться
-//                myself = handler.mapResponse(
-//                        handler.GETRequest("/user", Map.of("name", login)),
-//                        User.class
-//                );
-            }
-            catch (Exception e) {
-                System.out.println("Authorization failed");
-                System.out.println(e.getMessage());
-                return false;
-            }
-        }
-        return true;
-    }
 
     /**
      * присваивает selectedChat значение параметра
@@ -220,6 +247,11 @@ public class ClientModelManager implements ClientModel{
                 true)
                 .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
                 .thenAccept(System.out::println);
+    }
+
+    @Override
+    public void addListener(String eventName, PropertyChangeListener listener) {
+
     }
 
 }

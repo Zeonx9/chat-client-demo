@@ -75,14 +75,14 @@ public class ChatPageViewModel {
         List<String> memberNames = new ArrayList<>();
         chat.getMembers().forEach(member -> {
             if (!Objects.equals(member.getId(), model.getMyself().getId()))
-                memberNames.add(member.getName());
+                memberNames.add(member.getUsername());
         });
         return String.join(", ", memberNames);
     }
 
     private String prepareMessageToBeShown(Message msg) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm, dd.MM");
-        return "from " + msg.getAuthor().getName() +
+        return "from " + msg.getAuthor().getUsername() +
                 ": " + msg.getText() +
                 " at " + msg.getDateTime().format(dtf);
     }
