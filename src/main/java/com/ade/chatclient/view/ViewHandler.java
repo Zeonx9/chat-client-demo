@@ -1,5 +1,6 @@
 package com.ade.chatclient.view;
 
+import com.ade.chatclient.viewmodel.BackgroundService;
 import com.ade.chatclient.viewmodel.ViewModelProvider;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,7 +20,6 @@ import java.io.IOException;
  *
  */
 public class ViewHandler {
-
     /**
      * это перечисление определяет все возможные вью в нашем приложении
      * когда создается новое вью, информацию о нем нужно занести в это перечисление
@@ -56,6 +56,15 @@ public class ViewHandler {
      */
     public void start() throws IOException {
         openView(Views.LOG_IN_VIEW);
+    }
+
+    /**
+     * запускает потоки, которые будут работать в фоне и проверять
+     * наличие новых сообщений или чатов
+     */
+    public void startBackGroundServices() {
+        BackgroundService backgroundService = viewModelProvider.getBackgroundService();
+        backgroundService.run();
     }
 
     /**
