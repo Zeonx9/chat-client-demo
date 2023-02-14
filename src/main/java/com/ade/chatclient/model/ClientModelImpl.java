@@ -11,6 +11,7 @@ import com.ade.chatclient.dtos.MessageDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.w3c.dom.ls.LSOutput;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -136,19 +137,24 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public List<User> getAllUsers() {
-        if (users.isEmpty()) {
-            allUsers();
-        }
+
+        allUsers();
+        System.out.println(users);
         return users;
     }
 
     private void allUsers() {
         if (myself == null)
             throw new RuntimeException("attempt to get chats before log in");
-
-        handler.sendGETAsync("/users")
-                .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfUser))
-                .thenAccept(this::setUsers);
+        try {
+            users = handler.sendGETAsync("/users")
+                    .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfUser))
+                    .get();
+        }
+        catch (Exception e){
+            System.out.println("error getting users");
+        }
+        users.remove(myself);
     }
 
     @Override
