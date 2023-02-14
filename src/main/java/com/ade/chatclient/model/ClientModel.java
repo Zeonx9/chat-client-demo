@@ -1,25 +1,17 @@
 package com.ade.chatclient.model;
 
 import com.ade.chatclient.domain.Chat;
-import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
 
 import java.beans.PropertyChangeListener;
 
-import java.util.List;
-
 // an interface that a model should implement, used to add flexibility to model structure
 public interface ClientModel {
 
-    // returns the data of authorized user
-    User getMyself();
-
     /**
-     * обновляет чаты пользователя
-     * @return все чаты пользователя
+     * @return Авторизованного пользователя
      */
-    // returns a list of chats where user participates
-    List<Chat> getMyChats();
+    User getMyself();
 
     /**
      * отправляет GET запрос на получение списка всех чатов авторизованного пользователя
@@ -32,7 +24,7 @@ public interface ClientModel {
      * если чат в есть в списке чатов пользователя
      * @param chat чат, историю которого хотят получить
      */
-    void selectChat(Chat chat);
+    void setSelectedChat(Chat chat);
 
     /**
      *  отправляет GET запрос на историю, выбранного чата
@@ -48,19 +40,11 @@ public interface ClientModel {
     // method that authorize the user with given login(name)
     boolean Authorize(String login);
 
-    List<Message> getSelectedChatMessages();
-
     /**
      * отправляет POST запрос с сообщением в selectedChat
      * @param text сообщение
      */
     void sendMessageToChat(String text);
-
-    /**
-     * инициализирует список всех пользователей, если он пуст
-     * @return список всех пользователей
-     */
-    List<User> getAllUsers();
 
     /**
      * отправляет POST запрос с сообщением в чат с выбранным пользователем
@@ -73,8 +57,9 @@ public interface ClientModel {
      * отправляет POST запрос на создание личного чата между авторизованными пользователем и выбранным
      * @param user выбранный пользователь
      */
-    void createDialog(User user);
+    Chat createDialog(User user);
 
     void addListener(String eventName, PropertyChangeListener listener);
 
+    void updateAllUsers();
 }
