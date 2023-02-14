@@ -37,10 +37,12 @@ public class AsyncRequestHandler {
      * @return билдер запроса
      */
     private HttpRequest.Builder configureRequest(String path, Map<String, String> params, boolean authorized) {
-        if (url == null)
+        if (url == null) {
             throw new IllegalStateException("URL of server is not set yet!");
-        if (authorized && authToken == null)
+        }
+        if (authorized && authToken == null) {
             throw new IllegalStateException("Authorized request cannot be built, token is not set yet!");
+        }
 
         String uriStr = url + path;
         if (!params.isEmpty())

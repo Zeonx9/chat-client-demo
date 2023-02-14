@@ -9,6 +9,7 @@ import lombok.Getter;
 
 @Getter
 public class LogInView {
+    // TODO Егор добавить текстовое поле для ввода пароля
     @FXML private TextField loginTextField;
     @FXML private Label errorMessageLabel;
     @FXML private Button loginButton;

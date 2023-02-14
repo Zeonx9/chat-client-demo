@@ -8,41 +8,37 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 
 @Getter
+@RequiredArgsConstructor
 public class LogInViewModel {
-    private final StringProperty loginTextProperty;
-    private final StringProperty errorMessageProperty;
-    private final BooleanProperty disableButtonProperty;
+    // TODO Егор сделай стиль для сообщения об ошибке или удачном завершении авторизации
+    private final StringProperty loginTextProperty = new SimpleStringProperty();
+    private final StringProperty errorMessageProperty = new SimpleStringProperty();
+    private final BooleanProperty disableButtonProperty = new SimpleBooleanProperty(true);
 
-    private final ClientModel model;
     private final ViewHandler viewHandler;
-
-    public LogInViewModel(ViewHandler viewHandler, ClientModel model) {
-        this.model = model;
-        this.viewHandler = viewHandler;
-        loginTextProperty = new SimpleStringProperty();
-        errorMessageProperty = new SimpleStringProperty();
-        disableButtonProperty = new SimpleBooleanProperty(true);
-    }
+    private final ClientModel model;
 
     public void authorize() {
         boolean success = model.Authorize(loginTextProperty.get());
-        if (success) {
-            errorMessageProperty.set("Success!");
-//            System.out.println("You have been authorized, your data:" + model.getMyself().getId());
-            try {
-                viewHandler.openView(ViewHandler.Views.CHAT_PAGE_VIEW);
-            }
-            catch (IOException e) {
-                System.out.println(e.getMessage());
-                errorMessageProperty.set("cannot switch to another view!");
-            }
+        if (!success) {
+            errorMessageProperty.set("Unsuccessful");
+            return;
         }
-        else
-            errorMessageProperty.set("Something went wrong!");
+        errorMessageProperty.set("Success!");
+        try {
+            System.out.println("Авторизация успешна, переход к окну чатов");
+            viewHandler.startBackGroundServices();
+            viewHandler.openView(ViewHandler.Views.CHAT_PAGE_VIEW);
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+            errorMessageProperty.set("cannot switch to another view!");
+        }
     }
 
     public void onTextChanged(Observable obj, String oldValue, String newValue) {

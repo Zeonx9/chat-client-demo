@@ -8,16 +8,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 
 public class AllUsersView {
+    // TODO Егор убери public, сделай как надо
     public Button showChats;
     public Button ShowUsers;
     @FXML public ListView<User> userListView;
     private AllUsersViewModel viewModel;
+
     public void init(AllUsersViewModel allUsersViewModel) {
         this.viewModel = allUsersViewModel;
         userListView.itemsProperty().bind(viewModel.getUsersListProperty());
         userListView.setCellFactory(param -> viewModel.getUserListCellFactory());
         userListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
-        viewModel.getAllUsers();
     }
 
     public void showAllChatsClicked(ActionEvent actionEvent) {

@@ -9,6 +9,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 public class ChatPageView {
+    // TODO Егор не должно быть public полей и методов
+    // TODO Егор переименовать методы кнопок нормально
     public Button createChatBtn;
     public Button showChats;
     public Button ShowUsers;
@@ -30,16 +32,14 @@ public class ChatPageView {
      * @param viewModel ссылка на вью-модель, которая управляет этим вью
      */
     public void init(ChatPageViewModel viewModel) {
-        // егор, разберись здесь прям построчно, что происходит
         this.viewModel = viewModel;
 
         chatListView.itemsProperty().bind(viewModel.getChatListProperty());
-        chatListView.setCellFactory(param -> viewModel.getChatListCellFactory());
+        chatListView.setCellFactory(chatListView -> viewModel.getChatListCellFactory());
         chatListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
-//        viewModel.updateChatList();
 
         messageListView.itemsProperty().bind(viewModel.getMessageListProperty());
-        messageListView.setCellFactory(param -> viewModel.getMessageCellFactory());
+        messageListView.setCellFactory(messageListView -> viewModel.getMessageCellFactory());
 
         messageTextField.textProperty().bindBidirectional(viewModel.getMessageTextProperty());
     }
@@ -49,12 +49,11 @@ public class ChatPageView {
         viewModel.sendMessage();
     }
 
-    public void createNewChatClicked(ActionEvent actionEvent) {
-
-    }
-
     public void showAllUsersClicked(ActionEvent actionEvent) {
         viewModel.showUsers();
+    }
+
+    public void createNewChatClicked(ActionEvent actionEvent) {
     }
 
     public void showAllChatsClicked(ActionEvent actionEvent) {
