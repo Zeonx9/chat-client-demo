@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
  * Класс, который представляет сообщение
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Message {

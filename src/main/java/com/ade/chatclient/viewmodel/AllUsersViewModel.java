@@ -51,7 +51,7 @@ public class AllUsersViewModel {
         }
     }
     private String prepareUserToBeShown(User user) {
-        return user.getName();
+        return user.getUsername();
     }
 
     public ListCell<User> getUserListCellFactory() {

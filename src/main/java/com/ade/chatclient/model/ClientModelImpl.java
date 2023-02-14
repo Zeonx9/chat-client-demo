@@ -5,7 +5,9 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.TypeReferences;
 import com.ade.chatclient.domain.User;
+import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.AuthResponse;
+import com.ade.chatclient.dtos.MessageDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -55,7 +57,7 @@ public class ClientModelImpl implements ClientModel{
         try {
             AuthResponse auth = handler.sendPOSTAsync(
                             "/auth/" + request,
-                            makeBodyForAuthSending(login, password),
+                            AuthRequest.builder().login(login).password(password).build(),
                             false)
                     .thenApply(AsyncRequestHandler.mapperOf(AuthResponse.class))
                     .get();
@@ -71,12 +73,6 @@ public class ClientModelImpl implements ClientModel{
         System.out.println(request + " OK");
         return true;
     }
-
-    private String makeBodyForAuthSending(String login, String password) {
-        return "{ \"login\": \"" + login  +"\",\n" + " \"password\": \"" + password + "\" }";
-    }
-
-
 
     /**
      * обновляет чаты пользователя
@@ -97,11 +93,6 @@ public class ClientModelImpl implements ClientModel{
      */
     @Override
     public void updateMyChats() {
-
-//        myChats = handler.mapResponse(
-//                handler.GETRequest(String.format("/users/%d/chats", myself.getId())),
-//                RequestHandler.Types.ListOfChat
-//        );
 
         handler.sendGETAsync(String.format("/users/%d/chats", myself.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfChat))
@@ -138,10 +129,7 @@ public class ClientModelImpl implements ClientModel{
      */
     @Override
     public void updateMessages() {
-//        selectedChatMessages = handler.mapResponse(
-//                handler.GETRequest(String.format("/chats/%d/messages", selectedChat.getId())),
-//                RequestHandler.Types.ListOfMessage
-//        );
+
         handler.sendGETAsync(String.format("/chats/%d/messages", selectedChat.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
                 .thenAccept(this::setSelectedChatMessages);
@@ -154,28 +142,14 @@ public class ClientModelImpl implements ClientModel{
      */
     @Override
     public void sendMessageToChat(String text) {
-//        handler.sendPOST(
-//                handler.POSTRequest(
-//                        String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
-//                        makeBodyForMsgSending(text)
-//                )
-//        );
+
         handler.sendPOSTAsync(
                 String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
-                makeBodyForMsgSending(text),
+                        MessageDto.builder().text(text).build(),
                 true)
                 .thenApply(AsyncRequestHandler.mapperOf(Message.class))
                 .thenAccept(System.out::println);
 
-    }
-
-    /**
-     *
-     * @param text сообщение
-     * @return сообщение в нужной форме для отправки на сервер
-     */
-    private String makeBodyForMsgSending(String text) {
-        return "{ \"text\": \"" + text + "\" }";
     }
 
     /**
@@ -198,10 +172,6 @@ public class ClientModelImpl implements ClientModel{
         if (myself == null)
             throw new RuntimeException("attempt to get chats before log in");
 
-//        users = handler.mapResponse(
-//                handler.GETRequest("/users"),
-//                RequestHandler.Types.ListOfUser
-//        );
         handler.sendGETAsync("/users")
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfUser))
                 .thenAccept(this::setUsers);
@@ -214,17 +184,11 @@ public class ClientModelImpl implements ClientModel{
      */
     @Override
     public void sendMessageToUser(String text, User user) {
-//        handler.sendPOST(
-//                handler.POSTRequest(
-//                        String.format("/users/%d/message/users/%d", myself.getId(), user.getId()),
-//                        makeBodyForMsgSending(text)
-//                )
-//        );
+
         handler.sendPOSTAsync(
                 String.format("/users/%d/message/users/%d", myself.getId(), user.getId()),
-                makeBodyForMsgSending(text),
-                true
-                )
+                        MessageDto.builder().text(text).build(),
+                true)
                 .thenApply(AsyncRequestHandler.mapperOf(Message.class))
                 .thenAccept(System.out::println);
     }
@@ -235,12 +199,7 @@ public class ClientModelImpl implements ClientModel{
      */
     @Override
     public void createDialog(User user) {
-//        handler.sendPOST(
-//                handler.POSTRequest(
-//                        "/chat?isPrivate=true",
-//                        List.of(myself.getId(), user.getId())
-//                )
-//        );
+
         handler.sendPOSTAsync(
                 "/chat?isPrivate=true",
                 List.of(myself.getId(), user.getId()),
