@@ -4,7 +4,9 @@ import com.ade.chatclient.ClientApplication;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
+import com.ade.chatclient.model.ClientModelImpl;
 import com.ade.chatclient.view.ViewHandler;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -13,11 +15,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import lombok.Getter;
 
+import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 @Getter
 public class ChatPageViewModel {
@@ -36,10 +40,39 @@ public class ChatPageViewModel {
     ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
         this.model = model;
         this.viewHandler = viewHandler;
-
+        runAutoUpdate();
         chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
         messageListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
         messageTextProperty = new SimpleStringProperty();
+        model.addListener("MessageUpdate", this::updateMessage);
+    }
+
+    private void runAutoUpdate() {
+        Thread thread = new Thread(() -> {
+            Random r = new Random();
+            while (true) {
+                model.updateMessages();
+                try {
+                    Thread.sleep(r.nextInt(5000) + 10000);
+                }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        );
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private void updateMessage(PropertyChangeEvent propertyChangeEvent) {
+        Platform.runLater(() -> {
+            List<Message> selectedChatMessages = (List<Message>) propertyChangeEvent.getNewValue();
+            System.out.println("+++++++++++++++++++++++++++++++++");
+            messageListProperty.clear();
+            messageListProperty.addAll(selectedChatMessages);
+        });
+
     }
 
     // методы до следующего коммента - это Даша делает
@@ -49,11 +82,11 @@ public class ChatPageViewModel {
         chatListProperty.addAll(model.getMyChats());
     }
 
-    public void updateMessagesInSelectedChat() {
-        model.updateMessages();
-        messageListProperty.clear();
-        messageListProperty.addAll(model.getSelectedChatMessages());
-    }
+//    public void updateMessagesInSelectedChat() {
+//        model.updateMessages();
+//        messageListProperty.clear();
+//        messageListProperty.addAll(model.getSelectedChatMessages());
+//    }
 
     public void onSelectedItemChange(Observable observable, Chat oldValue, Chat newValue) {
         // теории тут потока
@@ -62,7 +95,7 @@ public class ChatPageViewModel {
             return;
         }
         model.selectChat(newValue);
-        updateMessagesInSelectedChat();
+//        updateMessagesInSelectedChat();
     }
 
     public void sendMessage() {
@@ -71,7 +104,7 @@ public class ChatPageViewModel {
 
         model.sendMessageToChat(messageTextProperty.get());
         messageTextProperty.set("");
-        updateMessagesInSelectedChat();
+//        updateMessagesInSelectedChat();
     }
 
     // все метод ниже должен был написать егор

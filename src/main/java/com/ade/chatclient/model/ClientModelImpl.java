@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,8 @@ public class ClientModelImpl implements ClientModel{
     @Setter
     private List<User> users = new ArrayList<>();
 
+    private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+    private List<Message> lastSelectedChatMessages = new ArrayList<>();
 
     /**
      * отправляет POST запрос для регистрации/входа
@@ -121,6 +124,7 @@ public class ClientModelImpl implements ClientModel{
             System.out.println("User does not has a chat with id: " + chat.getId());
         }
         else setSelectedChat(chat);
+        updateMessages();
     }
 
     /**
@@ -129,11 +133,12 @@ public class ClientModelImpl implements ClientModel{
      */
     @Override
     public void updateMessages() {
-
+        if (selectedChat == null) return;
         handler.sendGETAsync(String.format("/chats/%d/messages", selectedChat.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
                 .thenAccept(this::setSelectedChatMessages);
-
+        changeSupport.firePropertyChange("MessageUpdate", lastSelectedChatMessages, selectedChatMessages);
+        lastSelectedChatMessages = selectedChatMessages;
     }
 
     /**
@@ -149,7 +154,7 @@ public class ClientModelImpl implements ClientModel{
                 true)
                 .thenApply(AsyncRequestHandler.mapperOf(Message.class))
                 .thenAccept(System.out::println);
-
+        updateMessages();
     }
 
     /**
@@ -210,7 +215,7 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void addListener(String eventName, PropertyChangeListener listener) {
-
+        changeSupport.addPropertyChangeListener(eventName, listener);
     }
 
 }
