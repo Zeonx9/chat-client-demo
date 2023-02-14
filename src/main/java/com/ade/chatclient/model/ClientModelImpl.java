@@ -24,7 +24,7 @@ public class ClientModelImpl implements ClientModel{
     private final AsyncRequestHandler handler ;
     @Getter @Setter
     private User myself;
-    @Setter
+    @Getter @Setter
     private Chat selectedChat;
     @Setter
     private List<Chat> myChats = new ArrayList<>();
@@ -33,14 +33,10 @@ public class ClientModelImpl implements ClientModel{
     @Setter
     private List<User> users = new ArrayList<>();
 
-    private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+    private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
     private List<Message> lastSelectedChatMessages = new ArrayList<>();
+    private List<Chat> lastMyChats = new ArrayList<>();
 
-    /**
-     * отправляет POST запрос для регистрации/входа
-     * @param login логин пользователя, который хочет авторизоваться
-     * @return true - если авторизацция прошла успешно, иначе false
-     */
     @Override
     public boolean Authorize(String login) {
         System.out.println("Authorize request: " + login);
@@ -77,37 +73,27 @@ public class ClientModelImpl implements ClientModel{
         return true;
     }
 
-    /**
-     * обновляет чаты пользователя
-     * @return все чаты пользователя
-     */
     @Override
     public List<Chat> getMyChats() {
-        if (myself == null)
-            throw new RuntimeException("attempt to get chats before log in");
+        if (selectedChat == null) return myChats;
+//        if (myself == null)
+//            throw new RuntimeException("attempt to get chats before log in");
 
         updateMyChats();
         return myChats;
     }
 
-    /**
-     * отправляет GET запрос на получение списка всех чатов авторизованного пользователя
-     * присваивает полученные чаты в myChats
-     */
     @Override
     public void updateMyChats() {
-
+        System.out.println(myself);
+        if (myself == null) return;
         handler.sendGETAsync(String.format("/users/%d/chats", myself.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfChat))
                 .thenAccept(this::setMyChats);
+        changeSupport.firePropertyChange("MyChatsUpdate", lastMyChats, myChats);
+        lastMyChats = myChats;
     }
 
-
-    /**
-     * присваивает selectedChat значение параметра
-     * если чат в есть в списке чатов пользователя
-     * @param chat чат, историю которого хотят получить
-     */
     @Override
     public void selectChat(Chat chat) {
         if (myself == null)
@@ -124,13 +110,9 @@ public class ClientModelImpl implements ClientModel{
             System.out.println("User does not has a chat with id: " + chat.getId());
         }
         else setSelectedChat(chat);
-        updateMessages();
+//        updateMessages();
     }
 
-    /**
-     *  отправляет GET запрос на историю, выбранного чата
-     *  присваивает полученные сообщения в selectedChatMessages
-     */
     @Override
     public void updateMessages() {
         if (selectedChat == null) return;
@@ -141,10 +123,6 @@ public class ClientModelImpl implements ClientModel{
         lastSelectedChatMessages = selectedChatMessages;
     }
 
-    /**
-     * отправляет POST запрос с сообщением в selectedChat
-     * @param text сообщение
-     */
     @Override
     public void sendMessageToChat(String text) {
 
@@ -154,13 +132,8 @@ public class ClientModelImpl implements ClientModel{
                 true)
                 .thenApply(AsyncRequestHandler.mapperOf(Message.class))
                 .thenAccept(System.out::println);
-        updateMessages();
     }
 
-    /**
-     * инициализирует список всех пользователей, если он пуст
-     * @return список всех пользователей
-     */
     @Override
     public List<User> getAllUsers() {
         if (users.isEmpty()) {
@@ -169,10 +142,6 @@ public class ClientModelImpl implements ClientModel{
         return users;
     }
 
-    /**
-     * отправляет GET запрос на получение списка всех пользователей
-     * присваивает полученных пользователей в users
-     */
     private void allUsers() {
         if (myself == null)
             throw new RuntimeException("attempt to get chats before log in");
@@ -182,11 +151,6 @@ public class ClientModelImpl implements ClientModel{
                 .thenAccept(this::setUsers);
     }
 
-    /**
-     * отправляет POST запрос с сообщением в чат с выбранным пользователем
-     * @param text сообщение
-     * @param user пользователь, в чат которому надо отправить сообщение
-     */
     @Override
     public void sendMessageToUser(String text, User user) {
 
@@ -198,10 +162,6 @@ public class ClientModelImpl implements ClientModel{
                 .thenAccept(System.out::println);
     }
 
-    /**
-     * отправляет POST запрос на создание личного чата между авторизованными пользователем и выбранным
-     * @param user выбранный пользователь
-     */
     @Override
     public void createDialog(User user) {
 

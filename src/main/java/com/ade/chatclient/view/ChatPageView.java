@@ -36,7 +36,7 @@ public class ChatPageView {
         chatListView.itemsProperty().bind(viewModel.getChatListProperty());
         chatListView.setCellFactory(param -> viewModel.getChatListCellFactory());
         chatListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
-        viewModel.updateChatList();
+//        viewModel.updateChatList();
 
         messageListView.itemsProperty().bind(viewModel.getMessageListProperty());
         messageListView.setCellFactory(param -> viewModel.getMessageCellFactory());

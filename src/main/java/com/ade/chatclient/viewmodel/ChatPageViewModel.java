@@ -40,20 +40,53 @@ public class ChatPageViewModel {
     ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
         this.model = model;
         this.viewHandler = viewHandler;
-        runAutoUpdate();
         chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
         messageListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
         messageTextProperty = new SimpleStringProperty();
+        model.addListener("MyChatsUpdate", this::updateMyChats);
         model.addListener("MessageUpdate", this::updateMessage);
+        runAutoUpdateMessages();
+        runAutoUpdateChats();
+
     }
 
-    private void runAutoUpdate() {
+    private void updateMyChats(PropertyChangeEvent propertyChangeEvent) {
+        Platform.runLater(() -> {
+            List<Chat> myChats = (List<Chat>) propertyChangeEvent.getNewValue();
+            System.out.println("updateChats");
+            chatListProperty.clear();
+            chatListProperty.addAll(myChats);
+                }
+
+        );
+
+
+    }
+    private void runAutoUpdateChats() {
+        Thread thread = new Thread(() -> {
+            Random r = new Random();
+            while (true) {
+                model.updateMyChats();
+                try {
+                    Thread.sleep(r.nextInt(500) + 1000);
+                }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        );
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private void runAutoUpdateMessages() {
         Thread thread = new Thread(() -> {
             Random r = new Random();
             while (true) {
                 model.updateMessages();
                 try {
-                    Thread.sleep(r.nextInt(5000) + 10000);
+                    Thread.sleep(r.nextInt(250) + 100);
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();
@@ -68,19 +101,20 @@ public class ChatPageViewModel {
     private void updateMessage(PropertyChangeEvent propertyChangeEvent) {
         Platform.runLater(() -> {
             List<Message> selectedChatMessages = (List<Message>) propertyChangeEvent.getNewValue();
-            System.out.println("+++++++++++++++++++++++++++++++++");
+            System.out.println("updateMes");
             messageListProperty.clear();
             messageListProperty.addAll(selectedChatMessages);
-        });
+            }
+        );
 
     }
 
     // методы до следующего коммента - это Даша делает
 
-    public void updateChatList() {
-        chatListProperty.clear();
-        chatListProperty.addAll(model.getMyChats());
-    }
+//    public void updateChatList() {
+//        chatListProperty.clear();
+//        chatListProperty.addAll(model.getMyChats());
+//    }
 
 //    public void updateMessagesInSelectedChat() {
 //        model.updateMessages();
