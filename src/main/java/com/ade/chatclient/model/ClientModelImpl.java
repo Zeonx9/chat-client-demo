@@ -7,11 +7,9 @@ import com.ade.chatclient.domain.TypeReferences;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.AuthResponse;
-import com.ade.chatclient.dtos.MessageDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.w3c.dom.ls.LSOutput;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -21,36 +19,33 @@ import java.util.List;
 
 // realization of Client model interface manages and manipulates the data
 @RequiredArgsConstructor
+@Getter
+@Setter
 public class ClientModelImpl implements ClientModel{
     private final AsyncRequestHandler handler ;
-    @Getter @Setter
     private User myself;
-    @Getter @Setter
     private Chat selectedChat;
-    @Setter
     private List<Chat> myChats = new ArrayList<>();
-    @Getter @Setter
     private List<Message> selectedChatMessages = new ArrayList<>();
-    @Setter
-    private List<User> users = new ArrayList<>();
-
+    private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
-    private List<Message> lastSelectedChatMessages = new ArrayList<>();
-    private List<Chat> lastMyChats = new ArrayList<>();
 
     @Override
     public boolean Authorize(String login) {
         System.out.println("Authorize request: " + login);
+        //TODO Егор добавить поле для ввода пароля (егор сделает)
+        var password = "0000";
 
-        //TODO добавить поле для ввода пароля
-        var password = "Dasha";
-
-        if (myself == null) {
-            if (!authorizeRequest(login, password, "login")) {
-                return authorizeRequest(login, password, "register");
-            }
+        // действительно ли здесь надо на нулл проверять?
+        if (myself != null) {
+            System.out.println("Попытка ре-авторизации");
+            return true;
         }
-        return true;
+        if (authorizeRequest(login, password, "login")) {
+            return true;
+        }
+        // если авторизация не успешна, то попробуем зарегистрировать, позже удалить
+        return authorizeRequest(login, password, "register");
     }
 
     private boolean authorizeRequest(String login, String password, String request) {
@@ -58,7 +53,8 @@ public class ClientModelImpl implements ClientModel{
             AuthResponse auth = handler.sendPOSTAsync(
                             "/auth/" + request,
                             AuthRequest.builder().login(login).password(password).build(),
-                            false)
+                            false
+                    )
                     .thenApply(AsyncRequestHandler.mapperOf(AuthResponse.class))
                     .get();
 
@@ -66,8 +62,7 @@ public class ClientModelImpl implements ClientModel{
             handler.setAuthToken(auth.getToken());
         }
         catch (Exception e) {
-            System.out.println(request + " failed");
-            System.out.println(e.getMessage());
+            System.out.println(request + " failed\n" + e.getMessage());
             return false;
         }
         System.out.println(request + " OK");
@@ -75,113 +70,86 @@ public class ClientModelImpl implements ClientModel{
     }
 
     @Override
-    public List<Chat> getMyChats() {
-        if (selectedChat == null) return myChats;
-//        if (myself == null)
-//            throw new RuntimeException("attempt to get chats before log in");
-
-        updateMyChats();
-        return myChats;
-    }
-
-    @Override
     public void updateMyChats() {
-        System.out.println(myself);
-        if (myself == null) return;
+        if (myself == null) {
+            return;
+        }
         handler.sendGETAsync(String.format("/users/%d/chats", myself.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfChat))
-                .thenAccept(this::setMyChats);
-        changeSupport.firePropertyChange("MyChatsUpdate", lastMyChats, myChats);
-        lastMyChats = myChats;
-    }
-
-    @Override
-    public void selectChat(Chat chat) {
-        if (myself == null)
-            throw new RuntimeException("attempt to get chats before log in or you don't have chats");
-
-        boolean hasSuchChat = false;
-        for (Chat myChat : myChats) {
-            if (myChat.getId().equals(chat.getId())) {
-                hasSuchChat = true;
-                break;
-            }
-        }
-        if (!hasSuchChat) {
-            System.out.println("User does not has a chat with id: " + chat.getId());
-        }
-        else setSelectedChat(chat);
-//        updateMessages();
+                .thenAccept(chats -> {
+                    changeSupport.firePropertyChange("MyChatsUpdate", myChats, chats);
+                    setMyChats(chats);
+                });
     }
 
     @Override
     public void updateMessages() {
-        if (selectedChat == null) return;
+        if (selectedChat == null) {
+            return;
+        }
         handler.sendGETAsync(String.format("/chats/%d/messages", selectedChat.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
-                .thenAccept(this::setSelectedChatMessages);
-        changeSupport.firePropertyChange("MessageUpdate", lastSelectedChatMessages, selectedChatMessages);
-        lastSelectedChatMessages = selectedChatMessages;
+                .thenAccept(messages -> {
+                    changeSupport.firePropertyChange("MessageUpdate", selectedChatMessages, messages);
+                    setSelectedChatMessages(messages);
+                });
     }
 
     @Override
     public void sendMessageToChat(String text) {
-
+        if (selectedChat == null) {
+            return;
+        }
         handler.sendPOSTAsync(
-                String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
-                        MessageDto.builder().text(text).build(),
-                true)
-                .thenApply(AsyncRequestHandler.mapperOf(Message.class))
-                .thenAccept(System.out::println);
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-
-        allUsers();
-        System.out.println(users);
-        return users;
-    }
-
-    private void allUsers() {
-        if (myself == null)
-            throw new RuntimeException("attempt to get chats before log in");
-        try {
-            users = handler.sendGETAsync("/users")
-                    .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfUser))
-                    .get();
-        }
-        catch (Exception e){
-            System.out.println("error getting users");
-        }
-        users.remove(myself);
+                        String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
+                        Message.builder().text(text).build(),
+                        true
+                );
     }
 
     @Override
     public void sendMessageToUser(String text, User user) {
-
         handler.sendPOSTAsync(
-                String.format("/users/%d/message/users/%d", myself.getId(), user.getId()),
-                        MessageDto.builder().text(text).build(),
-                true)
-                .thenApply(AsyncRequestHandler.mapperOf(Message.class))
-                .thenAccept(System.out::println);
+                        String.format("/users/%d/message/users/%d", myself.getId(), user.getId()),
+                        Message.builder().text(text).build(),
+                        true
+                );
+
+
     }
 
     @Override
-    public void createDialog(User user) {
+    public void updateAllUsers() {
+        handler.sendGETAsync("/users")
+                .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfUser))
+                .thenApply(userList -> {
+                    userList.remove(myself);
+                    return userList;
+                })
+                .thenAccept(userList -> {
+                    changeSupport.firePropertyChange("AllUsers", allUsers, userList);
+                    setAllUsers(userList);
+                });
+    }
 
-        handler.sendPOSTAsync(
-                "/chat?isPrivate=true",
-                List.of(myself.getId(), user.getId()),
-                true)
-                .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
-                .thenAccept(System.out::println);
+    @Override
+    public Chat createDialog(User user) {
+        try {
+            return handler.sendPOSTAsync(
+                            "/chat?isPrivate=true",
+                            List.of(myself.getId(), user.getId()),
+                            true
+                    )
+                    .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
+                    .get();
+        } catch (Exception e) {
+            System.out.println("Fail to Create dialog");
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void addListener(String eventName, PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(eventName, listener);
     }
-
 }
