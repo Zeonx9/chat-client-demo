@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="446.0" prefWidth="816.0" styleClass="background-login" stylesheets="@../styles/LoginViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.LogInView">
+<AnchorPane prefHeight="520.0" prefWidth="816.0" styleClass="background-login" stylesheets="@../styles/LoginViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.LogInView">
    <opaqueInsets>
       <Insets />
    </opaqueInsets>
@@ -14,6 +14,7 @@
    </Label>
    <TextField fx:id="loginTextField" alignment="CENTER" focusTraversable="false" layoutX="183.0" layoutY="257.0" prefHeight="50.0" prefWidth="450.0" promptText="Please, enter your name to continue..." styleClass="text-input">
    </TextField>
-   <Button fx:id="loginButton" layoutX="183.0" layoutY="332.0" mnemonicParsing="false" onAction="#onLoginClick" prefHeight="50.0" prefWidth="450.0" styleClass="button" text="Log In" />
+   <Button fx:id="loginButton" layoutX="183.0" layoutY="407.0" mnemonicParsing="false" onAction="#onLoginClick" prefHeight="50.0" prefWidth="450.0" styleClass="button" text="Log In" />
    <Label fx:id="errorMessageLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="284.0" layoutY="402.0" prefHeight="17.0" prefWidth="248.0" textAlignment="CENTER" />
+   <PasswordField fx:id="PasswordField" alignment="CENTER" layoutX="183.0" layoutY="332.0" prefHeight="50.0" prefWidth="450.0" promptText="Please, enter your password to continue..." />
 </AnchorPane>

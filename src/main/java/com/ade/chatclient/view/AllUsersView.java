@@ -19,6 +19,7 @@ public class AllUsersView {
         userListView.itemsProperty().bind(viewModel.getUsersListProperty());
         userListView.setCellFactory(param -> viewModel.getUserListCellFactory());
         userListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
+        userListView.getSelectionModel().clearSelection();
     }
 
     public void showAllChatsClicked(ActionEvent actionEvent) {

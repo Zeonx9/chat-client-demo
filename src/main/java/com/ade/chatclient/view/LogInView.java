@@ -4,12 +4,13 @@ import com.ade.chatclient.viewmodel.LogInViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import lombok.Getter;
 
 @Getter
 public class LogInView {
-    // TODO Егор добавить текстовое поле для ввода пароля
+    @FXML public javafx.scene.control.PasswordField PasswordField;
     @FXML private TextField loginTextField;
     @FXML private Label errorMessageLabel;
     @FXML private Button loginButton;
