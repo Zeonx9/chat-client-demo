@@ -15,8 +15,8 @@ import java.io.IOException;
 @Getter
 @RequiredArgsConstructor
 public class LogInViewModel {
-    // TODO Егор сделай стиль для сообщения об ошибке или удачном завершении авторизации
     private final StringProperty loginTextProperty = new SimpleStringProperty();
+    private final StringProperty passwordProperty = new SimpleStringProperty();
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
     private final BooleanProperty disableButtonProperty = new SimpleBooleanProperty(true);
 
@@ -24,7 +24,7 @@ public class LogInViewModel {
     private final ClientModel model;
 
     public void authorize() {
-        boolean success = model.Authorize(loginTextProperty.get());
+        boolean success = model.Authorize(loginTextProperty.get(), passwordProperty.get());
         if (!success) {
             errorMessageProperty.set("Unsuccessful");
             return;
