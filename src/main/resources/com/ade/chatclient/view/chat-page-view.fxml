@@ -30,13 +30,13 @@
    <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="147.0" layoutY="60.0" pickOnBounds="true" preserveRatio="true">
       <Image url="@../img/search_icon.png" />
    </ImageView>
-   <Button fx:id="createChatBtn" layoutX="435.0" layoutY="116.0" mnemonicParsing="false" onAction="#createNewChatClicked" prefHeight="45.0" prefWidth="139.0" styleClass="buttonCreateNewChat" text="      new" />
+   <Button fx:id="createChatButton" layoutX="435.0" layoutY="116.0" mnemonicParsing="false" onAction="#onCreateChatClicked" prefHeight="45.0" prefWidth="139.0" styleClass="buttonCreateNewChat" text="      new" />
    <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="451.0" layoutY="128.0" pickOnBounds="true" preserveRatio="true">
       <image>
          <Image url="@../img/plus.png" />
       </image>
    </ImageView>
    <Pane prefHeight="1080.0" prefWidth="100.0" styleClass="leftPane" />
-   <Button fx:id="showChats" disable="true" layoutX="25.0" layoutY="565.0" mnemonicParsing="false" onAction="#showAllChatsClicked" prefHeight="50.0" prefWidth="50.0" styleClass="showChatsBtn" />
-   <Button fx:id="ShowUsers" layoutX="25.0" layoutY="465.0" mnemonicParsing="false" onAction="#showAllUsersClicked" prefHeight="50.0" prefWidth="50.0" styleClass="ShowUsersBtn" />
+   <Button fx:id="showChatsButton" disable="true" layoutX="25.0" layoutY="565.0" mnemonicParsing="false" onAction="#onShowChatsClicked" prefHeight="50.0" prefWidth="50.0" styleClass="showChatsBtn" />
+   <Button fx:id="showUsersButton" layoutX="25.0" layoutY="465.0" mnemonicParsing="false" onAction="#onShowUsersClicked" prefHeight="50.0" prefWidth="50.0" styleClass="ShowUsersBtn" />
 </AnchorPane>

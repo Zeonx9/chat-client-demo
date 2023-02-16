@@ -9,11 +9,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 public class ChatPageView {
-    // TODO Егор не должно быть public полей и методов
-    // TODO Егор переименовать методы кнопок нормально
-    public Button createChatBtn;
-    public Button showChats;
-    public Button ShowUsers;
+    @FXML private Button createChatButton;
+    @FXML private Button showChatsButton;
+    @FXML private Button showUsersButton;
     @FXML private TextField searchTextField;
 
     @FXML private ListView<Chat> chatListView;
@@ -37,10 +35,12 @@ public class ChatPageView {
         chatListView.itemsProperty().bind(viewModel.getChatListProperty());
         chatListView.setCellFactory(chatListView -> viewModel.getChatListCellFactory());
         chatListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
+        // удаление первого выделения не работает туи, думаю из-за потоков, так как на AllUsers она работает корректно
         chatListView.getSelectionModel().clearSelection();
 
         messageListView.itemsProperty().bind(viewModel.getMessageListProperty());
         messageListView.setCellFactory(messageListView -> viewModel.getMessageCellFactory());
+        messageListView.setFocusTraversable(false);
 
         messageTextField.textProperty().bindBidirectional(viewModel.getMessageTextProperty());
     }
@@ -50,14 +50,16 @@ public class ChatPageView {
         viewModel.sendMessage();
     }
 
-    public void showAllUsersClicked(ActionEvent actionEvent) {
+    @FXML
+    protected void onCreateChatClicked(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    protected void onShowChatsClicked(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    protected void onShowUsersClicked(ActionEvent actionEvent) {
         viewModel.showUsers();
-    }
-
-    public void createNewChatClicked(ActionEvent actionEvent) {
-    }
-
-    public void showAllChatsClicked(ActionEvent actionEvent) {
-
     }
 }
