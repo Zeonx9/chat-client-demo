@@ -38,7 +38,7 @@ public interface ClientModel {
      * @return true - если авторизацция прошла успешно, иначе false
      */
     // method that authorize the user with given login(name)
-    boolean Authorize(String login);
+    boolean Authorize(String login, String password);
 
     /**
      * отправляет POST запрос с сообщением в selectedChat

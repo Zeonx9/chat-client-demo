@@ -31,10 +31,8 @@ public class ClientModelImpl implements ClientModel{
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
     @Override
-    public boolean Authorize(String login) {
+    public boolean Authorize(String login, String password) {
         System.out.println("Authorize request: " + login);
-        //TODO Егор добавить поле для ввода пароля (егор сделает)
-        var password = "0000";
 
         // действительно ли здесь надо на нулл проверять?
         if (myself != null) {
