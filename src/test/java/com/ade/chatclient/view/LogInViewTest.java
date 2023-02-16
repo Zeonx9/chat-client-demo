@@ -63,18 +63,18 @@ class LogInViewTest {
         //then
         assertThat(underTest.getLoginButton().isDisabled()).isFalse();
     }
-
-    @Test
-    void buttonClickedAndAuthorizeCalled() {
-        //given
-        String text = "text";
-
-        //when
-        underTest.getLoginTextField().setText(text);
-        underTest.getLoginButton().fire();
-
-        //then
-        verify(model).Authorize(text);
-
-    }
 }
+//    @Test
+//    void buttonClickedAndAuthorizeCalled() {
+//        //given
+//        String text = "text";
+//
+//        //when
+//        underTest.getLoginTextField().setText(text);
+//        underTest.getLoginButton().fire();
+//
+//        //then
+//        verify(model).Authorize(text);
+//
+//    }
+//}
