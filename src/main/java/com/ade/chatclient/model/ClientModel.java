@@ -30,7 +30,7 @@ public interface ClientModel {
      *  отправляет GET запрос на историю, выбранного чата
      *  присваивает полученные сообщения в selectedChatMessages
      */
-    void updateMessages();
+    void getMessages();
 
     /**
      * отправляет POST запрос для регистрации/входа
@@ -62,4 +62,6 @@ public interface ClientModel {
     void addListener(String eventName, PropertyChangeListener listener);
 
     void updateAllUsers();
+
+    void updateMessages();
 }

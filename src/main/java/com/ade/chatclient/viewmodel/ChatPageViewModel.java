@@ -62,6 +62,7 @@ public class ChatPageViewModel {
             return;
         }
         model.setSelectedChat(newValue);
+        model.getMessages();
     }
 
     public void sendMessage() {

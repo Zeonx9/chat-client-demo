@@ -13,18 +13,19 @@ public class BackgroundService {
             return;
         }
         System.out.println("Background service started");
-        runAutoUpdateMessages();
+//        runAutoUpdateMessages();
         runAutoUpdateChats();
         model.updateAllUsers();
         isActive = true;
+        runNewMessages();
     }
 
-    private void runAutoUpdateChats() {
+    private void runNewMessages() {
         Thread thread = new Thread(() -> {
             while (true) {
-                model.updateMyChats();
+                model.updateMessages();
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(1000);
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();
@@ -35,13 +36,14 @@ public class BackgroundService {
         thread.start();
     }
 
-    private void runAutoUpdateMessages() {
+    private void runAutoUpdateChats() {
         Thread thread = new Thread(() -> {
             while (true) {
-                model.updateMessages();
+                model.updateMyChats();
                 try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
+                    Thread.sleep(10000);
+                }
+                catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -49,4 +51,19 @@ public class BackgroundService {
         thread.setDaemon(true);
         thread.start();
     }
+
+//    private void runAutoUpdateMessages() {
+//        Thread thread = new Thread(() -> {
+//            while (true) {
+//                model.getMessages();
+//                try {
+//                    Thread.sleep(300);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//        thread.setDaemon(true);
+//        thread.start();
+//    }
 }

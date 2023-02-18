@@ -15,4 +15,5 @@ public class Chat {
     private Long id;
     private Boolean isPrivate;
     private List<User> members;
+    private Long unreadCount = 0L;
 }
