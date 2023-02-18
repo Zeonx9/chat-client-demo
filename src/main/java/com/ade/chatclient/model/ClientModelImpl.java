@@ -13,7 +13,6 @@ import lombok.Setter;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,8 +30,6 @@ public class ClientModelImpl implements ClientModel{
     private List<Message> selectedChatMessages = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
-
-    private List<Message> newMessages = new ArrayList<>();
 
     @Override
     public boolean Authorize(String login, String password) {
@@ -105,13 +102,12 @@ public class ClientModelImpl implements ClientModel{
         handler.sendPOSTAsync(
                         String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
                         Message.builder().text(text).build(),
-                        true
-                );
-
-        var old = new ArrayList<>(selectedChatMessages);
-        selectedChatMessages.add(new Message(1L, text, LocalDateTime.now(), myself, selectedChat.getId()));
-        changeSupport.firePropertyChange("MessageUpdate", old, selectedChatMessages);
-
+                        true)
+                .thenApply(AsyncRequestHandler.mapperOf(Message.class))
+                .thenAccept(message -> {
+                    selectedChatMessages.add(message);
+                    changeSupport.firePropertyChange("MessageUpdate", null, selectedChatMessages);
+                });
     }
 
     @Override
@@ -144,42 +140,58 @@ public class ClientModelImpl implements ClientModel{
         }
         handler.sendGETAsync(String.format("/users/%d/undelivered_messages", myself.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
-                .thenAccept(this::setNewMessages);
-        updateUnreadMessagesInChats();
+                .thenAccept(this::updateUnreadMessagesInChats);
+
     }
 
-    void updateUnreadMessagesInChats() {
+    void updateUnreadMessagesInChats(List<Message> messages) {
         if (selectedChat != null) {
-            newMessages.forEach(message -> {
-                if (Objects.equals(message.getChatId(), selectedChat.getId())) {selectedChatMessages.add(message);}
+            messages.forEach(message -> {
+                if (Objects.equals(message.getChatId(), selectedChat.getId())) {
+                    selectedChatMessages.add(message);
+                    changeSupport.firePropertyChange("MessageUpdate", null, selectedChatMessages);
+                }
             });
         }
 
-        newMessages.forEach(message -> {
+        messages.forEach(message -> {
             myChats.forEach(chat -> {
                 if (message.getChatId().equals(chat.getId())) {
                     chat.setUnreadCount(chat.getUnreadCount() + 1);
+                    messages.remove(message);
                 }
             });
         });
+
+        messages.forEach(message -> {
+            createDialog(message.getAuthor());
+        });
+
 
     }
 
     @Override
     public Chat createDialog(User user) {
         try {
-            return handler.sendPOSTAsync(
+            Chat chat = handler.sendPOSTAsync(
                             "/chat?isPrivate=true",
                             List.of(myself.getId(), user.getId()),
                             true
                     )
                     .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
                     .get();
+            if (!myChats.contains(chat)) {
+                myChats.add(chat);
+                changeSupport.firePropertyChange("MyChatsUpdate", null, myChats);
+            }
+            return chat;
         } catch (Exception e) {
             System.out.println("Fail to Create dialog");
             throw new RuntimeException(e);
         }
     }
+
+
 
     @Override
     public void addListener(String eventName, PropertyChangeListener listener) {

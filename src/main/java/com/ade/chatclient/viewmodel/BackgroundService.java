@@ -13,14 +13,13 @@ public class BackgroundService {
             return;
         }
         System.out.println("Background service started");
-//        runAutoUpdateMessages();
-        runAutoUpdateChats();
+        model.updateMyChats();
         model.updateAllUsers();
         isActive = true;
-        runNewMessages();
+        runAutoUpdateMessages();
     }
 
-    private void runNewMessages() {
+    private void runAutoUpdateMessages() {
         Thread thread = new Thread(() -> {
             while (true) {
                 model.updateMessages();
@@ -35,35 +34,4 @@ public class BackgroundService {
         thread.setDaemon(true);
         thread.start();
     }
-
-    private void runAutoUpdateChats() {
-        Thread thread = new Thread(() -> {
-            while (true) {
-                model.updateMyChats();
-                try {
-                    Thread.sleep(10000);
-                }
-                catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        thread.setDaemon(true);
-        thread.start();
-    }
-
-//    private void runAutoUpdateMessages() {
-//        Thread thread = new Thread(() -> {
-//            while (true) {
-//                model.getMessages();
-//                try {
-//                    Thread.sleep(300);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//        thread.setDaemon(true);
-//        thread.start();
-//    }
 }
