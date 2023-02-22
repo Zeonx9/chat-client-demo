@@ -1,8 +1,8 @@
 package com.ade.chatclient.viewmodel;
 
+
 import com.ade.chatclient.model.ClientModel;
 import lombok.RequiredArgsConstructor;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -24,28 +24,12 @@ public class BackgroundService {
         model.updateMyChats();
 
         // schedule actions that need to be run in background
-//        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-//        executorService.scheduleWithFixedDelay(this::runUpdateMessages, 0, 1000, TimeUnit.MILLISECONDS);
         runAutoUpdateMessages();
     }
 
     private void runAutoUpdateMessages() {
-        Thread thread = new Thread(() -> {
-            while (true) {
-                model.updateMessages();
-                try {
-                    Thread.sleep(1000);
-                }
-                catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        thread.setDaemon(true);
-        thread.start();
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(model::updateMessages, 0, 700, TimeUnit.MILLISECONDS);
     }
 
-//    private void runUpdateMessages() {
-//        System.out.println("delayed runnable");
-//    }
 }

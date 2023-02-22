@@ -80,7 +80,7 @@ public class AllUsersViewModel {
             System.out.println("Selected User is null");
             return;
         }
-        Chat created = model.createDialog(newValue);
+        Chat created = model.createDialogFromAllUsers(newValue);
         model.setSelectedChat(created);
         showChats();
     }

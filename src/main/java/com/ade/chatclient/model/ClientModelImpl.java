@@ -13,9 +13,8 @@ import lombok.Setter;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 // realization of Client model interface manages and manipulates the data
@@ -28,6 +27,7 @@ public class ClientModelImpl implements ClientModel{
     private Chat selectedChat;
     private List<Chat> myChats = new ArrayList<>();
     private List<Message> selectedChatMessages = new ArrayList<>();
+    private List<Message> newSelectedChatMessages = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
@@ -36,6 +36,7 @@ public class ClientModelImpl implements ClientModel{
         System.out.println("Authorize request: " + login);
 
         // действительно ли здесь надо на нулл проверять?
+        // пока у нас нет кнопки для выхода не надо
         if (myself != null) {
             System.out.println("Попытка ре-авторизации");
             return true;
@@ -108,7 +109,7 @@ public class ClientModelImpl implements ClientModel{
                 .thenApply(AsyncRequestHandler.mapperOf(Message.class))
                 .thenAccept(message -> {
                     selectedChatMessages.add(message);
-                    changeSupport.firePropertyChange("MessageUpdate", null, selectedChatMessages);
+                    changeSupport.firePropertyChange("sentMessage", null, message);
                 });
     }
 
@@ -137,52 +138,50 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void updateMessages() {
-        if (selectedChat == null) {
-            return;
-        }
         handler.sendGETAsync(String.format("/users/%d/undelivered_messages", myself.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
-                .thenAccept(this::updateUnreadMessagesInChats);
+                .thenAccept(messages -> {
+                    incomingMessages(messages);
+                    updateUnreadMessagesInChats((messages));
+                });
 
     }
 
-    void updateUnreadMessagesInChats(List<Message> messages) {
+    private void incomingMessages(List<Message> messages) {
         if (selectedChat == null) {
             return;
         }
-        // Выбрать сообщения в открытый чат через stream().filter();
-        // запустить событие "incomingMessages"
-        // передать в это событие старые сообщения и список из новых.
-        // а после того, как событие было запущено - добавить все новые сообщения.
-        messages.forEach(message -> {
-            if (Objects.equals(message.getChatId(), selectedChat.getId())) {
-                selectedChatMessages.add(message);
-                changeSupport.firePropertyChange("MessageUpdate", null, selectedChatMessages);
-            }
-        });
 
-        messages.forEach(message -> {
-            myChats.forEach(chat -> {
-                if (message.getChatId().equals(chat.getId())) {
-                    chat.setUnreadCount(chat.getUnreadCount() + 1);
-                    messages.remove(message);
-                }
-            });
-        });
+        setNewSelectedChatMessages(messages.stream()
+                .filter(message -> message.getChatId().equals(selectedChat.getId()))
+                .toList()
+        );
 
-        // вот тут надо использовать не блокирующую версию функции, прочитай комменты около метода createDialog
-        messages.forEach(message -> {
-            createDialog(message.getAuthor());
-        });
+        changeSupport.firePropertyChange("incomingMessages", new ArrayList<>(), newSelectedChatMessages);
+
     }
 
-    // Сначала прочитай коммент внизу, а потом уже этот
-    // думаю, что надо разбить эту функцию на 2. получается, что вот тут поток
-    // блокируется, но для обновления чата в фоне нам блок не нужен
-    // выдели сам запрос в отдельную функцию, которая completable future возвращать
-    // внутри этого метода пусть гет вызывается, а в другом просто цепочка из completable future
+    private void updateUnreadMessagesInChats(List<Message> messages) {
+        Set<Long> idsOfChats= myChats.stream().map(Chat::getId).collect(Collectors.toSet());
+        Map <Boolean, List<Message>> split = messages.stream()
+                .collect(Collectors.partitioningBy(mes -> idsOfChats.contains(mes.getChatId())));
+
+        split.get(true).forEach(message -> {
+            for (Chat chat : myChats) {
+                if (message.getChatId().equals(chat.getId())) {
+                    chat.inc();
+                }
+            }
+        });
+//        todo событие для новых уведомлений
+//        changeSupport.firePropertyChange("MyChatsUpdate", null, myChats);
+
+        split.get(false).forEach(message -> createDialogFromNewMessage(message.getAuthor()));
+
+    }
+
     @Override
-    public Chat createDialog(User user) {
+    public Chat createDialogFromAllUsers(User user) {
         try {
             Chat chat = handler.sendPOSTAsync(
                             "/chat?isPrivate=true",
@@ -192,10 +191,7 @@ public class ClientModelImpl implements ClientModel{
                     .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
                     .get();
             if (!myChats.contains(chat)) {
-                // вот тут тоже должно быть другое событие,
-                // что-то типа newChatCreated, должно быть вызвано до добавки в список, а в качестве newValue передавай это самый чат
-                myChats.add(chat);
-                changeSupport.firePropertyChange("MyChatsUpdate", null, myChats);
+                changeSupport.firePropertyChange("NewChatCreated", null, chat);
             }
             return chat;
         } catch (Exception e) {
@@ -204,7 +200,19 @@ public class ClientModelImpl implements ClientModel{
         }
     }
 
-
+    @Override
+    public void createDialogFromNewMessage(User user) {
+            handler.sendPOSTAsync(
+                            "/chat?isPrivate=true",
+                            List.of(myself.getId(), user.getId()),
+                            true
+                    )
+                    .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
+                    .thenAccept(chat -> {
+                        changeSupport.firePropertyChange("NewChatCreated", null, chat);
+                        myChats.add(chat);
+                    });
+    }
 
     @Override
     public void addListener(String eventName, PropertyChangeListener listener) {

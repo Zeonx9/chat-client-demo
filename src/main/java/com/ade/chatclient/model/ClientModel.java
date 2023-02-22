@@ -58,7 +58,7 @@ public interface ClientModel {
      * отправляет POST запрос на создание личного чата между авторизованными пользователем и выбранным
      * @param user выбранный пользователь
      */
-    Chat createDialog(User user);
+    Chat createDialogFromAllUsers(User user);
 
     /**
      * отправляет GET запрос на получение списка всех чатов авторизованного пользователя
@@ -71,4 +71,6 @@ public interface ClientModel {
     void updateAllUsers();
 
     void updateMessages();
+
+    void createDialogFromNewMessage(User user);
 }

@@ -15,5 +15,9 @@ public class Chat {
     private Long id;
     private Boolean isPrivate;
     private List<User> members;
-    private Long unreadCount = 0L;
+    private Long unreadCount;
+
+    public void inc() {
+        setUnreadCount(unreadCount == null ? 1 :unreadCount + 1);
+    }
 }

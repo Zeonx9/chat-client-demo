@@ -40,8 +40,32 @@ public class ChatPageViewModel {
         model.addListener("MyChatsUpdate", this::updateMyChats);
         // вот этот слушатель для обновления при смене выбранного чата
         model.addListener("MessageUpdate", this::updateMessage);
+        model.addListener("NewChatCreated", this::newChatCreated);
+        model.addListener("incomingMessages", this::incomingMessages);
+        model.addListener("sentMessage", this::sentMessage);
 
         // надо новый слушатель для incoming messages, который просто добавляет их в конец
+    }
+
+    private void sentMessage(PropertyChangeEvent propertyChangeEvent) {
+        Platform.runLater(() -> {
+            Message message = (Message) propertyChangeEvent.getNewValue();
+            messageListProperty.add(message);
+        });
+    }
+
+    private void incomingMessages(PropertyChangeEvent propertyChangeEvent) {
+        Platform.runLater(() -> {
+            List<Message> selectedChatMessages = (List<Message>) propertyChangeEvent.getNewValue();
+            messageListProperty.addAll(selectedChatMessages);
+        });
+    }
+
+    private void newChatCreated(PropertyChangeEvent propertyChangeEvent) {
+        Platform.runLater(() -> {
+            Chat chat = (Chat) propertyChangeEvent.getNewValue();
+            chatListProperty.addAll(chat);
+        });
     }
 
     private void updateMyChats(PropertyChangeEvent propertyChangeEvent) {
