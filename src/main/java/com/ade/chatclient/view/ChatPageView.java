@@ -35,7 +35,6 @@ public class ChatPageView {
         chatListView.itemsProperty().bind(viewModel.getChatListProperty());
         chatListView.setCellFactory(chatListView -> viewModel.getChatListCellFactory());
         chatListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
-        // удаление первого выделения не работает туи, думаю из-за потоков, так как на AllUsers она работает корректно
         chatListView.getSelectionModel().clearSelection();
 
         messageListView.itemsProperty().bind(viewModel.getMessageListProperty());

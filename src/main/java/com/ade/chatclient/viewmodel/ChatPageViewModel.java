@@ -38,7 +38,10 @@ public class ChatPageViewModel {
 
         // методы, которые запустит модель во время изменений
         model.addListener("MyChatsUpdate", this::updateMyChats);
+        // вот этот слушатель для обновления при смене выбранного чата
         model.addListener("MessageUpdate", this::updateMessage);
+
+        // надо новый слушатель для incoming messages, который просто добавляет их в конец
     }
 
     private void updateMyChats(PropertyChangeEvent propertyChangeEvent) {

@@ -9,15 +9,24 @@ import java.beans.PropertyChangeListener;
 public interface ClientModel {
 
     /**
+     * добавляет слушателя за изменениями модели
+     * @param eventName - названия события изменения
+     * @param listener - методе-обработчик данного события
+     */
+    void addListener(String eventName, PropertyChangeListener listener);
+
+    /**
+     * отправляет POST запрос для регистрации/входа
+     * @param login логин пользователя, который хочет авторизоваться
+     * @return true - если авторизацция прошла успешно, иначе false
+     */
+    // method that authorize the user with given login(name)
+    boolean Authorize(String login, String password);
+
+    /**
      * @return Авторизованного пользователя
      */
     User getMyself();
-
-    /**
-     * отправляет GET запрос на получение списка всех чатов авторизованного пользователя
-     * присваивает полученные чаты в myChats
-     */
-    void updateMyChats();
 
     /**
      * присваивает selectedChat значение параметра
@@ -31,14 +40,6 @@ public interface ClientModel {
      *  присваивает полученные сообщения в selectedChatMessages
      */
     void getMessages();
-
-    /**
-     * отправляет POST запрос для регистрации/входа
-     * @param login логин пользователя, который хочет авторизоваться
-     * @return true - если авторизацция прошла успешно, иначе false
-     */
-    // method that authorize the user with given login(name)
-    boolean Authorize(String login, String password);
 
     /**
      * отправляет POST запрос с сообщением в selectedChat
@@ -59,7 +60,13 @@ public interface ClientModel {
      */
     Chat createDialog(User user);
 
-    void addListener(String eventName, PropertyChangeListener listener);
+    /**
+     * отправляет GET запрос на получение списка всех чатов авторизованного пользователя
+     * присваивает полученные чаты в myChats
+     */
+    void updateMyChats();
+
+    //TODO доделать документацию
 
     void updateAllUsers();
 

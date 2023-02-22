@@ -76,6 +76,7 @@ public class ClientModelImpl implements ClientModel{
         handler.sendGETAsync(String.format("/users/%d/chats", myself.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfChat))
                 .thenAccept(chats -> {
+                    // этот метод запускается только один раз сразу после входа
                     changeSupport.firePropertyChange("MyChatsUpdate", myChats, chats);
                     setMyChats(chats);
                 });
@@ -89,6 +90,7 @@ public class ClientModelImpl implements ClientModel{
         handler.sendGETAsync(String.format("/chats/%d/messages?userId=%d", selectedChat.getId(), myself.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
                 .thenAccept(messages -> {
+                    // только для обновления сообщений при выборе нового чата
                     changeSupport.firePropertyChange("MessageUpdate", selectedChatMessages, messages);
                     setSelectedChatMessages(messages);
                 });
@@ -135,7 +137,7 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void updateMessages() {
-        if (myself == null && selectedChat == null) {
+        if (selectedChat == null) {
             return;
         }
         handler.sendGETAsync(String.format("/users/%d/undelivered_messages", myself.getId()))
@@ -145,14 +147,19 @@ public class ClientModelImpl implements ClientModel{
     }
 
     void updateUnreadMessagesInChats(List<Message> messages) {
-        if (selectedChat != null) {
-            messages.forEach(message -> {
-                if (Objects.equals(message.getChatId(), selectedChat.getId())) {
-                    selectedChatMessages.add(message);
-                    changeSupport.firePropertyChange("MessageUpdate", null, selectedChatMessages);
-                }
-            });
+        if (selectedChat == null) {
+            return;
         }
+        // Выбрать сообщения в открытый чат через stream().filter();
+        // запустить событие "incomingMessages"
+        // передать в это событие старые сообщения и список из новых.
+        // а после того, как событие было запущено - добавить все новые сообщения.
+        messages.forEach(message -> {
+            if (Objects.equals(message.getChatId(), selectedChat.getId())) {
+                selectedChatMessages.add(message);
+                changeSupport.firePropertyChange("MessageUpdate", null, selectedChatMessages);
+            }
+        });
 
         messages.forEach(message -> {
             myChats.forEach(chat -> {
@@ -163,13 +170,17 @@ public class ClientModelImpl implements ClientModel{
             });
         });
 
+        // вот тут надо использовать не блокирующую версию функции, прочитай комменты около метода createDialog
         messages.forEach(message -> {
             createDialog(message.getAuthor());
         });
-
-
     }
 
+    // Сначала прочитай коммент внизу, а потом уже этот
+    // думаю, что надо разбить эту функцию на 2. получается, что вот тут поток
+    // блокируется, но для обновления чата в фоне нам блок не нужен
+    // выдели сам запрос в отдельную функцию, которая completable future возвращать
+    // внутри этого метода пусть гет вызывается, а в другом просто цепочка из completable future
     @Override
     public Chat createDialog(User user) {
         try {
@@ -181,6 +192,8 @@ public class ClientModelImpl implements ClientModel{
                     .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
                     .get();
             if (!myChats.contains(chat)) {
+                // вот тут тоже должно быть другое событие,
+                // что-то типа newChatCreated, должно быть вызвано до добавки в список, а в качестве newValue передавай это самый чат
                 myChats.add(chat);
                 changeSupport.firePropertyChange("MyChatsUpdate", null, myChats);
             }

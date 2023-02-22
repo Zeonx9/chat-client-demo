@@ -39,12 +39,6 @@ public class LogInView {
         passwordField.setFocusTraversable(false);
 
         errorMessageLabel.textProperty().bind(viewModel.getErrorMessageProperty());
-        if (Objects.equals(viewModel.getErrorMessageProperty().toString(), "Success!")) {
-            errorMessageLabel.setTextFill(Color.color(0, 1, 0));
-        }
-        else {
-            errorMessageLabel.setTextFill(Color.color(1, 0, 0));
-        }
 
         loginButton.disableProperty().bind(viewModel.getDisableButtonProperty());
     }
