@@ -26,7 +26,6 @@ public class ClientModelImpl implements ClientModel{
     private User myself;
     private Chat selectedChat;
     private List<Chat> myChats = new ArrayList<>();
-    private List<Message> selectedChatMessages = new ArrayList<>();
     private List<Message> newSelectedChatMessages = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
@@ -92,8 +91,8 @@ public class ClientModelImpl implements ClientModel{
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
                 .thenAccept(messages -> {
                     // только для обновления сообщений при выборе нового чата
-                    changeSupport.firePropertyChange("MessageUpdate", selectedChatMessages, messages);
-                    setSelectedChatMessages(messages);
+                    changeSupport.firePropertyChange("MessageUpdate", null, messages);
+                    setNewSelectedChatMessages(messages);
                 });
     }
 
@@ -108,8 +107,8 @@ public class ClientModelImpl implements ClientModel{
                         true)
                 .thenApply(AsyncRequestHandler.mapperOf(Message.class))
                 .thenAccept(message -> {
-                    selectedChatMessages.add(message);
-                    changeSupport.firePropertyChange("sentMessage", null, message);
+                    setNewSelectedChatMessages(new ArrayList<>(Collections.singletonList(message)));
+                    changeSupport.firePropertyChange("newSelectedMessages", null, newSelectedChatMessages);
                 });
     }
 
@@ -157,7 +156,7 @@ public class ClientModelImpl implements ClientModel{
                 .toList()
         );
 
-        changeSupport.firePropertyChange("incomingMessages", new ArrayList<>(), newSelectedChatMessages);
+        changeSupport.firePropertyChange("newSelectedMessages", new ArrayList<>(), newSelectedChatMessages);
 
     }
 
