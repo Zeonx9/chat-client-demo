@@ -14,19 +14,19 @@ import lombok.Setter;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
-// realization of Client model interface manages and manipulates the data
 @RequiredArgsConstructor
 @Getter
 @Setter
 public class ClientModelImpl implements ClientModel{
-    private final AsyncRequestHandler handler ;
+    private final AsyncRequestHandler handler;
     private User myself;
     private Chat selectedChat;
     private List<Chat> myChats = new ArrayList<>();
-    private List<Message> newSelectedChatMessages = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
@@ -92,7 +92,6 @@ public class ClientModelImpl implements ClientModel{
                 .thenAccept(messages -> {
                     // только для обновления сообщений при выборе нового чата
                     changeSupport.firePropertyChange("MessageUpdate", null, messages);
-                    setNewSelectedChatMessages(messages);
                 });
     }
 
@@ -106,19 +105,7 @@ public class ClientModelImpl implements ClientModel{
                         Message.builder().text(text).build(),
                         true)
                 .thenApply(AsyncRequestHandler.mapperOf(Message.class))
-                .thenAccept(message -> {
-                    setNewSelectedChatMessages(new ArrayList<>(Collections.singletonList(message)));
-                    changeSupport.firePropertyChange("newSelectedMessages", null, newSelectedChatMessages);
-                });
-    }
-
-    @Override
-    public void sendMessageToUser(String text, User user) {
-        handler.sendPOSTAsync(
-                        String.format("/users/%d/message/users/%d", myself.getId(), user.getId()),
-                        Message.builder().text(text).build(),
-                        true
-                );
+                .thenAccept(message -> changeSupport.firePropertyChange("newSelectedMessages", null, List.of(message)));
     }
 
     @Override
@@ -139,56 +126,51 @@ public class ClientModelImpl implements ClientModel{
     public void updateMessages() {
         handler.sendGETAsync(String.format("/users/%d/undelivered_messages", myself.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
-                .thenAccept(messages -> {
-                    incomingMessages(messages);
-                    updateUnreadMessagesInChats((messages));
-                });
-
+                .thenAccept(this::acceptNewMessages);
     }
 
-    private void incomingMessages(List<Message> messages) {
-        if (selectedChat == null) {
-            return;
-        }
-
-        setNewSelectedChatMessages(messages.stream()
-                .filter(message -> message.getChatId().equals(selectedChat.getId()))
-                .toList()
+    private void acceptNewMessages(List<Message> newMessages) {
+        Map<Boolean, List<Message>> splitBySelectedChat = newMessages.stream().collect(
+                Collectors.partitioningBy(
+                        message -> selectedChat != null && message.getChatId().equals(selectedChat.getId())
+                )
         );
-
-        changeSupport.firePropertyChange("newSelectedMessages", new ArrayList<>(), newSelectedChatMessages);
-
+        if (!splitBySelectedChat.get(true).isEmpty()){
+            changeSupport.firePropertyChange("newSelectedMessages", null, splitBySelectedChat.get(true));
+        }
+        if (!splitBySelectedChat.get(false).isEmpty()) {
+            updateUnreadMessagesInChats(splitBySelectedChat.get(false));
+        }
     }
 
     private void updateUnreadMessagesInChats(List<Message> messages) {
-        Set<Long> idsOfChats= myChats.stream().map(Chat::getId).collect(Collectors.toSet());
+        Map<Long, Chat> chatById = myChats.stream()
+                .collect(Collectors.toMap(Chat::getId, Function.identity()));
         Map <Boolean, List<Message>> split = messages.stream()
-                .collect(Collectors.partitioningBy(mes -> idsOfChats.contains(mes.getChatId())));
+                .collect(Collectors.partitioningBy(mes -> chatById.containsKey(mes.getChatId())));
 
-        split.get(true).forEach(message -> {
-            for (Chat chat : myChats) {
-                if (message.getChatId().equals(chat.getId())) {
-                    chat.inc();
-                }
-            }
-        });
-//        todo событие для новых уведомлений
-//        changeSupport.firePropertyChange("MyChatsUpdate", null, myChats);
+        split.get(true).forEach(message -> chatById.get(message.getChatId()).incrementUnreadCount());
+
+        // todo событие для новых уведомлений
+        //changeSupport.firePropertyChange("MyChatsUpdate", null, myChats);
 
         split.get(false).forEach(message -> createDialogFromNewMessage(message.getAuthor()));
+    }
 
+
+    private CompletableFuture<Chat> futureChatWith(User user) {
+        return handler.sendPOSTAsync(
+                        "/chat?isPrivate=true",
+                        List.of(myself.getId(), user.getId()),
+                        true
+                )
+                .thenApply(AsyncRequestHandler.mapperOf(Chat.class));
     }
 
     @Override
     public Chat createDialogFromAllUsers(User user) {
         try {
-            Chat chat = handler.sendPOSTAsync(
-                            "/chat?isPrivate=true",
-                            List.of(myself.getId(), user.getId()),
-                            true
-                    )
-                    .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
-                    .get();
+            Chat chat = futureChatWith(user).get();
             if (!myChats.contains(chat)) {
                 changeSupport.firePropertyChange("NewChatCreated", null, chat);
             }
@@ -201,16 +183,10 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void createDialogFromNewMessage(User user) {
-            handler.sendPOSTAsync(
-                            "/chat?isPrivate=true",
-                            List.of(myself.getId(), user.getId()),
-                            true
-                    )
-                    .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
-                    .thenAccept(chat -> {
-                        changeSupport.firePropertyChange("NewChatCreated", null, chat);
-                        myChats.add(chat);
-                    });
+        futureChatWith(user).thenAccept(chat -> {
+            changeSupport.firePropertyChange("NewChatCreated", null, chat);
+            myChats.add(chat);
+        });
     }
 
     @Override

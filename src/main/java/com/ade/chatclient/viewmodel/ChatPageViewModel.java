@@ -57,9 +57,6 @@ public class ChatPageViewModel {
 
     private void newSelectedMessages(PropertyChangeEvent event) {
         List<Message> selectedChatMessages = (List<Message>) event.getNewValue();
-        if (selectedChatMessages.isEmpty()) {
-            return;
-        }
         messageListProperty.addAll(selectedChatMessages);
         bottomScroller.run();
     }
@@ -70,7 +67,11 @@ public class ChatPageViewModel {
     }
 
     public <T> void AddBottomScroller(ListView<T> listView) {
-        bottomScroller = () -> listView.scrollTo(messageListProperty.size() - 1);
+        bottomScroller = () -> {
+            if (!messageListProperty.isEmpty()) {
+                listView.scrollTo(messageListProperty.size() - 1);
+            }
+        };
     }
 
     public void onSelectedItemChange(Observable observable, Chat oldValue, Chat newValue) {

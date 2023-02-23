@@ -48,13 +48,6 @@ public interface ClientModel {
     void sendMessageToChat(String text);
 
     /**
-     * отправляет POST запрос с сообщением в чат с выбранным пользователем
-     * @param text сообщение
-     * @param user пользователь, в чат которому надо отправить сообщение
-     */
-    void sendMessageToUser(String text, User user);
-
-    /**
      * отправляет POST запрос на создание личного чата между авторизованными пользователем и выбранным
      * @param user выбранный пользователь
      */

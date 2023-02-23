@@ -16,8 +16,11 @@ public class Chat {
     private Boolean isPrivate;
     private List<User> members;
     private Long unreadCount;
-
-    public void inc() {
-        setUnreadCount(unreadCount == null ? 1 :unreadCount + 1);
+    public void incrementUnreadCount() {
+        if (unreadCount == null) {
+            unreadCount = 1L;
+        } else {
+            unreadCount += 1L;
+        }
     }
 }
