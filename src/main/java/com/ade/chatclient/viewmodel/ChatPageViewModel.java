@@ -5,7 +5,6 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.view.ViewHandler;
-import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -13,6 +12,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import lombok.Getter;
@@ -24,11 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.ade.chatclient.viewmodel.ViewModelUtils.listReplacer;
+import static com.ade.chatclient.viewmodel.ViewModelUtils.runLaterListener;
+
 @Getter
 public class ChatPageViewModel {
     private final ListProperty<Chat> chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final ListProperty<Message> messageListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final StringProperty messageTextProperty = new SimpleStringProperty();
+    private Runnable bottomScroller = () -> {};
     private final ViewHandler viewHandler;
     private final ClientModel model;
 
@@ -37,43 +41,36 @@ public class ChatPageViewModel {
         this.model = model;
 
         // методы, которые запустит модель во время изменений
-        model.addListener("MyChatsUpdate", this::updateMyChats);
-        // вот этот слушатель для обновления при смене выбранного чата
-        model.addListener("MessageUpdate", this::updateMessage);
-        model.addListener("NewChatCreated", this::newChatCreated);
-        model.addListener("newSelectedMessages", this::newSelectedMessages);
+        model.addListener("MyChatsUpdate", runLaterListener(listReplacer(chatListProperty)));
+        model.addListener("MessageUpdate", runLaterListener(this::updateMessages));
+        model.addListener("NewChatCreated", runLaterListener(this::newChatCreated));
+        model.addListener("newSelectedMessages", runLaterListener(this::newSelectedMessages));
 
         // надо новый слушатель для incoming messages, который просто добавляет их в конец
     }
-
-    private void newSelectedMessages(PropertyChangeEvent propertyChangeEvent) {
-        Platform.runLater(() -> {
-            List<Message> selectedChatMessages = (List<Message>) propertyChangeEvent.getNewValue();
-            messageListProperty.addAll(selectedChatMessages);
-        });
+    private void updateMessages(PropertyChangeEvent event) {
+        List<Message> messages = (List<Message>) event.getNewValue();
+        messageListProperty.clear();
+        messageListProperty.addAll(messages);
+        bottomScroller.run();
     }
 
-    private void newChatCreated(PropertyChangeEvent propertyChangeEvent) {
-        Platform.runLater(() -> {
-            Chat chat = (Chat) propertyChangeEvent.getNewValue();
-            chatListProperty.addAll(chat);
-        });
+    private void newSelectedMessages(PropertyChangeEvent event) {
+        List<Message> selectedChatMessages = (List<Message>) event.getNewValue();
+        if (selectedChatMessages.isEmpty()) {
+            return;
+        }
+        messageListProperty.addAll(selectedChatMessages);
+        bottomScroller.run();
     }
 
-    private void updateMyChats(PropertyChangeEvent propertyChangeEvent) {
-        Platform.runLater(() -> {
-            List<Chat> myChats = (List<Chat>) propertyChangeEvent.getNewValue();
-            chatListProperty.clear();
-            chatListProperty.addAll(myChats);
-        });
+    private void newChatCreated(PropertyChangeEvent event) {
+        Chat chat = (Chat) event.getNewValue();
+        chatListProperty.add(chat);
     }
 
-    private void updateMessage(PropertyChangeEvent propertyChangeEvent) {
-        Platform.runLater(() -> {
-            List<Message> selectedChatMessages = (List<Message>) propertyChangeEvent.getNewValue();
-            messageListProperty.clear();
-            messageListProperty.addAll(selectedChatMessages);
-        });
+    public <T> void AddBottomScroller(ListView<T> listView) {
+        bottomScroller = () -> listView.scrollTo(messageListProperty.size() - 1);
     }
 
     public void onSelectedItemChange(Observable observable, Chat oldValue, Chat newValue) {
@@ -92,8 +89,7 @@ public class ChatPageViewModel {
         messageTextProperty.set("");
     }
 
-    public void showUsers() {
-        // TODO Егор назови метод нормально, и разберись с полями
+    public void switchToAllUsers() {
         try {
             viewHandler.openView(ViewHandler.Views.ALL_USERS_VIEW);
         }

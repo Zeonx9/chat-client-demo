@@ -40,6 +40,7 @@ public class ChatPageView {
         messageListView.itemsProperty().bind(viewModel.getMessageListProperty());
         messageListView.setCellFactory(messageListView -> viewModel.getMessageCellFactory());
         messageListView.setFocusTraversable(false);
+        viewModel.AddBottomScroller(messageListView);
 
         messageTextField.textProperty().bindBidirectional(viewModel.getMessageTextProperty());
     }
@@ -59,6 +60,6 @@ public class ChatPageView {
 
     @FXML
     protected void onShowUsersClicked(ActionEvent actionEvent) {
-        viewModel.showUsers();
+        viewModel.switchToAllUsers();
     }
 }

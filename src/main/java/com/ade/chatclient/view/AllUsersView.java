@@ -22,7 +22,7 @@ public class AllUsersView {
     }
 
     public void onShowChatsClicked(ActionEvent actionEvent) {
-        viewModel.showChats();
+        viewModel.switchToChatPage();
     }
 
 }

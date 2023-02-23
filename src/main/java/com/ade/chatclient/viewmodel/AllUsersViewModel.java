@@ -5,7 +5,6 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.view.ViewHandler;
-import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -15,9 +14,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import lombok.Getter;
 
-import java.beans.PropertyChangeEvent;
 import java.io.IOException;
-import java.util.List;
+
+import static com.ade.chatclient.viewmodel.ViewModelUtils.listReplacer;
+import static com.ade.chatclient.viewmodel.ViewModelUtils.runLaterListener;
 
 @Getter
 public class AllUsersViewModel {
@@ -29,18 +29,10 @@ public class AllUsersViewModel {
         this.model = model;
         this.viewHandler = viewHandler;
 
-        model.addListener("AllUsers", this::fillListOfUsers);
+        model.addListener("AllUsers", runLaterListener(listReplacer(usersListProperty)));
     }
 
-    public void fillListOfUsers(PropertyChangeEvent event) {
-        Platform.runLater(() -> {
-            List<User> userList = (List<User>) event.getNewValue();
-            usersListProperty.clear();
-            usersListProperty.addAll(userList);
-        });
-    }
-
-    public void showChats() {
+    public void switchToChatPage() {
         try {
             viewHandler.openView(ViewHandler.Views.CHAT_PAGE_VIEW);
         }
@@ -82,6 +74,7 @@ public class AllUsersViewModel {
         }
         Chat created = model.createDialogFromAllUsers(newValue);
         model.setSelectedChat(created);
-        showChats();
+        model.getMessages();
+        switchToChatPage();
     }
 }
