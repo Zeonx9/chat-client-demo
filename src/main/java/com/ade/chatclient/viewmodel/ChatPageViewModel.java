@@ -105,7 +105,11 @@ public class ChatPageViewModel {
             if (!Objects.equals(member.getId(), model.getMyself().getId()))
                 memberNames.add(member.getUsername());
         });
-        return String.join(", ", memberNames);
+        var res = String.join(", ", memberNames);
+        if (chat.getUnreadCount() != null && chat.getUnreadCount() > 0) {
+            res += " (" + chat.getUnreadCount() + ")";
+        }
+        return res;
     }
 
     private String prepareMessageToBeShown(Message msg) {

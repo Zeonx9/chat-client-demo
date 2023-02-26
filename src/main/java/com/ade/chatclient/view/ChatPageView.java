@@ -3,6 +3,7 @@ package com.ade.chatclient.view;
 
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
+import com.ade.chatclient.domain.User;
 import com.ade.chatclient.viewmodel.ChatPageViewModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,7 +13,7 @@ import javafx.scene.layout.BorderPane;
 public class ChatPageView {
     @FXML private TextField searchChatsTextField;
     @FXML private TextField searchUsersTextField;
-    @FXML private ListView userListView;
+    @FXML private ListView<User> userListView;
     @FXML private BorderPane usersPane;
     @FXML private BorderPane chatsPane;
     @FXML private Button showChatsButton;
