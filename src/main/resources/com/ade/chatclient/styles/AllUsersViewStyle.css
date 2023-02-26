@@ -1,3 +1,22 @@
+@font-face {
+    font-family: 'Poppins Regular';
+    src: url('../fonts/Poppins-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Poppins SemiBold';
+    src: url('../fonts/Poppins-SemiBold.ttf');
+}
+
+@font-face {
+    font-family: 'Poppins Medium';
+    src: url('../fonts/Poppins-Medium.ttf');
+}
+.header {
+    -fx-font-family: "Poppins SemiBold";
+    -fx-font-size: 30;
+}
+
 .leftPane {
     -fx-background-color: #1D1E20;
 }
@@ -22,16 +41,15 @@
     -fx-opacity: 30%;
 }
 
-/*.ShowUsersBtn:hover {*/
-/*    -fx-opacity: 50%;*/
-/*}*/
-
-/*.ShowUsersBtn:focused {*/
-/*    -fx-opacity: 30%;*/
-/*}*/
-
 .listChats {
     -fx-background-color: transparent;
+}
+.text-input {
+    -fx-font-family: "Poppins Regular";
+    -fx-font-size: 17;
+    -fx-text-fill: #1D1E20;
+    -fx-background-radius: 15px;
+    -fx-background-color: #F2F2F2;
 }
 
 .list-cell {
