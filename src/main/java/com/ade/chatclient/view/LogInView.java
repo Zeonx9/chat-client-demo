@@ -1,14 +1,20 @@
 package com.ade.chatclient.view;
 
 import com.ade.chatclient.viewmodel.LogInViewModel;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import lombok.Getter;
+
+import java.util.Objects;
 
 @Getter
 public class LogInView {
+    @FXML private PasswordField passwordField;
     @FXML private TextField loginTextField;
     @FXML private Label errorMessageLabel;
     @FXML private Button loginButton;
@@ -26,8 +32,14 @@ public class LogInView {
 
         loginTextField.textProperty().bindBidirectional(viewModel.getLoginTextProperty());
         loginTextField.textProperty().addListener(viewModel::onTextChanged);
+        loginTextField.setFocusTraversable(false);
+
+        passwordField.textProperty().bindBidirectional(viewModel.getPasswordProperty());
+        passwordField.textProperty().addListener(viewModel::onTextChanged);
+        passwordField.setFocusTraversable(false);
 
         errorMessageLabel.textProperty().bind(viewModel.getErrorMessageProperty());
+
         loginButton.disableProperty().bind(viewModel.getDisableButtonProperty());
     }
 

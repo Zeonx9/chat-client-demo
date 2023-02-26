@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
  * Класс, который представляет сообщение
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Message {
@@ -15,5 +16,6 @@ public class Message {
     private String text;
     private LocalDateTime dateTime;
     private User author;
+    private Long chatId;
 }
 

@@ -9,6 +9,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 public class ChatPageView {
+    @FXML private Button createChatButton;
+    @FXML private Button showChatsButton;
+    @FXML private Button showUsersButton;
     @FXML private TextField searchTextField;
 
     @FXML private ListView<Chat> chatListView;
@@ -27,16 +30,17 @@ public class ChatPageView {
      * @param viewModel ссылка на вью-модель, которая управляет этим вью
      */
     public void init(ChatPageViewModel viewModel) {
-        // егор, разберись здесь прям построчно, что происходит
         this.viewModel = viewModel;
 
         chatListView.itemsProperty().bind(viewModel.getChatListProperty());
-        chatListView.setCellFactory(param -> viewModel.getChatListCellFactory());
+        chatListView.setCellFactory(chatListView -> viewModel.getChatListCellFactory());
         chatListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
-        viewModel.updateChatList();
+        chatListView.getSelectionModel().clearSelection();
 
         messageListView.itemsProperty().bind(viewModel.getMessageListProperty());
-        messageListView.setCellFactory(param -> viewModel.getMessageCellFactory());
+        messageListView.setCellFactory(messageListView -> viewModel.getMessageCellFactory());
+        messageListView.setFocusTraversable(false);
+        viewModel.AddBottomScroller(messageListView);
 
         messageTextField.textProperty().bindBidirectional(viewModel.getMessageTextProperty());
     }
@@ -44,5 +48,18 @@ public class ChatPageView {
     @FXML
     protected void onSendButtonClicked(ActionEvent actionEvent) {
         viewModel.sendMessage();
+    }
+
+    @FXML
+    protected void onCreateChatClicked(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    protected void onShowChatsClicked(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    protected void onShowUsersClicked(ActionEvent actionEvent) {
+        viewModel.switchToAllUsers();
     }
 }

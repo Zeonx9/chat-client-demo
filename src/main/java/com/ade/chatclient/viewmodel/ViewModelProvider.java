@@ -15,7 +15,8 @@ public class ViewModelProvider {
     private LogInViewModel logInViewModel;
     private ChatPageViewModel chatPageViewModel;
     private final ModelFactory modelFactory;
-
+    private AllUsersViewModel allUsersViewModel;
+    private BackgroundService backgroundService;
 
     /**
      * метод передающий ссылку на ViewHandler в объекты вью-моделей
@@ -25,5 +26,17 @@ public class ViewModelProvider {
     public void instantiateViewModels(ViewHandler viewHandler) {
         logInViewModel = new LogInViewModel(viewHandler, modelFactory.getModel());
         chatPageViewModel = new ChatPageViewModel(viewHandler, modelFactory.getModel());
+        allUsersViewModel = new AllUsersViewModel(viewHandler, modelFactory.getModel());
+    }
+
+    /**
+     * Ленивая инициализация Фоновой службы
+     * @return фоновую службу
+     */
+    public BackgroundService getBackgroundService() {
+        if (backgroundService == null) {
+            backgroundService = new BackgroundService(modelFactory.getModel());
+        }
+        return backgroundService;
     }
 }

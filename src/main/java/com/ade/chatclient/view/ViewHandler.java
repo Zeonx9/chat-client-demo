@@ -1,5 +1,6 @@
 package com.ade.chatclient.view;
 
+import com.ade.chatclient.viewmodel.BackgroundService;
 import com.ade.chatclient.viewmodel.ViewModelProvider;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,7 +20,6 @@ import java.io.IOException;
  *
  */
 public class ViewHandler {
-
     /**
      * это перечисление определяет все возможные вью в нашем приложении
      * когда создается новое вью, информацию о нем нужно занести в это перечисление
@@ -27,8 +27,8 @@ public class ViewHandler {
     @AllArgsConstructor
     public enum Views {
         LOG_IN_VIEW("log-in-view"),
-        CHAT_PAGE_VIEW("chat-page-view");
-
+        CHAT_PAGE_VIEW("chat-page-view"),
+        ALL_USERS_VIEW("all-users-view");
         final String fxmlFileName;
     }
 
@@ -59,6 +59,15 @@ public class ViewHandler {
     }
 
     /**
+     * запускает потоки, которые будут работать в фоне и проверять
+     * наличие новых сообщений или чатов
+     */
+    public void startBackGroundServices() {
+        BackgroundService backgroundService = viewModelProvider.getBackgroundService();
+        backgroundService.run();
+    }
+
+    /**
      * метод, который открывает указанное с помощью константы вью
      * @param viewType константа указывающая на нужное вью
      */
@@ -75,9 +84,16 @@ public class ViewHandler {
             ChatPageView view = fxmlLoader.getController();
             view.init(viewModelProvider.getChatPageViewModel());
         }
+        else if (viewType == Views.ALL_USERS_VIEW) {
+            AllUsersView view = fxmlLoader.getController();
+            view.init(viewModelProvider.getAllUsersViewModel());
+        }
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        if (viewType == Views.CHAT_PAGE_VIEW || viewType == Views.ALL_USERS_VIEW) {
+            stage.setFullScreen(true);
+        }
         stage.show();
     }
 }

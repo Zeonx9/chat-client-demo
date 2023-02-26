@@ -1,0 +1,28 @@
+package com.ade.chatclient.view;
+
+import com.ade.chatclient.domain.User;
+import com.ade.chatclient.viewmodel.AllUsersViewModel;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+
+public class AllUsersView {
+    @FXML private Button showChatsButton;
+    @FXML private Button showUsersButton;
+    @FXML private ListView<User> userListView;
+    private AllUsersViewModel viewModel;
+
+    public void init(AllUsersViewModel allUsersViewModel) {
+        this.viewModel = allUsersViewModel;
+        userListView.itemsProperty().bind(viewModel.getUsersListProperty());
+        userListView.setCellFactory(param -> viewModel.getUserListCellFactory());
+        userListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
+        userListView.getSelectionModel().clearSelection();
+    }
+
+    public void onShowChatsClicked(ActionEvent actionEvent) {
+        viewModel.switchToChatPage();
+    }
+
+}
