@@ -91,9 +91,9 @@ public class ViewHandler {
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        if (viewType == Views.CHAT_PAGE_VIEW || viewType == Views.ALL_USERS_VIEW) {
-            stage.setFullScreen(true);
-        }
+//        if (viewType == Views.CHAT_PAGE_VIEW || viewType == Views.ALL_USERS_VIEW) {
+//            stage.setFullScreen(true);
+//        }
         stage.show();
     }
 }

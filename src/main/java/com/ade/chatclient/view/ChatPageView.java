@@ -7,12 +7,16 @@ import com.ade.chatclient.viewmodel.ChatPageViewModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 
 public class ChatPageView {
-    @FXML private Button createChatButton;
+    @FXML private TextField searchChatsTextField;
+    @FXML private TextField searchUsersTextField;
+    @FXML private ListView userListView;
+    @FXML private BorderPane usersPane;
+    @FXML private BorderPane chatsPane;
     @FXML private Button showChatsButton;
     @FXML private Button showUsersButton;
-    @FXML private TextField searchTextField;
 
     @FXML private ListView<Chat> chatListView;
     @FXML private ListView<Message> messageListView;
@@ -43,6 +47,9 @@ public class ChatPageView {
         messageListView.setFocusTraversable(false);
 
         messageTextField.textProperty().bindBidirectional(viewModel.getMessageTextProperty());
+
+        usersPane.setVisible(false);
+        showChatsButton.setDisable(true);
     }
 
     @FXML
@@ -56,10 +63,21 @@ public class ChatPageView {
 
     @FXML
     protected void onShowChatsClicked(ActionEvent actionEvent) {
+        usersPane.setVisible(false);
+        chatsPane.setVisible(true);
+        showChatsButton.setDisable(true);
+        showUsersButton.setDisable(false);
+        showChatsButton.setFocusTraversable(false);
+        showUsersButton.setFocusTraversable(false);
     }
 
     @FXML
     protected void onShowUsersClicked(ActionEvent actionEvent) {
-        viewModel.showUsers();
+        chatsPane.setVisible(false);
+        usersPane.setVisible(true);
+        showChatsButton.setDisable(false);
+        showUsersButton.setDisable(true);
+        showChatsButton.setFocusTraversable(false);
+        showUsersButton.setFocusTraversable(false);
     }
 }
