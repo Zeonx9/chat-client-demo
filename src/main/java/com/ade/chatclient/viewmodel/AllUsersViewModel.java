@@ -5,7 +5,6 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.view.ViewHandler;
-import javafx.beans.Observable;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -13,8 +12,6 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import lombok.Getter;
-
-import java.io.IOException;
 
 import static com.ade.chatclient.viewmodel.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.viewmodel.ViewModelUtils.runLaterListener;
@@ -33,12 +30,7 @@ public class AllUsersViewModel {
     }
 
     public void switchToChatPage() {
-        try {
-            viewHandler.openView(ViewHandler.Views.CHAT_PAGE_VIEW);
-        }
-        catch (IOException e) {
-            System.out.println("cannot switch to another view! " + e.getMessage());
-        }
+        viewHandler.openView(ViewHandler.Views.CHAT_PAGE_VIEW);
     }
     private String prepareUserToBeShown(User user) {
         return user.getUsername();
@@ -67,7 +59,7 @@ public class AllUsersViewModel {
         };
     }
 
-    public void onSelectedItemChange(Observable observable, User oldValue, User newValue) {
+    public void onSelectedItemChange(User newValue) {
         if (newValue == null) {
             System.out.println("Selected User is null");
             return;

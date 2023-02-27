@@ -36,7 +36,7 @@ class LogInViewModelTest {
         //given
         String newText = "text";
         // when
-        underTest.onTextChanged(null, null, newText);
+        underTest.onTextChanged(newText);
         // then
         assertThat(underTest.getDisableButtonProperty().get()).isFalse();
     }
@@ -46,7 +46,7 @@ class LogInViewModelTest {
         //given
         String newText = "    ";
         // when
-        underTest.onTextChanged(null, null, newText);
+        underTest.onTextChanged(newText);
         // then
         assertThat(underTest.getDisableButtonProperty().get()).isTrue();
     }

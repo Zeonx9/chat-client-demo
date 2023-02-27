@@ -2,15 +2,12 @@ package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.view.ViewHandler;
-import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.io.IOException;
 
 @Getter
 @RequiredArgsConstructor
@@ -29,19 +26,14 @@ public class LogInViewModel {
             errorMessageProperty.set("Unsuccessful");
             return;
         }
+
+        System.out.println("Авторизация успешна, переход к окну чатов");
         errorMessageProperty.set("Success!");
-        try {
-            System.out.println("Авторизация успешна, переход к окну чатов");
-            viewHandler.startBackGroundServices();
-            viewHandler.openView(ViewHandler.Views.CHAT_PAGE_VIEW);
-        }
-        catch (IOException e) {
-            System.out.println(e.getMessage());
-            errorMessageProperty.set("cannot switch to another view!");
-        }
+        viewHandler.startBackGroundServices();
+        viewHandler.openView(ViewHandler.Views.CHAT_PAGE_VIEW);
     }
 
-    public void onTextChanged(Observable obj, String oldValue, String newValue) {
+    public void onTextChanged(String newValue) {
         if (newValue == null)
             newValue = "";
         disableButtonProperty.set(newValue.isBlank() || newValue.contains(" "));

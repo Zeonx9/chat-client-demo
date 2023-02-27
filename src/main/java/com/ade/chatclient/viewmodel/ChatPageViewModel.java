@@ -5,7 +5,6 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.view.ViewHandler;
-import javafx.beans.Observable;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -18,7 +17,6 @@ import javafx.scene.image.ImageView;
 import lombok.Getter;
 
 import java.beans.PropertyChangeEvent;
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +62,7 @@ public class ChatPageViewModel {
     private void newChatCreated(PropertyChangeEvent event) {
         Chat chat = (Chat) event.getNewValue();
         chatListProperty.add(chat);
+
     }
 
     public <T> void AddBottomScroller(ListView<T> listView) {
@@ -74,7 +73,7 @@ public class ChatPageViewModel {
         };
     }
 
-    public void onSelectedItemChange(Observable observable, Chat oldValue, Chat newValue) {
+    public void onSelectedItemChange(Chat newValue) {
         if (newValue == null) {
             return;
         }
@@ -90,14 +89,12 @@ public class ChatPageViewModel {
         messageTextProperty.set("");
     }
 
+/* этот метод сейчас не нужен, но может потом пригодится
+
     public void switchToAllUsers() {
-        try {
-            viewHandler.openView(ViewHandler.Views.ALL_USERS_VIEW);
-        }
-        catch (IOException e) {
-            System.out.println("cannot switch to all users view " + e.getMessage());
-        }
+        viewHandler.openView(ViewHandler.Views.ALL_USERS_VIEW);
     }
+*/
 
     private String prepareChatToBeShown(Chat chat) {
         List<String> memberNames = new ArrayList<>();

@@ -5,6 +5,7 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.viewmodel.ChatPageViewModel;
+import com.ade.chatclient.viewmodel.ViewModelUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -39,13 +40,13 @@ public class ChatPageView {
 
         chatListView.itemsProperty().bind(viewModel.getChatListProperty());
         chatListView.setCellFactory(chatListView -> viewModel.getChatListCellFactory());
-        chatListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
-        // удаление первого выделения не работает туи, думаю из-за потоков, так как на AllUsers она работает корректно
-        chatListView.getSelectionModel().clearSelection();
+        chatListView.getSelectionModel().selectedItemProperty()
+                .addListener(ViewModelUtils.changeListener(viewModel::onSelectedItemChange));
 
         messageListView.itemsProperty().bind(viewModel.getMessageListProperty());
         messageListView.setCellFactory(messageListView -> viewModel.getMessageCellFactory());
         messageListView.setFocusTraversable(false);
+        viewModel.AddBottomScroller(messageListView);
 
         messageTextField.textProperty().bindBidirectional(viewModel.getMessageTextProperty());
 

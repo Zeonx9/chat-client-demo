@@ -5,10 +5,12 @@ import com.ade.chatclient.viewmodel.ViewModelProvider;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.AllArgsConstructor;
 
 import java.io.IOException;
+import java.util.function.BiConsumer;
 
 /**
  * a class that manipulates the views
@@ -26,10 +28,29 @@ public class ViewHandler {
      */
     @AllArgsConstructor
     public enum Views {
-        LOG_IN_VIEW("log-in-view"),
-        CHAT_PAGE_VIEW("chat-page-view"),
-        ALL_USERS_VIEW("all-users-view");
+        LOG_IN_VIEW(
+                "log-in-view",
+                (loader, vmProvider) -> {
+                    LogInView view = loader.getController();
+                    view.init(vmProvider.getLogInViewModel());
+                }
+        ),
+        CHAT_PAGE_VIEW(
+                "chat-page-view",
+                (loader, vmProvider) -> {
+                    ChatPageView view = loader.getController();
+                    view.init(vmProvider.getChatPageViewModel());
+                }
+        ),
+        ALL_USERS_VIEW(
+                "all-users-view",
+                (loader, vmProvider) -> {
+                    AllUsersView view = loader.getController();
+                    view.init(vmProvider.getAllUsersViewModel());
+                }
+        );
         final String fxmlFileName;
+        final BiConsumer<FXMLLoader, ViewModelProvider> viewInitializer;
     }
 
     private final Stage stage;
@@ -54,7 +75,7 @@ public class ViewHandler {
     /**
      * метод, который запускает самое первое вью, которое должно быть показано пользователю
      */
-    public void start() throws IOException {
+    public void start() {
         openView(Views.LOG_IN_VIEW);
     }
 
@@ -71,29 +92,35 @@ public class ViewHandler {
      * метод, который открывает указанное с помощью константы вью
      * @param viewType константа указывающая на нужное вью
      */
-    public void openView(Views viewType) throws IOException {
+    public void openView(Views viewType) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(viewType.fxmlFileName + ".fxml"));
-        Parent root = fxmlLoader.load();
-
-        if (viewType == Views.LOG_IN_VIEW) {
-            LogInView view = fxmlLoader.getController();
-            view.init(viewModelProvider.getLogInViewModel());
+        Parent root;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            System.out.println("cannot open the view: " + viewType.fxmlFileName);
+            throw new RuntimeException(e);
         }
 
-        else if (viewType == Views.CHAT_PAGE_VIEW) {
-            ChatPageView view = fxmlLoader.getController();
-            view.init(viewModelProvider.getChatPageViewModel());
-        }
-        else if (viewType == Views.ALL_USERS_VIEW) {
-            AllUsersView view = fxmlLoader.getController();
-            view.init(viewModelProvider.getAllUsersViewModel());
-        }
+        viewType.viewInitializer.accept(fxmlLoader, viewModelProvider);
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
-//        if (viewType == Views.CHAT_PAGE_VIEW || viewType == Views.ALL_USERS_VIEW) {
-//            stage.setFullScreen(true);
-//        }
         stage.show();
+    }
+
+    public void switchPane(Views paneType, Pane placeHolder) {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(paneType.fxmlFileName + ".fxml"));
+        Parent paneRoot;
+        try {
+            paneRoot = fxmlLoader.load();
+        } catch (IOException e) {
+            System.out.println("cannot switch to pane: " + paneType.fxmlFileName);
+            throw new RuntimeException(e);
+        }
+
+        //init the controller Of Pane
+        paneType.viewInitializer.accept(fxmlLoader, viewModelProvider);
+        placeHolder.getChildren().setAll(paneRoot);
     }
 }

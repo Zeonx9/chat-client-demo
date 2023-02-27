@@ -2,6 +2,7 @@ package com.ade.chatclient.view;
 
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.viewmodel.AllUsersViewModel;
+import com.ade.chatclient.viewmodel.ViewModelUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -17,7 +18,8 @@ public class AllUsersView {
         this.viewModel = allUsersViewModel;
         userListView.itemsProperty().bind(viewModel.getUsersListProperty());
         userListView.setCellFactory(param -> viewModel.getUserListCellFactory());
-        userListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
+        userListView.getSelectionModel().selectedItemProperty()
+                .addListener(ViewModelUtils.changeListener(viewModel::onSelectedItemChange));
         userListView.getSelectionModel().clearSelection();
     }
 
