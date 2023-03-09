@@ -1,13 +1,15 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.view.ViewHandler;
+import com.ade.chatclient.application.ViewHandler;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
 
 @Getter
 @RequiredArgsConstructor
@@ -30,7 +32,7 @@ public class LogInViewModel {
         System.out.println("Авторизация успешна, переход к окну чатов");
         errorMessageProperty.set("Success!");
         viewHandler.startBackGroundServices();
-        viewHandler.openView(ViewHandler.Views.CHAT_PAGE_VIEW);
+        viewHandler.openView(CHAT_PAGE_VIEW);
     }
 
     public void onTextChanged(String newValue) {

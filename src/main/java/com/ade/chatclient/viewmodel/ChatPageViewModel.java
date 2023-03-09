@@ -4,7 +4,7 @@ import com.ade.chatclient.ClientApplication;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.view.ViewHandler;
+import com.ade.chatclient.application.ViewHandler;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.ade.chatclient.viewmodel.ViewModelUtils.listReplacer;
-import static com.ade.chatclient.viewmodel.ViewModelUtils.runLaterListener;
+import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
+import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 
 @Getter
 public class ChatPageViewModel {
@@ -34,7 +34,7 @@ public class ChatPageViewModel {
     private final ViewHandler viewHandler;
     private final ClientModel model;
 
-    ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
+    public ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
         this.viewHandler = viewHandler;
         this.model = model;
 
@@ -47,6 +47,7 @@ public class ChatPageViewModel {
         // надо новый слушатель для incoming messages, который просто добавляет их в конец
     }
     private void updateMessages(PropertyChangeEvent event) {
+        @SuppressWarnings("unchecked")
         List<Message> messages = (List<Message>) event.getNewValue();
         messageListProperty.clear();
         messageListProperty.addAll(messages);
@@ -54,6 +55,7 @@ public class ChatPageViewModel {
     }
 
     private void newSelectedMessages(PropertyChangeEvent event) {
+        @SuppressWarnings("unchecked")
         List<Message> selectedChatMessages = (List<Message>) event.getNewValue();
         messageListProperty.addAll(selectedChatMessages);
         bottomScroller.run();

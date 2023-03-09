@@ -4,7 +4,7 @@ import com.ade.chatclient.ClientApplication;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.view.ViewHandler;
+import com.ade.chatclient.application.ViewHandler;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -13,8 +13,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import lombok.Getter;
 
-import static com.ade.chatclient.viewmodel.ViewModelUtils.listReplacer;
-import static com.ade.chatclient.viewmodel.ViewModelUtils.runLaterListener;
+import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
+import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
+import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 
 @Getter
 public class AllUsersViewModel {
@@ -22,7 +23,7 @@ public class AllUsersViewModel {
     private final ViewHandler viewHandler;
     private final ListProperty<User> usersListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
 
-    AllUsersViewModel(ViewHandler viewHandler, ClientModel model) {
+    public AllUsersViewModel(ViewHandler viewHandler, ClientModel model) {
         this.model = model;
         this.viewHandler = viewHandler;
 
@@ -30,7 +31,7 @@ public class AllUsersViewModel {
     }
 
     public void switchToChatPage() {
-        viewHandler.openView(ViewHandler.Views.CHAT_PAGE_VIEW);
+        viewHandler.openView(CHAT_PAGE_VIEW);
     }
     private String prepareUserToBeShown(User user) {
         return user.getUsername();

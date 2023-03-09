@@ -16,7 +16,7 @@ public class ClientApplication extends Application {
      * обязательный для переопределенмя метод из Application, запускает приложение
      */
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         stage.setTitle("InTouch");
         StartClientApp.start(stage);
     }

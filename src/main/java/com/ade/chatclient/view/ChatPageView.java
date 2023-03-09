@@ -5,17 +5,19 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.viewmodel.ChatPageViewModel;
-import com.ade.chatclient.viewmodel.ViewModelUtils;
+import com.ade.chatclient.application.ViewModelUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import lombok.Getter;
 
 public class ChatPageView {
     @FXML private TextField searchChatsTextField;
     @FXML private TextField searchUsersTextField;
     @FXML private ListView<User> userListView;
     @FXML private BorderPane usersPane;
+    @Getter
     @FXML private BorderPane chatsPane;
     @FXML private Button showChatsButton;
     @FXML private Button showUsersButton;

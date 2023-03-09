@@ -1,17 +1,13 @@
 package com.ade.chatclient.view;
 
 import com.ade.chatclient.viewmodel.LogInViewModel;
-import com.ade.chatclient.viewmodel.ViewModelUtils;
-import javafx.beans.property.StringProperty;
+import com.ade.chatclient.application.ViewModelUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
 import lombok.Getter;
-
-import java.util.Objects;
 
 @Getter
 public class LogInView {

@@ -1,7 +1,9 @@
-package com.ade.chatclient.viewmodel;
+package com.ade.chatclient.application;
 
-import com.ade.chatclient.model.ModelFactory;
-import com.ade.chatclient.view.ViewHandler;
+import com.ade.chatclient.viewmodel.AllUsersViewModel;
+import com.ade.chatclient.viewmodel.BackgroundService;
+import com.ade.chatclient.viewmodel.ChatPageViewModel;
+import com.ade.chatclient.viewmodel.LogInViewModel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

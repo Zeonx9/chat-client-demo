@@ -2,7 +2,7 @@ package com.ade.chatclient.view;
 
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.viewmodel.AllUsersViewModel;
-import com.ade.chatclient.viewmodel.ViewModelUtils;
+import com.ade.chatclient.application.ViewModelUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
