@@ -1,5 +1,6 @@
 package com.ade.chatclient.application;
 
+import com.ade.chatclient.view.LogInView;
 import com.ade.chatclient.viewmodel.BackgroundService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,8 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.Getter;
-
-import java.io.IOException;
 
 import static com.ade.chatclient.application.Views.LOG_IN_VIEW;
 
@@ -65,11 +64,11 @@ public class ViewHandler {
      * @param viewType константа указывающая на нужное вью
      */
     public void openView(Views viewType) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(viewType.fxmlFileName + ".fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(LogInView.class.getResource(viewType.fxmlFileName + ".fxml"));
         Parent root;
         try {
             root = fxmlLoader.load();
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("cannot open the view: " + viewType.fxmlFileName);
             throw new RuntimeException(e);
         }
@@ -88,11 +87,11 @@ public class ViewHandler {
      * @param placeHolder - контейнер типа Pane или его наследник, на месте которого будет открыта новая панель
      */
     public void openPane(Views paneType, Pane placeHolder) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(paneType.fxmlFileName + ".fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(LogInView.class.getResource(paneType.fxmlFileName + ".fxml"));
         Parent paneRoot;
         try {
             paneRoot = fxmlLoader.load();
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("cannot open the pane: " + paneType.fxmlFileName);
             throw new RuntimeException(e);
         }
