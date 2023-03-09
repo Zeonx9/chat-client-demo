@@ -1,5 +1,6 @@
 package com.ade.chatclient.view;
 
+import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.viewmodel.LogInViewModel;
 import javafx.application.Platform;
@@ -14,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.verify;
 
 /**
  * реализует интеграционный тест между вью и вью-модел

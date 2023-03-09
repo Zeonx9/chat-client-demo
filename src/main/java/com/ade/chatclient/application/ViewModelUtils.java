@@ -1,4 +1,4 @@
-package com.ade.chatclient.viewmodel;
+package com.ade.chatclient.application;
 
 import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
@@ -20,8 +20,10 @@ public class ViewModelUtils {
 
     public static <T> Consumer<PropertyChangeEvent> listReplacer(ListProperty<T> property) {
         return event -> {
+            @SuppressWarnings("unchecked")
+            List<T> newList = (List<T>) event.getNewValue();
             property.clear();
-            property.addAll((List<T>) event.getNewValue());
+            property.addAll(newList);
         };
     }
 

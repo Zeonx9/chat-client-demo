@@ -1,7 +1,7 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.view.ViewHandler;
+import com.ade.chatclient.application.ViewHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

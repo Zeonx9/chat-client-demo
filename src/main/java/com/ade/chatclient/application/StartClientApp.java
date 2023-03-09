@@ -1,8 +1,5 @@
 package com.ade.chatclient.application;
 
-import com.ade.chatclient.model.ModelFactory;
-import com.ade.chatclient.view.ViewHandler;
-import com.ade.chatclient.viewmodel.ViewModelProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -81,7 +78,7 @@ public class StartClientApp {
      * передает управление на ViewHandler
      * @param stage объект Stage, который получен от метода start в главном классе приложения
      */
-    public static void start(Stage stage) throws IOException {
+    public static void start(Stage stage) {
         System.out.println("Starting the application ...");
 
         // создание фабрик для управления слоями приложения

@@ -1,6 +1,7 @@
-package com.ade.chatclient.model;
+package com.ade.chatclient.application;
 
-import com.ade.chatclient.application.AsyncRequestHandler;
+import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.model.ClientModelImpl;
 import lombok.NoArgsConstructor;
 
 /**
