@@ -1,16 +1,16 @@
-package com.ade.chatclient.view;
+package com.ade.chatclient.application;
 
 import com.ade.chatclient.viewmodel.BackgroundService;
-import com.ade.chatclient.viewmodel.ViewModelProvider;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.io.IOException;
-import java.util.function.BiConsumer;
+
+import static com.ade.chatclient.application.Views.LOG_IN_VIEW;
 
 /**
  * a class that manipulates the views
@@ -22,38 +22,10 @@ import java.util.function.BiConsumer;
  *
  */
 public class ViewHandler {
-    /**
-     * это перечисление определяет все возможные вью в нашем приложении
-     * когда создается новое вью, информацию о нем нужно занести в это перечисление
-     */
-    @AllArgsConstructor
-    public enum Views {
-        LOG_IN_VIEW(
-                "log-in-view",
-                (loader, vmProvider) -> {
-                    LogInView view = loader.getController();
-                    view.init(vmProvider.getLogInViewModel());
-                }
-        ),
-        CHAT_PAGE_VIEW(
-                "chat-page-view",
-                (loader, vmProvider) -> {
-                    ChatPageView view = loader.getController();
-                    view.init(vmProvider.getChatPageViewModel());
-                }
-        ),
-        ALL_USERS_VIEW(
-                "all-users-view",
-                (loader, vmProvider) -> {
-                    AllUsersView view = loader.getController();
-                    view.init(vmProvider.getAllUsersViewModel());
-                }
-        );
-        final String fxmlFileName;
-        final BiConsumer<FXMLLoader, ViewModelProvider> viewInitializer;
-    }
+
 
     private final Stage stage;
+    @Getter
     private final ViewModelProvider viewModelProvider;
 
     /**
@@ -76,7 +48,7 @@ public class ViewHandler {
      * метод, который запускает самое первое вью, которое должно быть показано пользователю
      */
     public void start() {
-        openView(Views.LOG_IN_VIEW);
+        openView(LOG_IN_VIEW);
     }
 
     /**
@@ -102,25 +74,32 @@ public class ViewHandler {
             throw new RuntimeException(e);
         }
 
-        viewType.viewInitializer.accept(fxmlLoader, viewModelProvider);
+        viewType.viewInitializer.accept(fxmlLoader, this);
 
+        // создать сцену для нового вью и установить его на stage
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
 
-    public void switchPane(Views paneType, Pane placeHolder) {
+    /**
+     * открывает заданную панель в заданном контейнере
+     * @param paneType - тип панели для открытия
+     * @param placeHolder - контейнер типа Pane или его наследник, на месте которого будет открыта новая панель
+     */
+    public void openPane(Views paneType, Pane placeHolder) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(paneType.fxmlFileName + ".fxml"));
         Parent paneRoot;
         try {
             paneRoot = fxmlLoader.load();
         } catch (IOException e) {
-            System.out.println("cannot switch to pane: " + paneType.fxmlFileName);
+            System.out.println("cannot open the pane: " + paneType.fxmlFileName);
             throw new RuntimeException(e);
         }
 
         //init the controller Of Pane
-        paneType.viewInitializer.accept(fxmlLoader, viewModelProvider);
+        paneType.viewInitializer.accept(fxmlLoader, this);
+        // эта строчка устанавливает уже инициализированную панель на ее место в родителе
         placeHolder.getChildren().setAll(paneRoot);
     }
 }
