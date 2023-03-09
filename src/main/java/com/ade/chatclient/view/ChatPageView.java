@@ -8,25 +8,37 @@ import com.ade.chatclient.viewmodel.ChatPageViewModel;
 import com.ade.chatclient.viewmodel.ViewModelUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+
+import java.io.IOException;
+import java.util.Objects;
 
 public class ChatPageView {
-    @FXML private TextField searchChatsTextField;
-    @FXML private TextField searchUsersTextField;
-    @FXML private ListView<User> userListView;
-    @FXML private BorderPane usersPane;
-    @FXML private BorderPane chatsPane;
+    Pane page1;// = FXMLLoader.load(getClass().getResource("all-chats-view.fxml"));
+    Pane page0;// = FXMLLoader.load(getClass().getResource("all-users-view.fxml"));
+    public StackPane stackPane;
+//    @FXML private TextField searchChatsTextField;
+//    @FXML private TextField searchUsersTextField;
+//    @FXML private ListView<User> userListView;
+//    @FXML private BorderPane usersPane;
+//    @FXML private BorderPane chatsPane;
     @FXML private Button showChatsButton;
     @FXML private Button showUsersButton;
 
-    @FXML private ListView<Chat> chatListView;
+//    @FXML private ListView<Chat> chatListView;
     @FXML private ListView<Message> messageListView;
     @FXML private TextField messageTextField;
 
     @FXML private Button sendButton;
 
     private ChatPageViewModel viewModel;
+
+    public ChatPageView(){
+    }
 
 
     /**
@@ -38,10 +50,10 @@ public class ChatPageView {
     public void init(ChatPageViewModel viewModel) {
         this.viewModel = viewModel;
 
-        chatListView.itemsProperty().bind(viewModel.getChatListProperty());
-        chatListView.setCellFactory(chatListView -> viewModel.getChatListCellFactory());
-        chatListView.getSelectionModel().selectedItemProperty()
-                .addListener(ViewModelUtils.changeListener(viewModel::onSelectedItemChange));
+//        chatListView.itemsProperty().bind(viewModel.getChatListProperty());
+//        chatListView.setCellFactory(chatListView -> viewModel.getChatListCellFactory());
+//        chatListView.getSelectionModel().selectedItemProperty()
+//                .addListener(ViewModelUtils.changeListener(viewModel::onSelectedItemChange));
 
         messageListView.itemsProperty().bind(viewModel.getMessageListProperty());
         messageListView.setCellFactory(messageListView -> viewModel.getMessageCellFactory());
@@ -50,7 +62,13 @@ public class ChatPageView {
 
         messageTextField.textProperty().bindBidirectional(viewModel.getMessageTextProperty());
 
-        usersPane.setVisible(false);
+        stackPane.getChildren().add(page0);
+        stackPane.getChildren().add(page1);
+        page0.visibleProperty().bind(page1.visibleProperty().not());
+        page1.setVisible(false);
+
+        showChatsButton.setFocusTraversable(false);
+        showUsersButton.setFocusTraversable(false);
         showChatsButton.setDisable(true);
     }
 
@@ -65,8 +83,7 @@ public class ChatPageView {
 
     @FXML
     protected void onShowChatsClicked(ActionEvent actionEvent) {
-        usersPane.setVisible(false);
-        chatsPane.setVisible(true);
+        page1.setVisible(true);
         showChatsButton.setDisable(true);
         showUsersButton.setDisable(false);
         showChatsButton.setFocusTraversable(false);
@@ -75,8 +92,7 @@ public class ChatPageView {
 
     @FXML
     protected void onShowUsersClicked(ActionEvent actionEvent) {
-        chatsPane.setVisible(false);
-        usersPane.setVisible(true);
+        page1.setVisible(false);
         showChatsButton.setDisable(false);
         showUsersButton.setDisable(true);
         showChatsButton.setFocusTraversable(false);

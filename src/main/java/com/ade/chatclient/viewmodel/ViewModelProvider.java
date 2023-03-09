@@ -27,6 +27,7 @@ public class ViewModelProvider {
         logInViewModel = new LogInViewModel(viewHandler, modelFactory.getModel());
         chatPageViewModel = new ChatPageViewModel(viewHandler, modelFactory.getModel());
         allUsersViewModel = new AllUsersViewModel(viewHandler, modelFactory.getModel());
+
     }
 
     /**

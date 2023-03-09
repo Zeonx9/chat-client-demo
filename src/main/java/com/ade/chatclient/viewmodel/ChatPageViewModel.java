@@ -65,13 +65,7 @@ public class ChatPageViewModel {
 
     }
 
-    public <T> void AddBottomScroller(ListView<T> listView) {
-        bottomScroller = () -> {
-            if (!messageListProperty.isEmpty()) {
-                listView.scrollTo(messageListProperty.size() - 1);
-            }
-        };
-    }
+     
 
     public void onSelectedItemChange(Chat newValue) {
         if (newValue == null) {
