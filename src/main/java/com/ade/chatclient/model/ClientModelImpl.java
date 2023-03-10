@@ -17,6 +17,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @RequiredArgsConstructor
@@ -92,6 +93,9 @@ public class ClientModelImpl implements ClientModel{
                 .thenAccept(messages -> {
                     // только для обновления сообщений при выборе нового чата
                     changeSupport.firePropertyChange("MessageUpdate", null, messages);
+                    selectedChat.setUnreadCount(0L);
+                    //TODO обновление чатов(уведомлений)
+                    changeSupport.firePropertyChange("MyChatsUpdate", null, myChats);
                 });
     }
 
@@ -151,8 +155,8 @@ public class ClientModelImpl implements ClientModel{
 
         split.get(true).forEach(message -> chatById.get(message.getChatId()).incrementUnreadCount());
 
-        // todo событие для новых уведомлений
-        //changeSupport.firePropertyChange("MyChatsUpdate", null, myChats);
+        //TODO обновление чатов(уведомлений)
+        changeSupport.firePropertyChange("MyChatsUpdate", null, myChats);
 
         split.get(false).forEach(message -> createDialogFromNewMessage(message.getAuthor()));
     }
@@ -167,12 +171,39 @@ public class ClientModelImpl implements ClientModel{
                 .thenApply(AsyncRequestHandler.mapperOf(Chat.class));
     }
 
+    private CompletableFuture<Chat> futureGroupWith(ArrayList<User> users) {
+        return handler.sendPOSTAsync(
+                        "/chat?isPrivate=false",
+                        Stream.concat(users.stream().map(User::getId).toList().stream(), Stream.of(myself.getId())).toList(),
+                        true
+                )
+                .thenApply(AsyncRequestHandler.mapperOf(Chat.class));
+    }
+
+    @Override
+    public Chat createGroupFromAllUsers(ArrayList<User> users) {
+        System.out.println(Stream.concat(users.stream().map(User::getId).toList().stream(), Stream.of(myself.getId())).toList());
+        try {
+            Chat chat = futureGroupWith(users).get();
+            if (!myChats.contains(chat)) {
+                changeSupport.firePropertyChange("NewChatCreated", null, chat);
+                myChats.add(chat);
+            }
+            return chat;
+        } catch (Exception e) {
+            System.out.println("Fail to Create dialog");
+            throw new RuntimeException(e);
+        }
+    }
+
+
     @Override
     public Chat createDialogFromAllUsers(User user) {
         try {
             Chat chat = futureChatWith(user).get();
             if (!myChats.contains(chat)) {
                 changeSupport.firePropertyChange("NewChatCreated", null, chat);
+                myChats.add(chat);
             }
             return chat;
         } catch (Exception e) {
@@ -188,6 +219,8 @@ public class ClientModelImpl implements ClientModel{
             myChats.add(chat);
         });
     }
+
+
 
     @Override
     public void addListener(String eventName, PropertyChangeListener listener) {

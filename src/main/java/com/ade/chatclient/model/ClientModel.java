@@ -4,6 +4,7 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
 
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 // an interface that a model should implement, used to add flexibility to model structure
 public interface ClientModel {
@@ -46,6 +47,8 @@ public interface ClientModel {
      * @param text сообщение
      */
     void sendMessageToChat(String text);
+
+    Chat createGroupFromAllUsers(ArrayList<User> users);
 
     /**
      * отправляет POST запрос на создание личного чата между авторизованными пользователем и выбранным

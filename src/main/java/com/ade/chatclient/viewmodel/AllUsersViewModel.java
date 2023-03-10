@@ -77,7 +77,7 @@ public class AllUsersViewModel {
         for (User user : usersForNewChat) {
             System.out.println(user.getUsername());
         }
-        Chat created = model.createDialogFromAllUsers(usersForNewChat.get(0));
+        Chat created = model.createGroupFromAllUsers(usersForNewChat);
         model.setSelectedChat(created);
         model.getMessages();
         switchToChatPage();
