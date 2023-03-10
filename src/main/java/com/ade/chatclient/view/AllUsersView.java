@@ -5,16 +5,15 @@ import com.ade.chatclient.viewmodel.AllUsersViewModel;
 import com.ade.chatclient.application.ViewModelUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import lombok.Getter;
 
+@Getter
 public class AllUsersView {
-    public BorderPane usersPane;
-    public TextField searchUsersTextField;
-    @FXML private Button showChatsButton;
-    @FXML private Button showUsersButton;
+    @FXML private Button createChatButton;
+    @FXML private BorderPane usersPane;
+    @FXML private TextField searchUsersTextField;
     @FXML private ListView<User> userListView;
     private AllUsersViewModel viewModel;
 
@@ -25,10 +24,16 @@ public class AllUsersView {
         userListView.getSelectionModel().selectedItemProperty()
                 .addListener(ViewModelUtils.changeListener(viewModel::onSelectedItemChange));
         userListView.getSelectionModel().clearSelection();
+        userListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        // TODO Артем мне нужна твоя помощь туту
+//        userListView.getSelectionModel().selectedItemProperty().addListener((obs,ov,nv)->{
+//            for (User user : viewModel.getUsersForNewChatProperty()) {
+//                userListView.getSelectionModel().select(user);
+//            }
+//        });
     }
 
-    public void onShowChatsClicked(ActionEvent actionEvent) {
-        viewModel.switchToChatPage();
+    public void OnCreateChatButtonClicked(ActionEvent actionEvent) {
+        viewModel.createNewChat();
     }
-
 }

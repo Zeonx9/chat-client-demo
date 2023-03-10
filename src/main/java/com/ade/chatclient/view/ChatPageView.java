@@ -1,33 +1,25 @@
 package com.ade.chatclient.view;
 
 
-import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.application.Views;
 import com.ade.chatclient.domain.Message;
-import com.ade.chatclient.domain.User;
 import com.ade.chatclient.viewmodel.ChatPageViewModel;
-import com.ade.chatclient.viewmodel.ViewModelUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 
 public class ChatPageView {
-    @FXML private TextField searchChatsTextField;
-    @FXML private TextField searchUsersTextField;
-    @FXML private ListView<User> userListView;
-    @FXML private BorderPane usersPane;
-    @FXML private BorderPane chatsPane;
+    public Pane switchPane;
     @FXML private Button showChatsButton;
     @FXML private Button showUsersButton;
 
-    @FXML private ListView<Chat> chatListView;
     @FXML private ListView<Message> messageListView;
     @FXML private TextField messageTextField;
 
     @FXML private Button sendButton;
 
     private ChatPageViewModel viewModel;
-
 
     /**
      * метод, который выполняет инициализацию вместо конструкора,
@@ -38,11 +30,6 @@ public class ChatPageView {
     public void init(ChatPageViewModel viewModel) {
         this.viewModel = viewModel;
 
-        chatListView.itemsProperty().bind(viewModel.getChatListProperty());
-        chatListView.setCellFactory(chatListView -> viewModel.getChatListCellFactory());
-        chatListView.getSelectionModel().selectedItemProperty()
-                .addListener(ViewModelUtils.changeListener(viewModel::onSelectedItemChange));
-
         messageListView.itemsProperty().bind(viewModel.getMessageListProperty());
         messageListView.setCellFactory(messageListView -> viewModel.getMessageCellFactory());
         messageListView.setFocusTraversable(false);
@@ -50,8 +37,8 @@ public class ChatPageView {
 
         messageTextField.textProperty().bindBidirectional(viewModel.getMessageTextProperty());
 
-        usersPane.setVisible(false);
-        showChatsButton.setDisable(true);
+       changeButtonsParam(true);
+
     }
 
     @FXML
@@ -60,26 +47,25 @@ public class ChatPageView {
     }
 
     @FXML
-    protected void onCreateChatClicked(ActionEvent actionEvent) {
-    }
-
-    @FXML
     protected void onShowChatsClicked(ActionEvent actionEvent) {
-        usersPane.setVisible(false);
-        chatsPane.setVisible(true);
-        showChatsButton.setDisable(true);
-        showUsersButton.setDisable(false);
-        showChatsButton.setFocusTraversable(false);
-        showUsersButton.setFocusTraversable(false);
+        viewModel.ChangePane(Views.ALL_CHATS_VIEW, switchPane);
+
+        changeButtonsParam(true);
     }
 
     @FXML
     protected void onShowUsersClicked(ActionEvent actionEvent) {
-        chatsPane.setVisible(false);
-        usersPane.setVisible(true);
-        showChatsButton.setDisable(false);
-        showUsersButton.setDisable(true);
+        viewModel.ChangePane(Views.ALL_USERS_VIEW, switchPane);
+        changeButtonsParam(false);
+    }
+
+    private void changeButtonsParam(Boolean param) {
+        showChatsButton.setDisable(param);
+        showUsersButton.setDisable(!param);
         showChatsButton.setFocusTraversable(false);
         showUsersButton.setFocusTraversable(false);
+    }
+    public Pane getChatsPane() {
+        return switchPane;
     }
 }

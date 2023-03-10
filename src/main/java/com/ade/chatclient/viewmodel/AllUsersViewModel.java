@@ -13,6 +13,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import lombok.Getter;
 
+import java.util.ArrayList;
+
 import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
 import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
@@ -22,6 +24,8 @@ public class AllUsersViewModel {
     private final ClientModel model;
     private final ViewHandler viewHandler;
     private final ListProperty<User> usersListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    // TODO:эту переменную надо как-то очищать, если пользователь не нажал на create
+    private final ArrayList<User> usersForNewChat = new ArrayList<>();
 
     public AllUsersViewModel(ViewHandler viewHandler, ClientModel model) {
         this.model = model;
@@ -31,6 +35,7 @@ public class AllUsersViewModel {
     }
 
     public void switchToChatPage() {
+        usersForNewChat.clear();
         viewHandler.openView(CHAT_PAGE_VIEW);
     }
     private String prepareUserToBeShown(User user) {
@@ -65,7 +70,14 @@ public class AllUsersViewModel {
             System.out.println("Selected User is null");
             return;
         }
-        Chat created = model.createDialogFromAllUsers(newValue);
+        usersForNewChat.add(newValue);
+    }
+
+    public void createNewChat() {
+        for (User user : usersForNewChat) {
+            System.out.println(user.getUsername());
+        }
+        Chat created = model.createDialogFromAllUsers(usersForNewChat.get(0));
         model.setSelectedChat(created);
         model.getMessages();
         switchToChatPage();

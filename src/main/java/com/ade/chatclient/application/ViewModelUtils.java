@@ -8,7 +8,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.function.Consumer;
-
 public class ViewModelUtils {
     public static PropertyChangeListener runLaterListener(Consumer<PropertyChangeEvent> handler) {
         return (event) -> Platform.runLater(() -> handler.accept(event));

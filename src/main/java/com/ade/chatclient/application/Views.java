@@ -1,5 +1,6 @@
 package com.ade.chatclient.application;
 
+import com.ade.chatclient.view.AllChatsView;
 import com.ade.chatclient.view.AllUsersView;
 import com.ade.chatclient.view.ChatPageView;
 import com.ade.chatclient.view.LogInView;
@@ -24,13 +25,20 @@ public enum Views {
                 view.init(viewHandler.getViewModelProvider().getAllUsersViewModel());
             }
     ),
+    ALL_CHATS_VIEW(
+            "all-chats-view",
+            (loader, viewHandler) -> {
+                AllChatsView view = loader.getController();
+                view.init(viewHandler.getViewModelProvider().getAllChatsViewModel());
+            }
+    ),
     CHAT_PAGE_VIEW(
             "chat-page-view",
             (loader, viewHandler) -> {
                 ChatPageView view = loader.getController();
                 view.init(viewHandler.getViewModelProvider().getChatPageViewModel());
 //                пример, как тут подгрузить панель
-//                viewHandler.openPane(ALL_USERS_VIEW, view.getChatsPane());
+                viewHandler.openPane(ALL_CHATS_VIEW, view.getChatsPane());
             }
     );
     /**

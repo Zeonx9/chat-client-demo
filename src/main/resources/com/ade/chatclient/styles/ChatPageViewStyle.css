@@ -67,24 +67,6 @@
     -fx-background-image: url("../img/send_mes_focused.png");
 }
 
-.buttonCreateNewChat {
-    -fx-background-radius: 15px;
-    -fx-background-color: #F2F2F2;
-    -fx-opacity: 20%;
-    -fx-font-family: "Poppins Medium";
-    -fx-font-size: 24;
-}
-
-.buttonCreateNewChat:hover {
-    /*-fx-background-color: #F2F2F2;*/
-    -fx-opacity: 50%;
-}
-
-.buttonCreateNewChat:focused {
-    /*-fx-background-color: #F2F2F2;*/
-    -fx-opacity: 100%;
-}
-
 .messageInput {
     -fx-font-family: "Poppins Regular";
     -fx-font-size: 17;

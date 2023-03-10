@@ -1,8 +1,7 @@
 package com.ade.chatclient.view;
 
 import com.ade.chatclient.viewmodel.AllChatsViewModel;
-import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
+import com.ade.chatclient.application.ViewModelUtils;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -13,10 +12,10 @@ import com.ade.chatclient.domain.Chat;
 @Getter
 public class AllChatsView {
 
-    @FXML public TextField searchChatsTextField;
-    @FXML public BorderPane chatsPane;
-    @FXML public ListView<Chat> chatListView;
-
+    @FXML private TextField searchChatsTextField;
+    @FXML private BorderPane chatsPane;
+    @FXML private ListView<Chat> chatListView;
+    private AllChatsViewModel viewModel;
     public void init(AllChatsViewModel viewModel) {
         this.viewModel = viewModel;
 
@@ -24,7 +23,5 @@ public class AllChatsView {
         chatListView.setCellFactory(chatListView -> viewModel.getChatListCellFactory());
         chatListView.getSelectionModel().selectedItemProperty()
                 .addListener(ViewModelUtils.changeListener(viewModel::onSelectedItemChange));
-
-
     }
 }

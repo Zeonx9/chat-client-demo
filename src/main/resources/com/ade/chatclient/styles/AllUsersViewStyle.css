@@ -14,7 +14,7 @@
 }
 .header {
     -fx-font-family: "Poppins SemiBold";
-    -fx-font-size: 30;
+    -fx-font-size: 20;
 }
 
 .leftPane {
@@ -84,4 +84,22 @@
 
 .mainPane {
     -fx-background-color: #CCC1BE;
+}
+
+.buttonCreateNewChat {
+    -fx-background-radius: 15px;
+    -fx-background-color: #F2F2F2;
+    -fx-opacity: 100%;
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 20;
+}
+
+.buttonCreateNewChat:hover {
+    /*-fx-background-color: #F2F2F2;*/
+    -fx-opacity: 50%;
+}
+
+.buttonCreateNewChat:focused {
+    /*-fx-background-color: #F2F2F2;*/
+    -fx-opacity: 20%;
 }
