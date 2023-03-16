@@ -66,20 +66,24 @@ public class AllUsersViewModel {
     }
 
     public void onSelectedItemChange(User newValue) {
-        if (newValue == null) {
-            System.out.println("Selected User is null");
-            return;
-        }
-        usersForNewChat.add(newValue);
-    }
-
-    public void createNewChat() {
-        for (User user : usersForNewChat) {
-            System.out.println(user.getUsername());
-        }
-        Chat created = model.createGroupFromAllUsers(usersForNewChat);
+        Chat created = model.createDialogFromAllUsers(newValue);
         model.setSelectedChat(created);
         model.getMessages();
         switchToChatPage();
+        //        if (newValue == null) {
+//            System.out.println("Selected User is null");
+//            return;
+//        }
+//        usersForNewChat.add(newValue);
     }
+
+//    public void createNewChat() {
+//        for (User user : usersForNewChat) {
+//            System.out.println(user.getUsername());
+//        }
+//        Chat created = model.createGroupFromAllUsers(usersForNewChat);
+//        model.setSelectedChat(created);
+//        model.getMessages();
+//        switchToChatPage();
+//    }
 }
