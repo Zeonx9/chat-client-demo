@@ -139,3 +139,7 @@
 .ShowUsersBtn:focused {
     -fx-opacity: 30%;
 }
+
+.helpPane {
+    -fx-background-color: red;
+}

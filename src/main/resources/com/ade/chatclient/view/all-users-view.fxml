@@ -30,7 +30,7 @@
                 </ImageView>
                 <Label layoutY="60.0" prefHeight="28.0" prefWidth="193.0" styleClass="header" text="Select user (users)" />
             <Label layoutY="85.0" prefHeight="28.0" prefWidth="193.0" styleClass="header" text="to create chat" />
-            <Button fx:id="createChatButton" layoutX="230.0" layoutY="67.0" mnemonicParsing="false" onAction="#OnCreateChatButtonClicked" prefHeight="37.0" prefWidth="120.0" styleClass="buttonCreateNewChat" text="create" />
+            <Button fx:id="createChatButton" disable="true" layoutX="230.0" layoutY="67.0" mnemonicParsing="false" onAction="#OnCreateChatButtonClicked" prefHeight="37.0" prefWidth="120.0" styleClass="buttonCreateNewChat" text="create" />
             </Group>
         </top>
     </BorderPane>

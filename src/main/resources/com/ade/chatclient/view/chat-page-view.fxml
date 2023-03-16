@@ -19,27 +19,71 @@
     </BorderPane>
 
     <!--  это панель с сообщениями  -->
-    <BorderPane layoutX="480.0" prefHeight="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <bottom>
-            <Group BorderPane.alignment="CENTER_LEFT">
-                <BorderPane.margin>
-                    <Insets bottom="25.0" left="25.0" right="25.0" />
-                </BorderPane.margin>
-                <TextField fx:id="messageTextField" focusTraversable="false" prefHeight="50.0" prefWidth="600.0" promptText="Enter your message . . ." styleClass="messageInput">
-                    <padding>
-                        <Insets left="20.0" right="70.0" />
-                    </padding>
-                </TextField>
-                <Button fx:id="sendButton" layoutX="545.0" mnemonicParsing="false" onAction="#onSendButtonClicked" prefHeight="50.0" prefWidth="50.0" styleClass="buttonSend" />
-            </Group>
-        </bottom>
-        <center>
-            <ListView fx:id="messageListView" prefHeight="434.0" prefWidth="602.0" BorderPane.alignment="CENTER">
-                <BorderPane.margin>
-                    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-                </BorderPane.margin>
-            </ListView>
-        </center>
-    </BorderPane>
+<!--    <StackPane prefHeight="600.0" prefWidth="1000.0" StackPane.alignment="CENTER_RIGHT">-->
+<!--        <ListView fx:id="messageListView" prefHeight="399.0" prefWidth="520.0" StackPane.margin="25.0">-->
+<!--            <BorderPane.margin>-->
+<!--                <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />-->
+<!--            </BorderPane.margin>-->
+<!--        </ListView>-->
+<!--        <StackPane.alignment>-->
+<!--            <Pos fx:constant="BOTTOM_RIGHT" />-->
+<!--        </StackPane.alignment>-->
+<!--        <Button fx:id="sendButton" mnemonicParsing="false" onAction="#onSendButtonClicked" prefHeight="50.0" prefWidth="50.0" styleClass="buttonSend">-->
+<!--            <StackPane.margin>-->
+<!--                <Insets right="10.0" />-->
+<!--            </StackPane.margin>-->
+<!--        </Button>-->
+<!--        <TextField fx:id="messageTextField" focusTraversable="false" prefHeight="50.0" promptText="Enter your message . . ." styleClass="messageInput">-->
+<!--            <padding>-->
+<!--                <Insets left="20.0" right="70.0" />-->
+<!--            </padding>-->
+<!--        </TextField>-->
+<!--    </StackPane>-->
+
+
+        <VBox prefHeight="600.0" prefWidth="1000.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <ListView fx:id="messageListView" prefHeight="399.0" prefWidth="520.0" VBox.vgrow="ALWAYS">
+            <BorderPane.margin>
+                <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+            </BorderPane.margin>
+         <VBox.margin>
+            <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+         </VBox.margin>
+        </ListView>
+          <Button fx:id="sendButton" mnemonicParsing="false" onAction="#onSendButtonClicked" prefHeight="50.0" prefWidth="50.0" styleClass="buttonSend" />
+        <TextField fx:id="messageTextField" focusTraversable="false" prefHeight="50.0" promptText="Enter your message . . ." styleClass="messageInput">
+            <padding>
+                <Insets left="20.0" right="70.0" />
+            </padding>
+         <VBox.margin>
+            <Insets bottom="25.0" left="25.0" right="25.0" />
+         </VBox.margin>
+        </TextField>
+    </VBox>
+
+
+
+<!--    <BorderPane layoutX="480.0" prefHeight="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">-->
+<!--        <bottom>-->
+<!--            <Pane fx:id="helpPane" maxWidth="1000.0" styleClass="helpPane" BorderPane.alignment="BOTTOM_LEFT">-->
+<!--                <BorderPane.margin>-->
+<!--                    <Insets bottom="25.0" left="25.0" right="25.0" />-->
+<!--                </BorderPane.margin>-->
+<!--                <TextField fx:id="messageTextField" focusTraversable="false" maxWidth="1000.0" minWidth="472.0" prefHeight="50.0" prefWidth="472.0" promptText="Enter your message . . ." styleClass="messageInput">-->
+<!--                    <padding>-->
+<!--                        <Insets left="20.0" right="70.0" />-->
+<!--                    </padding>-->
+<!--                </TextField>-->
+<!--            </Pane>-->
+<!--        </bottom>-->
+<!--        <center>-->
+<!--            <ListView fx:id="messageListView" prefHeight="434.0" prefWidth="602.0" BorderPane.alignment="CENTER">-->
+<!--                <BorderPane.margin>-->
+<!--                    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />-->
+<!--                </BorderPane.margin>-->
+<!--            </ListView>-->
+<!--        </center>-->
+<!--    </BorderPane>-->
+
    <Pane fx:id="switchPane" layoutX="80.0" prefHeight="600.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
 </AnchorPane>
