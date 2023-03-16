@@ -1,48 +1,54 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.ClientApplication;
+import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.application.ViewHandler;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import lombok.Getter;
+import lombok.Setter;
 
-import java.util.ArrayList;
-
-import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
 import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
+import static com.ade.chatclient.application.Views.ALL_CHATS_VIEW;
 
 @Getter
 public class AllUsersViewModel {
-    private final ClientModel model;
-    private final ViewHandler viewHandler;
     private final ListProperty<User> usersListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
-    // TODO:эту переменную надо как-то очищать, если пользователь не нажал на create
-    private final ArrayList<User> usersForNewChat = new ArrayList<>();
+    @Setter
+    private Pane placeHolder;
+    private final ViewHandler viewHandler;
+    private final ClientModel model;
 
     public AllUsersViewModel(ViewHandler viewHandler, ClientModel model) {
         this.model = model;
         this.viewHandler = viewHandler;
-
         model.addListener("AllUsers", runLaterListener(listReplacer(usersListProperty)));
     }
 
-    public void switchToChatPage() {
-        usersForNewChat.clear();
-        viewHandler.openView(CHAT_PAGE_VIEW);
+    private void switchToChatPage() {
+        viewHandler.openPane(ALL_CHATS_VIEW, placeHolder);
     }
-    private String prepareUserToBeShown(User user) {
+
+    public void onSelectedItemChange(User newValue) {
+        Chat created = model.createDialogFromAllUsers(newValue);
+        model.setSelectedChat(created);
+        model.getMessages();
+        switchToChatPage();
+    }
+
+    private static String prepareUserToBeShown(User user) {
         return user.getUsername();
     }
 
-    public ListCell<User> getUserListCellFactory() {
+    public static ListCell<User> getUserListCellFactory() {
         return new ListCell<>() {
             private final ImageView imageView = new ImageView();
             @Override
@@ -64,26 +70,4 @@ public class AllUsersViewModel {
             }
         };
     }
-
-    public void onSelectedItemChange(User newValue) {
-        Chat created = model.createDialogFromAllUsers(newValue);
-        model.setSelectedChat(created);
-        model.getMessages();
-        switchToChatPage();
-        //        if (newValue == null) {
-//            System.out.println("Selected User is null");
-//            return;
-//        }
-//        usersForNewChat.add(newValue);
-    }
-
-//    public void createNewChat() {
-//        for (User user : usersForNewChat) {
-//            System.out.println(user.getUsername());
-//        }
-//        Chat created = model.createGroupFromAllUsers(usersForNewChat);
-//        model.setSelectedChat(created);
-//        model.getMessages();
-//        switchToChatPage();
-//    }
 }

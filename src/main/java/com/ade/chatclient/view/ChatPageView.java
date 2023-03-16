@@ -1,30 +1,30 @@
 package com.ade.chatclient.view;
 
 
-import com.ade.chatclient.application.Views;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.viewmodel.ChatPageViewModel;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import lombok.Getter;
 
 public class ChatPageView {
-    public Pane switchPane;
     @FXML private Button showChatsButton;
     @FXML private Button showUsersButton;
 
     @FXML private ListView<Message> messageListView;
     @FXML private TextField messageTextField;
-
     @FXML private Button sendButton;
-
+    @Getter
+    public Pane switchPane;
     private ChatPageViewModel viewModel;
 
     /**
-     * метод, который выполняет инициализацию вместо конструкора,
-     * так как объекты вью получаются при подключении не через констуктор, а из FXMLLoader
-     * выполняет байндинг модели и вью модели
+     * метод, который выполняет инициализацию вместо конструктора,
+     * так как объекты View получаются при подключении не через конструктор, а из FXMLLoader
+     * выполняет binding модели и вью модели
      * @param viewModel ссылка на вью-модель, которая управляет этим вью
      */
     public void init(ChatPageViewModel viewModel) {
@@ -33,7 +33,9 @@ public class ChatPageView {
         messageListView.itemsProperty().bind(viewModel.getMessageListProperty());
         messageListView.setCellFactory(messageListView -> viewModel.getMessageCellFactory());
         messageListView.setFocusTraversable(false);
+
         viewModel.AddBottomScroller(messageListView);
+        viewModel.setSwitchPane(switchPane);
 
         messageTextField.textProperty().bindBidirectional(viewModel.getMessageTextProperty());
 
@@ -41,27 +43,20 @@ public class ChatPageView {
         showChatsButton.focusTraversableProperty().bind(viewModel.getButtonFocused());
         showUsersButton.disableProperty().bind(viewModel.getShowUsersButtonDisabled());
         showUsersButton.focusTraversableProperty().bind(viewModel.getButtonFocused());
-
     }
 
     @FXML
-    protected void onSendButtonClicked(ActionEvent actionEvent) {
+    protected void onSendButtonClicked() {
         viewModel.sendMessage();
     }
 
     @FXML
-    protected void onShowChatsClicked(ActionEvent actionEvent) {
-        viewModel.ChangePane(Views.ALL_CHATS_VIEW, switchPane);
-        viewModel.changeButtonsParam(true);
+    protected void onShowChatsClicked() {
+        viewModel.openChatPane();
     }
 
     @FXML
-    protected void onShowUsersClicked(ActionEvent actionEvent) {
-        viewModel.ChangePane(Views.ALL_USERS_VIEW, switchPane);
-        viewModel.changeButtonsParam(false);
-    }
-
-    public Pane getChatsPane() {
-        return switchPane;
+    protected void onShowUsersClicked() {
+        viewModel.openUsersPane();
     }
 }

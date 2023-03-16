@@ -78,7 +78,7 @@ public class ClientModelImpl implements ClientModel{
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfChat))
                 .thenAccept(chats -> {
                     // этот метод запускается только один раз сразу после входа
-                    changeSupport.firePropertyChange("MyChatsUpdate", myChats, chats);
+                    changeSupport.firePropertyChange("MyChatsUpdate", null, chats);
                     setMyChats(chats);
                 });
     }
