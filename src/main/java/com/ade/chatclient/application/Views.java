@@ -4,41 +4,46 @@ import com.ade.chatclient.view.AllChatsView;
 import com.ade.chatclient.view.AllUsersView;
 import com.ade.chatclient.view.ChatPageView;
 import com.ade.chatclient.view.LogInView;
-import javafx.fxml.FXMLLoader;
 import lombok.AllArgsConstructor;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
+
+/**
+ * Перечисление, которое содержит константы описывающие View или Pane в приложении.
+ * Каждая константа описывает свой метод инициализации, в который передаются необходимые параметры
+ */
 @AllArgsConstructor
 public enum Views {
     LOG_IN_VIEW(
             "log-in-view",
-            (loader, viewHandler) -> {
-                LogInView view = loader.getController();
-                view.init(viewHandler.getViewModelProvider().getLogInViewModel());
+            (initializer) -> {
+                LogInView view = initializer.getLoader().getController();
+                view.init(initializer.getViewHandler().getViewModelProvider().getLogInViewModel());
             }
     ),
     ALL_USERS_VIEW(
             "all-users-view",
-            (loader, viewHandler) -> {
-                AllUsersView view = loader.getController();
-                view.init(viewHandler.getViewModelProvider().getAllUsersViewModel());
+            (initializer) -> {
+                AllUsersView view = initializer.getLoader().getController();
+                view.init(initializer.getViewModelProvider().getAllUsersViewModel());
+                view.getViewModel().setPlaceHolder(initializer.getParent());
             }
     ),
     ALL_CHATS_VIEW(
             "all-chats-view",
-            (loader, viewHandler) -> {
-                AllChatsView view = loader.getController();
-                view.init(viewHandler.getViewModelProvider().getAllChatsViewModel());
+            (initializer) -> {
+                AllChatsView view = initializer.getLoader().getController();
+                view.init(initializer.getViewModelProvider().getAllChatsViewModel());
             }
     ),
     CHAT_PAGE_VIEW(
             "chat-page-view",
-            (loader, viewHandler) -> {
-                ChatPageView view = loader.getController();
-                view.init(viewHandler.getViewModelProvider().getChatPageViewModel());
+            (initializer) -> {
+                ChatPageView view = initializer.getLoader().getController();
+                view.init(initializer.getViewModelProvider().getChatPageViewModel());
 //                пример, как тут подгрузить панель
-                viewHandler.openPane(ALL_CHATS_VIEW, view.getChatsPane());
+                initializer.getViewHandler().openPane(ALL_CHATS_VIEW, view.getSwitchPane());
             }
     );
     /**
@@ -48,7 +53,8 @@ public enum Views {
     /**
      * функциональный объект инициализатор, он должен загрузить контролер из fxmlLoader,
      * и вызвать инициализатор для этого контроллера (view.init(...)), если вью содержит панели,
-     * то необходимо подгрузить и панели используя переданный
+     * то необходимо подгрузить и панели используя переданный viewHandler
+     * Все необходимые параметры должны быть упакованы и переданы в объекте ViewInitializer
      */
-    final BiConsumer<FXMLLoader, ViewHandler> viewInitializer;
+    final Consumer<ViewInitializer> initAction;
 }
