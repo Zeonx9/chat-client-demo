@@ -4,10 +4,7 @@ import com.ade.chatclient.application.Views;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.application.ViewHandler;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -27,6 +24,9 @@ public class ChatPageViewModel {
     private Runnable bottomScroller = () -> {};
     private final ViewHandler viewHandler;
     private final ClientModel model;
+    private final BooleanProperty showChatsButtonDisabled = new SimpleBooleanProperty(true);
+    private final BooleanProperty showUsersButtonDisabled = new SimpleBooleanProperty(false);
+    private final BooleanProperty buttonFocused = new SimpleBooleanProperty(false);
     public ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
         this.viewHandler = viewHandler;
         this.model = model;
@@ -89,6 +89,11 @@ public class ChatPageViewModel {
     }
     public void ChangePane(Views paneType, Pane pane){
         viewHandler.openPane(paneType, pane);
+    }
+    public void changeButtonsParam(Boolean param) {
+        showChatsButtonDisabled.set(param);
+        showUsersButtonDisabled.set(!param);
+        buttonFocused.set(false);
     }
 
     /* этот метод сейчас не нужен, но может потом пригодится

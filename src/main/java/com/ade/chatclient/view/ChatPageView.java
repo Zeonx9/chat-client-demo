@@ -37,7 +37,10 @@ public class ChatPageView {
 
         messageTextField.textProperty().bindBidirectional(viewModel.getMessageTextProperty());
 
-       changeButtonsParam(true);
+        showChatsButton.disableProperty().bind(viewModel.getShowChatsButtonDisabled());
+        showChatsButton.focusTraversableProperty().bind(viewModel.getButtonFocused());
+        showUsersButton.disableProperty().bind(viewModel.getShowUsersButtonDisabled());
+        showUsersButton.focusTraversableProperty().bind(viewModel.getButtonFocused());
 
     }
 
@@ -49,22 +52,15 @@ public class ChatPageView {
     @FXML
     protected void onShowChatsClicked(ActionEvent actionEvent) {
         viewModel.ChangePane(Views.ALL_CHATS_VIEW, switchPane);
-
-        changeButtonsParam(true);
+        viewModel.changeButtonsParam(true);
     }
 
     @FXML
     protected void onShowUsersClicked(ActionEvent actionEvent) {
         viewModel.ChangePane(Views.ALL_USERS_VIEW, switchPane);
-        changeButtonsParam(false);
+        viewModel.changeButtonsParam(false);
     }
 
-    private void changeButtonsParam(Boolean param) {
-        showChatsButton.setDisable(param);
-        showUsersButton.setDisable(!param);
-        showChatsButton.setFocusTraversable(false);
-        showUsersButton.setFocusTraversable(false);
-    }
     public Pane getChatsPane() {
         return switchPane;
     }
