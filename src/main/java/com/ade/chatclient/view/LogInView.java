@@ -1,5 +1,7 @@
 package com.ade.chatclient.view;
 
+import com.ade.chatclient.application.AbstractView;
+import com.ade.chatclient.application.ListenerFactoryAllChecked;
 import com.ade.chatclient.viewmodel.LogInViewModel;
 import com.ade.chatclient.application.ViewModelUtils;
 import javafx.fxml.FXML;
@@ -10,34 +12,32 @@ import javafx.scene.control.TextField;
 import lombok.Getter;
 
 @Getter
-public class LogInView {
+public class LogInView extends AbstractView<LogInViewModel> {
     @FXML private PasswordField passwordField;
     @FXML private TextField loginTextField;
     @FXML private Label errorMessageLabel;
     @FXML private Button loginButton;
 
-    private LogInViewModel viewModel;
-
     /**
-     * метод, который выполняет инициализацию вместо конструкора,
-     * так как объекты вью получаются при подключении не через констуктор, а из FXMLLoader
-     * выполняет байндинг модели и вью модели
+     * метод, который выполняет инициализацию вместо конструктора,
+     * так как объекты вью получаться при подключении не через конструктор, а из FXMLLoader
+     * выполняет binding модели и вью модели
      * @param logInViewModel ссылка на вью-модель, которая управляет этим вью
      */
+    @Override
     public void init(LogInViewModel logInViewModel) {
-        this.viewModel = logInViewModel;
+        super.init(logInViewModel);
+
+        var listenerFactory = new ListenerFactoryAllChecked(viewModel::onCheckPassed, viewModel::onCheckFailed);
+        loginTextField.textProperty().addListener(listenerFactory.newListener(viewModel::checkChangedText));
+        passwordField.textProperty().addListener(listenerFactory.newListener(viewModel::checkChangedText));
 
         loginTextField.textProperty().bindBidirectional(viewModel.getLoginTextProperty());
-        loginTextField.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onTextChanged));
-        loginTextField.setFocusTraversable(false);
-
         passwordField.textProperty().bindBidirectional(viewModel.getPasswordProperty());
-        passwordField.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onTextChanged));
-        passwordField.setFocusTraversable(false);
-
         errorMessageLabel.textProperty().bind(viewModel.getErrorMessageProperty());
-
         loginButton.disableProperty().bind(viewModel.getDisableButtonProperty());
+
+        passwordField.setOnKeyPressed(ViewModelUtils.enterKeyHandler(viewModel::authorize));
     }
 
     @FXML
