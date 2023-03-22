@@ -1,9 +1,10 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.ClientApplication;
-import com.ade.chatclient.domain.Chat;
-import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.application.ViewHandler;
+import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.domain.User;
+import com.ade.chatclient.model.ClientModel;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -13,7 +14,6 @@ import javafx.scene.image.ImageView;
 import lombok.Getter;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,15 +71,18 @@ public class AllChatsViewModel {
     }
 
     private String prepareChatToBeShown(Chat chat) {
-        List<String> memberNames = new ArrayList<>();
-        chat.getMembers().forEach(member -> {
-            if (!Objects.equals(member.getId(), model.getMyself().getId()))
-                memberNames.add(member.getUsername());
-        });
+        List<String> memberNames = chat.getMembers().stream()
+                .filter(this::isNotMyself)
+                .map(User::getUsername)
+                .toList();
         var res = String.join(", ", memberNames);
         if (chat.getUnreadCount() != null && chat.getUnreadCount() > 0) {
             res += " (" + chat.getUnreadCount() + ")";
         }
         return res;
+    }
+
+    private boolean isNotMyself(User user) {
+        return !Objects.equals(user.getId(), model.getMyself().getId());
     }
 }

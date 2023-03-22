@@ -94,8 +94,6 @@ public class ClientModelImpl implements ClientModel{
                     // только для обновления сообщений при выборе нового чата
                     changeSupport.firePropertyChange("MessageUpdate", null, messages);
                     selectedChat.setUnreadCount(0L);
-                    //TODO обновление чатов(уведомлений)
-                    changeSupport.firePropertyChange("MyChatsUpdate", null, myChats);
                 });
     }
 
@@ -154,9 +152,6 @@ public class ClientModelImpl implements ClientModel{
                 .collect(Collectors.partitioningBy(mes -> chatById.containsKey(mes.getChatId())));
 
         split.get(true).forEach(message -> chatById.get(message.getChatId()).incrementUnreadCount());
-
-        //TODO обновление чатов(уведомлений)
-        changeSupport.firePropertyChange("MyChatsUpdate", null, myChats);
 
         split.get(false).forEach(message -> createDialogFromNewMessage(message.getAuthor()));
     }

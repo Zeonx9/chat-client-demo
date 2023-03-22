@@ -14,6 +14,7 @@ import javafx.scene.image.ImageView;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
 import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
@@ -25,7 +26,7 @@ public class AllUsersViewModel {
     private final ViewHandler viewHandler;
     private final ListProperty<User> usersListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     // TODO:эту переменную надо как-то очищать, если пользователь не нажал на create
-    private final ArrayList<User> usersForNewChat = new ArrayList<>();
+    private final List<User> usersForNewChat = new ArrayList<>();
 
     public AllUsersViewModel(ViewHandler viewHandler, ClientModel model) {
         this.model = model;

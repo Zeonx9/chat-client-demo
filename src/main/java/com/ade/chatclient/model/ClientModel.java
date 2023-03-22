@@ -36,6 +36,8 @@ public interface ClientModel {
      */
     void setSelectedChat(Chat chat);
 
+    Chat getSelectedChat();
+
     /**
      *  отправляет GET запрос на историю, выбранного чата
      *  присваивает полученные сообщения в selectedChatMessages
