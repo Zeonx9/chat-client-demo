@@ -1,10 +1,9 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.ClientApplication;
-import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.domain.Chat;
-import com.ade.chatclient.domain.User;
 import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.application.ViewHandler;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -14,6 +13,7 @@ import javafx.scene.image.ImageView;
 import lombok.Getter;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,16 +29,34 @@ public class AllChatsViewModel {
         this.viewHandler = viewHandler;
         this.model = model;
 
-        // методы, которые запустит модель во время изменений
         model.addListener("MyChatsUpdate", runLaterListener(listReplacer(chatListProperty)));
         model.addListener("NewChatCreated", runLaterListener(this::newChatCreated));
-
-        // надо новый слушатель для incoming messages, который просто добавляет их в конец
     }
 
     private void newChatCreated(PropertyChangeEvent event) {
         Chat chat = (Chat) event.getNewValue();
         chatListProperty.add(chat);
+    }
+
+    public void onSelectedItemChange(Chat newValue) {
+        if (newValue == null) {
+            return;
+        }
+        model.setSelectedChat(newValue);
+        model.getMessages();
+    }
+
+    private String prepareChatToBeShown(Chat chat) {
+        List<String> memberNames = new ArrayList<>();
+        chat.getMembers().forEach(member -> {
+            if (!Objects.equals(member.getId(), model.getMyself().getId()))
+                memberNames.add(member.getUsername());
+        });
+        var res = String.join(", ", memberNames);
+        if (chat.getUnreadCount() != null && chat.getUnreadCount() > 0) {
+            res += " (" + chat.getUnreadCount() + ")";
+        }
+        return res;
     }
 
     public ListCell<Chat> getChatListCellFactory() {
@@ -61,28 +79,5 @@ public class AllChatsViewModel {
                 setGraphic(imageView);
             }
         };
-    }
-    public void onSelectedItemChange(Chat newValue) {
-        if (newValue == null) {
-            return;
-        }
-        model.setSelectedChat(newValue);
-        model.getMessages();
-    }
-
-    private String prepareChatToBeShown(Chat chat) {
-        List<String> memberNames = chat.getMembers().stream()
-                .filter(this::isNotMyself)
-                .map(User::getUsername)
-                .toList();
-        var res = String.join(", ", memberNames);
-        if (chat.getUnreadCount() != null && chat.getUnreadCount() > 0) {
-            res += " (" + chat.getUnreadCount() + ")";
-        }
-        return res;
-    }
-
-    private boolean isNotMyself(User user) {
-        return !Objects.equals(user.getId(), model.getMyself().getId());
     }
 }

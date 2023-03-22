@@ -23,8 +23,6 @@ import static com.ade.chatclient.application.Views.LOG_IN_VIEW;
  *
  */
 public class ViewHandler {
-
-
     private final Stage stage;
     @Getter
     private final ViewModelProvider viewModelProvider;
@@ -38,10 +36,6 @@ public class ViewHandler {
     public ViewHandler(Stage stage, ViewModelProvider viewModelProvider) {
         this.viewModelProvider = viewModelProvider;
         this.stage = stage;
-
-        // важная строка, которая инициализирует перед тем, как могут быть созданы вью
-        // этот вызов передает в фабрику моделей ссылку на созданный ViewHandler
-        // он нужен, чтобы вью-модель могла передать управление другому вью
         viewModelProvider.instantiateViewModels(this);
     }
 
@@ -74,8 +68,8 @@ public class ViewHandler {
             System.out.println("cannot open the view: " + viewType.fxmlFileName);
             throw new RuntimeException(e);
         }
-
-        viewType.viewInitializer.accept(fxmlLoader, this);
+        ViewInitializer initializer = new ViewInitializer(fxmlLoader, this, null);
+        viewType.initAction.accept(initializer);
 
         // создать сцену для нового вью и установить его на stage
         Scene scene = new Scene(root);
@@ -99,7 +93,8 @@ public class ViewHandler {
         }
 
         //init the controller Of Pane
-        paneType.viewInitializer.accept(fxmlLoader, this);
+        ViewInitializer initializer = new ViewInitializer(fxmlLoader, this, placeHolder);
+        paneType.initAction.accept(initializer);
         // эта строчка устанавливает уже инициализированную панель на ее место в родителе
         placeHolder.getChildren().setAll(paneRoot);
         if (placeHolder instanceof AnchorPane) {
