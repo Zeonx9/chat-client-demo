@@ -6,6 +6,8 @@ import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.application.ViewHandler;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
@@ -93,20 +95,26 @@ public class ChatPageViewModel {
 
     private String prepareMessageToBeShown(Message msg) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm, dd.MM");
-        return "from " + msg.getAuthor().getUsername() +
-                ": " + msg.getText() +
-                " at " + msg.getDateTime().format(dtf);
+        return msg.getText() + " at " + msg.getDateTime().format(dtf);
     }
 
     public ListCell<Message> getMessageCellFactory() {
         return new ListCell<>() {
+            private final Label label = new Label();
             @Override
             protected void updateItem(Message item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
-                    setText(null);
+                    setGraphic(null);
                 } else {
-                    setText(prepareMessageToBeShown(item));
+                    if (item.getAuthor().getId().equals(model.getMyself().getId())) {
+                        setAlignment(Pos.CENTER_RIGHT);
+                    }
+                    else {
+                        setAlignment(Pos.CENTER_LEFT);
+                    }
+                    label.setText(prepareMessageToBeShown(item));
+                    setGraphic(label);
                 }
             }
         };

@@ -84,15 +84,22 @@
     -fx-opacity: 30%;
 }
 
-.messageListView .list-cell {
-    -fx-background-color: #1A1A22;
-    -fx-font-family: "Poppins Medium";
-    -fx-font-size: 20;
-    -fx-text-fill: #FFFFFF;
-    -fx-pref-height: 70px;
+.messageListView .list-cell{
+    -fx-background-color: transparent;
 }
 
-.messageListView .list-cell:empty {
+.messageListView .list-cell .label{
+    display: inline-block;
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 15;
+    -fx-text-fill: #FFFFFF;
+    -fx-background: #1A1A22;
+    -fx-background-color: -fx-background ;
+    -fx-background-radius: 30px;
+    -fx-padding: 12px ;
+}
+
+.messageListView .list-cell:empty .label {
     -fx-background-color: transparent;
 }
 
