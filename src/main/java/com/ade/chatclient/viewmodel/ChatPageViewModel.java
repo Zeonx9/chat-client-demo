@@ -25,6 +25,7 @@ public class ChatPageViewModel {
     private final BooleanProperty showChatsButtonDisabled = new SimpleBooleanProperty(true);
     private final BooleanProperty showUsersButtonDisabled = new SimpleBooleanProperty(false);
     private final BooleanProperty buttonFocused = new SimpleBooleanProperty(false);
+    private final StringProperty userNameProperty = new SimpleStringProperty();
     @Setter
     private Pane switchPane;
     private Runnable bottomScroller = () -> {};
@@ -47,6 +48,7 @@ public class ChatPageViewModel {
         List<Message> messages = (List<Message>) event.getNewValue();
         messageListProperty.clear();
         messageListProperty.addAll(messages);
+        userNameProperty.setValue(model.getSelectedChat().membersAsString());
         bottomScroller.run();
     }
 
@@ -74,18 +76,16 @@ public class ChatPageViewModel {
     }
     public void openChatPane() {
         changePane(Views.ALL_CHATS_VIEW, switchPane);
-        changeButtonsParam(true);
     }
 
     public void openUsersPane() {
         changePane(Views.ALL_USERS_VIEW, switchPane);
-        changeButtonsParam(false);
     }
 
     private void changePane(Views paneType, Pane pane){
         viewHandler.openPane(paneType, pane);
     }
-    private void changeButtonsParam(Boolean param) {
+    public void changeButtonsParam(Boolean param) {
         showChatsButtonDisabled.set(param);
         showUsersButtonDisabled.set(!param);
         buttonFocused.set(false);

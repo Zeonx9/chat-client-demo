@@ -28,6 +28,7 @@ public enum Views {
                 AllUsersView view = initializer.getLoader().getController();
                 view.init(initializer.getViewModelProvider().getAllUsersViewModel());
                 view.getViewModel().setPlaceHolder(initializer.getParent());
+                initializer.getViewModelProvider().getChatPageViewModel().changeButtonsParam(false);
             }
     ),
     ALL_CHATS_VIEW(
@@ -35,6 +36,7 @@ public enum Views {
             (initializer) -> {
                 AllChatsView view = initializer.getLoader().getController();
                 view.init(initializer.getViewModelProvider().getAllChatsViewModel());
+                initializer.getViewModelProvider().getChatPageViewModel().changeButtonsParam(true);
             }
     ),
     CHAT_PAGE_VIEW(

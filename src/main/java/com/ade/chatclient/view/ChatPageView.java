@@ -5,6 +5,7 @@ import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.viewmodel.ChatPageViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -13,10 +14,9 @@ import lombok.Getter;
 public class ChatPageView {
     @FXML private Button showChatsButton;
     @FXML private Button showUsersButton;
-
+    @FXML private Label userNameLabel;
     @FXML private ListView<Message> messageListView;
     @FXML private TextField messageTextField;
-    @FXML private Button sendButton;
     @Getter
     public Pane switchPane;
     private ChatPageViewModel viewModel;
@@ -43,6 +43,8 @@ public class ChatPageView {
         showChatsButton.focusTraversableProperty().bind(viewModel.getButtonFocused());
         showUsersButton.disableProperty().bind(viewModel.getShowUsersButtonDisabled());
         showUsersButton.focusTraversableProperty().bind(viewModel.getButtonFocused());
+
+        userNameLabel.textProperty().bind(viewModel.getUserNameProperty());
     }
 
     @FXML

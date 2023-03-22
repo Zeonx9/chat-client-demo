@@ -33,15 +33,15 @@ public class AllUsersViewModel {
         model.addListener("AllUsers", runLaterListener(listReplacer(usersListProperty)));
     }
 
-    private void switchToChatPage() {
-        viewHandler.openPane(ALL_CHATS_VIEW, placeHolder);
-    }
-
     public void onSelectedItemChange(User newValue) {
         Chat created = model.createDialogFromAllUsers(newValue);
         model.setSelectedChat(created);
         model.getMessages();
         switchToChatPage();
+    }
+
+    private void switchToChatPage() {
+        viewHandler.openPane(ALL_CHATS_VIEW, placeHolder);
     }
 
     private static String prepareUserToBeShown(User user) {
