@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1000.0" stylesheets="@../styles/ChatPageViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.ChatPageView">
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" styleClass="mainPane" stylesheets="@../styles/ChatPageViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.ChatPageView">
     <BorderPane prefHeight="600.0" prefWidth="80.0" styleClass="leftPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
         <center>
             <Group BorderPane.alignment="CENTER">
@@ -18,72 +18,39 @@
         </center>
     </BorderPane>
 
-    <!--  это панель с сообщениями  -->
-<!--    <StackPane prefHeight="600.0" prefWidth="1000.0" StackPane.alignment="CENTER_RIGHT">-->
-<!--        <ListView fx:id="messageListView" prefHeight="399.0" prefWidth="520.0" StackPane.margin="25.0">-->
-<!--            <BorderPane.margin>-->
-<!--                <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />-->
-<!--            </BorderPane.margin>-->
-<!--        </ListView>-->
-<!--        <StackPane.alignment>-->
-<!--            <Pos fx:constant="BOTTOM_RIGHT" />-->
-<!--        </StackPane.alignment>-->
-<!--        <Button fx:id="sendButton" mnemonicParsing="false" onAction="#onSendButtonClicked" prefHeight="50.0" prefWidth="50.0" styleClass="buttonSend">-->
-<!--            <StackPane.margin>-->
-<!--                <Insets right="10.0" />-->
-<!--            </StackPane.margin>-->
-<!--        </Button>-->
-<!--        <TextField fx:id="messageTextField" focusTraversable="false" prefHeight="50.0" promptText="Enter your message . . ." styleClass="messageInput">-->
-<!--            <padding>-->
-<!--                <Insets left="20.0" right="70.0" />-->
-<!--            </padding>-->
-<!--        </TextField>-->
-<!--    </StackPane>-->
-
-
         <VBox prefHeight="600.0" prefWidth="1000.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <ListView fx:id="messageListView" prefHeight="399.0" prefWidth="520.0" VBox.vgrow="ALWAYS">
+      <Label fx:id="userNameLabel" prefHeight="50.0" prefWidth="479.0" styleClass="header">
+         <VBox.margin>
+            <Insets left="25.0" top="20.0" />
+         </VBox.margin>
+      </Label>
+        <ListView fx:id="messageListView" prefHeight="399.0" prefWidth="520.0" style="-fx-background-color: transparent;" styleClass="messageListView" VBox.vgrow="ALWAYS">
             <BorderPane.margin>
                 <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
             </BorderPane.margin>
          <VBox.margin>
-            <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+            <Insets bottom="10.0" left="25.0" right="25.0" top="10.0" />
          </VBox.margin>
         </ListView>
-          <Button fx:id="sendButton" mnemonicParsing="false" onAction="#onSendButtonClicked" prefHeight="50.0" prefWidth="50.0" styleClass="buttonSend" />
-        <TextField fx:id="messageTextField" focusTraversable="false" prefHeight="50.0" promptText="Enter your message . . ." styleClass="messageInput">
-            <padding>
-                <Insets left="20.0" right="70.0" />
-            </padding>
-         <VBox.margin>
-            <Insets bottom="25.0" left="25.0" right="25.0" />
-         </VBox.margin>
-        </TextField>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="600.0">
+                <TextField fx:id="messageTextField" focusTraversable="false" maxWidth="800.0" minWidth="400.0" prefHeight="50.0" prefWidth="400.0" promptText="Enter your message . . ." styleClass="messageInput">
+                    <HBox.margin>
+                        <Insets left="25.0" />
+                    </HBox.margin>
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding>
+                    <HBox.hgrow>
+                        <Priority fx:value="ALWAYS" />
+                    </HBox.hgrow>
+                </TextField>
+                <Button fx:id="sendButton" mnemonicParsing="false" onAction="#onSendButtonClicked" prefHeight="50.0" prefWidth="50.0" styleClass="buttonSend">
+                    <HBox.margin>
+                        <Insets left="20.0" right="25.0" />
+                    </HBox.margin>
+                </Button>
+            </HBox>
     </VBox>
 
-
-
-<!--    <BorderPane layoutX="480.0" prefHeight="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">-->
-<!--        <bottom>-->
-<!--            <Pane fx:id="helpPane" maxWidth="1000.0" styleClass="helpPane" BorderPane.alignment="BOTTOM_LEFT">-->
-<!--                <BorderPane.margin>-->
-<!--                    <Insets bottom="25.0" left="25.0" right="25.0" />-->
-<!--                </BorderPane.margin>-->
-<!--                <TextField fx:id="messageTextField" focusTraversable="false" maxWidth="1000.0" minWidth="472.0" prefHeight="50.0" prefWidth="472.0" promptText="Enter your message . . ." styleClass="messageInput">-->
-<!--                    <padding>-->
-<!--                        <Insets left="20.0" right="70.0" />-->
-<!--                    </padding>-->
-<!--                </TextField>-->
-<!--            </Pane>-->
-<!--        </bottom>-->
-<!--        <center>-->
-<!--            <ListView fx:id="messageListView" prefHeight="434.0" prefWidth="602.0" BorderPane.alignment="CENTER">-->
-<!--                <BorderPane.margin>-->
-<!--                    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />-->
-<!--                </BorderPane.margin>-->
-<!--            </ListView>-->
-<!--        </center>-->
-<!--    </BorderPane>-->
-
-   <Pane fx:id="switchPane" layoutX="80.0" prefHeight="600.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
+   <AnchorPane fx:id="switchPane" layoutX="80.0" prefHeight="600.0" prefWidth="400.0" styleClass="chatsPane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
 </AnchorPane>

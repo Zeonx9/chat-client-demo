@@ -6,12 +6,12 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="400.0" stylesheets="@../styles/AllUsersViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.AllUsersView">
-    <BorderPane fx:id="usersPane" prefHeight="600.0" prefWidth="400.0" styleClass="mainPane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+<AnchorPane prefHeight="600.0" prefWidth="400.0" styleClass="chatsPane" stylesheets="@../styles/ChatPageViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.AllUsersView">
+    <BorderPane fx:id="usersPane" prefHeight="600.0" prefWidth="400.0" styleClass="chatsPane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
         <center>
-            <ListView fx:id="userListView" prefHeight="406.0" prefWidth="400.0" styleClass="listChats" BorderPane.alignment="CENTER">
+            <ListView fx:id="userListView" prefHeight="406.0" prefWidth="400.0" style="-fx-background-color: transparent;" styleClass="chatListView" BorderPane.alignment="CENTER">
                 <BorderPane.margin>
-                    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                    <Insets bottom="25.0" top="25.0" />
                 </BorderPane.margin>
             </ListView>
         </center>
@@ -28,9 +28,8 @@
                 <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                     <Image url="@../img/search_icon.png" />
                 </ImageView>
-                <Label layoutY="60.0" prefHeight="28.0" prefWidth="193.0" styleClass="header" text="Select user (users)" />
-            <Label layoutY="85.0" prefHeight="28.0" prefWidth="193.0" styleClass="header" text="to create chat" />
-            <Button fx:id="createChatButton" disable="true" layoutX="230.0" layoutY="67.0" mnemonicParsing="false" onAction="#OnCreateChatButtonClicked" prefHeight="37.0" prefWidth="120.0" styleClass="buttonCreateNewChat" text="create" />
+                <Label layoutY="60.0" prefHeight="43.0" prefWidth="319.0" styleClass="header" text="Select user (users)" />
+            <Label layoutY="85.0" prefHeight="43.0" prefWidth="314.0" styleClass="header" text="to create chat" />
             </Group>
         </top>
     </BorderPane>
