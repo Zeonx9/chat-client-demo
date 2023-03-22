@@ -3,6 +3,9 @@ package com.ade.chatclient.application;
 import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -23,6 +26,14 @@ public class ViewModelUtils {
             List<T> newList = (List<T>) event.getNewValue();
             property.clear();
             property.addAll(newList);
+        };
+    }
+
+    public static EventHandler<KeyEvent> enterKeyHandler(Runnable action) {
+        return keyEvent -> {
+            if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                action.run();
+            }
         };
     }
 

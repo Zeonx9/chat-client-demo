@@ -1,5 +1,6 @@
 package com.ade.chatclient.viewmodel;
 
+import com.ade.chatclient.application.AbstractViewModel;
 import com.ade.chatclient.application.Views;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.model.ClientModel;
@@ -12,37 +13,29 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.beans.PropertyChangeEvent;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 
 @Getter
-public class ChatPageViewModel {
+public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final ListProperty<Message> messageListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final StringProperty messageTextProperty = new SimpleStringProperty();
     private final BooleanProperty showChatsButtonDisabled = new SimpleBooleanProperty(true);
     private final BooleanProperty showUsersButtonDisabled = new SimpleBooleanProperty(false);
-    private final BooleanProperty buttonFocused = new SimpleBooleanProperty(false);
     private final StringProperty userNameProperty = new SimpleStringProperty();
-    @Setter
-    private Pane switchPane;
-    private Runnable bottomScroller = () -> {};
-    private final ViewHandler viewHandler;
-    private final ClientModel model;
+    private Runnable bottomScroller;
+    private Consumer<Views> paneSwitcher;
 
     public ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
-        this.viewHandler = viewHandler;
-        this.model = model;
+        super(viewHandler, model);
 
-        // методы, которые запустит модель во время изменений
         model.addListener("MessageUpdate", runLaterListener(this::updateMessages));
         model.addListener("newSelectedMessages", runLaterListener(this::newSelectedMessages));
-
-        // надо новый слушатель для incoming messages, который просто добавляет их в конец
     }
 
     private void updateMessages(PropertyChangeEvent event) {
@@ -61,6 +54,25 @@ public class ChatPageViewModel {
         bottomScroller.run();
     }
 
+    public <T> void addBottomScroller(ListView<T> listView) {
+        bottomScroller = () -> {
+            if (!messageListProperty.isEmpty()) {
+                listView.scrollTo(messageListProperty.size() - 1);
+            }
+        };
+    }
+
+    public void addPaneSwitcher(Pane placeHolder) {
+        paneSwitcher = viewType -> viewHandler.openPane(viewType, placeHolder);
+    }
+
+    public void openChatPane() {
+        paneSwitcher.accept(Views.ALL_CHATS_VIEW);
+    }
+    public void openUsersPane() {
+        paneSwitcher.accept(Views.ALL_USERS_VIEW);
+    }
+
     public void sendMessage() {
         if (messageTextProperty.get().isBlank()) {
             return;
@@ -69,28 +81,9 @@ public class ChatPageViewModel {
         messageTextProperty.set("");
     }
 
-    public <T> void AddBottomScroller(ListView<T> listView) {
-        bottomScroller = () -> {
-            if (!messageListProperty.isEmpty()) {
-                listView.scrollTo(messageListProperty.size() - 1);
-            }
-        };
-    }
-    public void openChatPane() {
-        changePane(Views.ALL_CHATS_VIEW, switchPane);
-    }
-
-    public void openUsersPane() {
-        changePane(Views.ALL_USERS_VIEW, switchPane);
-    }
-
-    private void changePane(Views paneType, Pane pane){
-        viewHandler.openPane(paneType, pane);
-    }
     public void changeButtonsParam(Boolean param) {
         showChatsButtonDisabled.set(param);
         showUsersButtonDisabled.set(!param);
-        buttonFocused.set(false);
     }
 
     private String prepareMessageToBeShown(Message msg) {
