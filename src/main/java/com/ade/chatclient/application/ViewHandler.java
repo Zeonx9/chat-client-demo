@@ -3,8 +3,10 @@ package com.ade.chatclient.application;
 import com.ade.chatclient.view.LogInView;
 import com.ade.chatclient.viewmodel.BackgroundService;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -88,7 +90,7 @@ public class ViewHandler {
      */
     public void openPane(Views paneType, Pane placeHolder) {
         FXMLLoader fxmlLoader = new FXMLLoader(LogInView.class.getResource(paneType.fxmlFileName + ".fxml"));
-        Parent paneRoot;
+        Node paneRoot;
         try {
             paneRoot = fxmlLoader.load();
         } catch (Exception e) {
@@ -100,5 +102,15 @@ public class ViewHandler {
         paneType.viewInitializer.accept(fxmlLoader, this);
         // эта строчка устанавливает уже инициализированную панель на ее место в родителе
         placeHolder.getChildren().setAll(paneRoot);
+        if (placeHolder instanceof AnchorPane) {
+            anchorPaneInParent(paneRoot);
+        }
+    }
+
+    private void anchorPaneInParent(Node child) {
+        AnchorPane.setTopAnchor(child, 0.0);
+        AnchorPane.setBottomAnchor(child, 0.0);
+        AnchorPane.setLeftAnchor(child, 0.0);
+        AnchorPane.setRightAnchor(child, 0.0);
     }
 }
