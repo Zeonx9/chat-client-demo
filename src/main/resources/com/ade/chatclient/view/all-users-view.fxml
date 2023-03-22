@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane prefHeight="600.0" prefWidth="400.0" styleClass="chatsPane" stylesheets="@../styles/ChatPageViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.AllUsersView">
-    <BorderPane fx:id="usersPane" prefHeight="600.0" prefWidth="400.0" styleClass="chatsPane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <BorderPane prefHeight="600.0" prefWidth="400.0" styleClass="chatsPane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
         <center>
             <ListView fx:id="userListView" prefHeight="406.0" prefWidth="400.0" style="-fx-background-color: transparent;" styleClass="chatListView" BorderPane.alignment="CENTER">
                 <BorderPane.margin>

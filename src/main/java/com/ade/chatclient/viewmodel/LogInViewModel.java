@@ -1,26 +1,26 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.application.AbstractViewModel;
 import com.ade.chatclient.application.ViewHandler;
+import com.ade.chatclient.model.ClientModel;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
 
 @Getter
-@RequiredArgsConstructor
-public class LogInViewModel {
+public class LogInViewModel extends AbstractViewModel<ClientModel> {
     private final StringProperty loginTextProperty = new SimpleStringProperty();
     private final StringProperty passwordProperty = new SimpleStringProperty();
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
     private final BooleanProperty disableButtonProperty = new SimpleBooleanProperty(true);
 
-    private final ViewHandler viewHandler;
-    private final ClientModel model;
+    public LogInViewModel(ViewHandler viewHandler, ClientModel model) {
+        super(viewHandler, model);
+    }
 
     public void authorize() {
         boolean success = model.Authorize(loginTextProperty.get(), passwordProperty.get());
@@ -39,5 +39,20 @@ public class LogInViewModel {
         if (newValue == null)
             newValue = "";
         disableButtonProperty.set(newValue.isBlank() || newValue.contains(" "));
+    }
+
+    public Boolean checkChangedText(String newValue) {
+        if (newValue == null) {
+            return false;
+        }
+        return !newValue.isBlank() && !newValue.contains(" ");
+    }
+
+    public void onCheckFailed() {
+        disableButtonProperty.set(true);
+    }
+
+    public void onCheckPassed() {
+        disableButtonProperty.set(false);
     }
 }

@@ -1,6 +1,7 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.ClientApplication;
+import com.ade.chatclient.application.AbstractChildViewModel;
 import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
@@ -11,36 +12,30 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import lombok.Getter;
-import lombok.Setter;
 
 import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 import static com.ade.chatclient.application.Views.ALL_CHATS_VIEW;
 
 @Getter
-public class AllUsersViewModel {
+public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
     private final ListProperty<User> usersListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
-    @Setter
-    private Pane placeHolder;
-    private final ViewHandler viewHandler;
-    private final ClientModel model;
 
     public AllUsersViewModel(ViewHandler viewHandler, ClientModel model) {
-        this.model = model;
-        this.viewHandler = viewHandler;
+        super(viewHandler, model);
         model.addListener("AllUsers", runLaterListener(listReplacer(usersListProperty)));
+    }
+
+    @Override
+    public void actionInParentOnOpen() {
+        viewHandler.getViewModelProvider().getChatPageViewModel().changeButtonsParam(false);
     }
 
     public void onSelectedItemChange(User newValue) {
         Chat created = model.createDialogFromAllUsers(newValue);
         model.setSelectedChat(created);
         model.getMessages();
-        switchToChatPage();
-    }
-
-    private void switchToChatPage() {
         viewHandler.openPane(ALL_CHATS_VIEW, placeHolder);
     }
 

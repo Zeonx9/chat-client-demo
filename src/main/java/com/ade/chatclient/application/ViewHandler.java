@@ -68,8 +68,9 @@ public class ViewHandler {
             System.out.println("cannot open the view: " + viewType.fxmlFileName);
             throw new RuntimeException(e);
         }
-        ViewInitializer initializer = new ViewInitializer(fxmlLoader, this, null);
-        viewType.initAction.accept(initializer);
+
+        AbstractView<AbstractViewModel<?>> view = fxmlLoader.getController();
+        view.init(viewType.viewModelGetter.apply(viewModelProvider));
 
         // создать сцену для нового вью и установить его на stage
         Scene scene = new Scene(root);
@@ -92,9 +93,11 @@ public class ViewHandler {
             throw new RuntimeException(e);
         }
 
-        //init the controller Of Pane
-        ViewInitializer initializer = new ViewInitializer(fxmlLoader, this, placeHolder);
-        paneType.initAction.accept(initializer);
+        AbstractView<AbstractChildViewModel<?>> pane = fxmlLoader.getController();
+        pane.init((AbstractChildViewModel<?>) paneType.viewModelGetter.apply(viewModelProvider));
+        pane.getViewModel().setPlaceHolder(placeHolder);
+        pane.getViewModel().actionInParentOnOpen();
+
         // эта строчка устанавливает уже инициализированную панель на ее место в родителе
         placeHolder.getChildren().setAll(paneRoot);
         if (placeHolder instanceof AnchorPane) {

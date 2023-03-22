@@ -12,8 +12,8 @@
                 <cursor>
                     <Cursor fx:constant="DEFAULT" />
                 </cursor>
-                <Button fx:id="showChatsButton" layoutY="100.0" mnemonicParsing="false" onAction="#onShowChatsClicked" prefHeight="50.0" prefWidth="50.0" styleClass="showChatsBtn" />
-                <Button fx:id="showUsersButton" mnemonicParsing="false" onAction="#onShowUsersClicked" prefHeight="50.0" prefWidth="50.0" styleClass="ShowUsersBtn" />
+                <Button fx:id="showChatsButton" focusTraversable="false" layoutY="100.0" mnemonicParsing="false" onAction="#onShowChatsClicked" prefHeight="50.0" prefWidth="50.0" styleClass="showChatsBtn" />
+                <Button fx:id="showUsersButton" focusTraversable="false" mnemonicParsing="false" onAction="#onShowUsersClicked" prefHeight="50.0" prefWidth="50.0" styleClass="ShowUsersBtn" />
             </Group>
         </center>
     </BorderPane>
@@ -24,7 +24,7 @@
             <Insets left="25.0" top="20.0" />
          </VBox.margin>
       </Label>
-        <ListView fx:id="messageListView" prefHeight="399.0" prefWidth="520.0" style="-fx-background-color: transparent;" styleClass="messageListView" VBox.vgrow="ALWAYS">
+        <ListView fx:id="messageListView" focusTraversable="false" prefHeight="399.0" prefWidth="520.0" style="-fx-background-color: transparent;" styleClass="messageListView" VBox.vgrow="ALWAYS">
             <BorderPane.margin>
                 <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
             </BorderPane.margin>
@@ -44,7 +44,7 @@
                         <Priority fx:value="ALWAYS" />
                     </HBox.hgrow>
                 </TextField>
-                <Button fx:id="sendButton" mnemonicParsing="false" onAction="#onSendButtonClicked" prefHeight="50.0" prefWidth="50.0" styleClass="buttonSend">
+                <Button focusTraversable="false" mnemonicParsing="false" onAction="#onSendButtonClicked" prefHeight="50.0" prefWidth="50.0" styleClass="buttonSend">
                     <HBox.margin>
                         <Insets left="20.0" right="25.0" />
                     </HBox.margin>
@@ -52,5 +52,5 @@
             </HBox>
     </VBox>
 
-   <AnchorPane fx:id="switchPane" layoutX="80.0" prefHeight="600.0" prefWidth="400.0" styleClass="chatsPane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
+   <AnchorPane fx:id="placeHolder" layoutX="80.0" prefHeight="600.0" prefWidth="400.0" styleClass="chatsPane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
 </AnchorPane>

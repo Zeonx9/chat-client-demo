@@ -16,5 +16,5 @@
    </TextField>
    <Button fx:id="loginButton" layoutX="183.0" layoutY="407.0" mnemonicParsing="false" onAction="#onLoginClick" prefHeight="50.0" prefWidth="450.0" styleClass="button" text="Log In" />
    <Label fx:id="errorMessageLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="284.0" layoutY="480.0" prefHeight="17.0" prefWidth="248.0" textAlignment="CENTER" />
-   <PasswordField fx:id="passwordField" alignment="CENTER" layoutX="183.0" layoutY="332.0" prefHeight="50.0" prefWidth="450.0" promptText="Please, enter your password to continue..." />
+   <PasswordField fx:id="passwordField" focusTraversable="false" alignment="CENTER" layoutX="183.0" layoutY="332.0" prefHeight="50.0" prefWidth="450.0" promptText="Please, enter your password to continue..." />
 </AnchorPane>

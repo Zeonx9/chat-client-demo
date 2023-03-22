@@ -1,6 +1,7 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.ClientApplication;
+import com.ade.chatclient.application.AbstractChildViewModel;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.application.ViewHandler;
@@ -20,17 +21,19 @@ import java.util.Objects;
 import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 @Getter
-public class AllChatsViewModel {
+public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     private final ListProperty<Chat> chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
-    private final ViewHandler viewHandler;
-    private final ClientModel model;
 
     public AllChatsViewModel(ViewHandler viewHandler, ClientModel model) {
-        this.viewHandler = viewHandler;
-        this.model = model;
+        super(viewHandler, model);
 
         model.addListener("MyChatsUpdate", runLaterListener(listReplacer(chatListProperty)));
         model.addListener("NewChatCreated", runLaterListener(this::newChatCreated));
+    }
+
+    @Override
+    public void actionInParentOnOpen() {
+        viewHandler.getViewModelProvider().getChatPageViewModel().changeButtonsParam(true);
     }
 
     private void newChatCreated(PropertyChangeEvent event) {
