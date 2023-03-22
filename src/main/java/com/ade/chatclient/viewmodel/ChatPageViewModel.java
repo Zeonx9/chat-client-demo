@@ -22,11 +22,12 @@ public class ChatPageViewModel {
     private final ListProperty<Message> messageListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final StringProperty messageTextProperty = new SimpleStringProperty();
     private Runnable bottomScroller = () -> {};
-    private final ViewHandler viewHandler;
-    private final ClientModel model;
     private final BooleanProperty showChatsButtonDisabled = new SimpleBooleanProperty(true);
     private final BooleanProperty showUsersButtonDisabled = new SimpleBooleanProperty(false);
     private final BooleanProperty buttonFocused = new SimpleBooleanProperty(false);
+    private final StringProperty userNameProperty = new SimpleStringProperty();
+    private final ViewHandler viewHandler;
+    private final ClientModel model;
     public ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
         this.viewHandler = viewHandler;
         this.model = model;
@@ -42,6 +43,7 @@ public class ChatPageViewModel {
         List<Message> messages = (List<Message>) event.getNewValue();
         messageListProperty.clear();
         messageListProperty.addAll(messages);
+        userNameProperty.setValue(model.getSelectedChat().membersAsString());
         bottomScroller.run();
     }
 

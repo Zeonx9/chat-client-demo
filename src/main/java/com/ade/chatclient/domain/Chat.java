@@ -23,4 +23,9 @@ public class Chat {
             unreadCount += 1L;
         }
     }
+
+    public String membersAsString() {
+        var names = members.stream().map(User::getUsername).toList();
+        return String.join(", ", names);
+    }
 }

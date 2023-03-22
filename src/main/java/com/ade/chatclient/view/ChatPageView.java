@@ -4,20 +4,22 @@ package com.ade.chatclient.view;
 import com.ade.chatclient.application.Views;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.viewmodel.ChatPageViewModel;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 
 public class ChatPageView {
     public Pane switchPane;
+    public Label userNameLabel;
     @FXML private Button showChatsButton;
     @FXML private Button showUsersButton;
 
     @FXML private ListView<Message> messageListView;
     @FXML private TextField messageTextField;
 
-    @FXML private Button sendButton;
 
     private ChatPageViewModel viewModel;
 
@@ -42,21 +44,23 @@ public class ChatPageView {
         showUsersButton.disableProperty().bind(viewModel.getShowUsersButtonDisabled());
         showUsersButton.focusTraversableProperty().bind(viewModel.getButtonFocused());
 
+        userNameLabel.textProperty().bind(viewModel.getUserNameProperty());
+
     }
 
     @FXML
-    protected void onSendButtonClicked(ActionEvent actionEvent) {
+    protected void onSendButtonClicked() {
         viewModel.sendMessage();
     }
 
     @FXML
-    protected void onShowChatsClicked(ActionEvent actionEvent) {
+    protected void onShowChatsClicked() {
         viewModel.ChangePane(Views.ALL_CHATS_VIEW, switchPane);
         viewModel.changeButtonsParam(true);
     }
 
     @FXML
-    protected void onShowUsersClicked(ActionEvent actionEvent) {
+    protected void onShowUsersClicked() {
         viewModel.ChangePane(Views.ALL_USERS_VIEW, switchPane);
         viewModel.changeButtonsParam(false);
     }
