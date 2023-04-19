@@ -112,6 +112,7 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void updateAllUsers() {
+        //TODO change to company/users
         handler.sendGETAsync("/users")
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfUser))
                 .thenApply(userList -> {
@@ -119,6 +120,7 @@ public class ClientModelImpl implements ClientModel{
                     return userList;
                 })
                 .thenAccept(userList -> {
+                    //TODO sorting
                     changeSupport.firePropertyChange("AllUsers", allUsers, userList);
                     setAllUsers(userList);
                 });
@@ -158,11 +160,7 @@ public class ClientModelImpl implements ClientModel{
 
 
     private CompletableFuture<Chat> futureChatWith(User user) {
-        return handler.sendPOSTAsync(
-                        "/chat?isPrivate=true",
-                        List.of(myself.getId(), user.getId()),
-                        true
-                )
+        return handler.sendGETAsync(String.format("/private_chat/%d/%d", myself.getId(), user.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(Chat.class));
     }
 
@@ -203,6 +201,7 @@ public class ClientModelImpl implements ClientModel{
             return chat;
         } catch (Exception e) {
             System.out.println("Fail to Create dialog");
+            System.out.println(e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -214,8 +213,6 @@ public class ClientModelImpl implements ClientModel{
             myChats.add(chat);
         });
     }
-
-
 
     @Override
     public void addListener(String eventName, PropertyChangeListener listener) {

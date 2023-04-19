@@ -1,17 +1,19 @@
 package com.ade.chatclient.dtos;
 
+import com.ade.chatclient.domain.GroupChatInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthRequest {
-    private String login;
-    private String password;
-    @Builder.Default
-    private Long companyId = 1L;
+public class GroupRequest {
+    private List<Long> ids;
+    private GroupChatInfo groupInfo;
 }
+
