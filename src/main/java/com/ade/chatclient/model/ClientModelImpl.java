@@ -94,6 +94,7 @@ public class ClientModelImpl implements ClientModel{
                     // только для обновления сообщений при выборе нового чата
                     changeSupport.firePropertyChange("MessageUpdate", null, messages);
                     selectedChat.setUnreadCount(0L);
+                    changeSupport.firePropertyChange("MarkAsRead", null, selectedChat);
                 });
     }
 
@@ -107,7 +108,10 @@ public class ClientModelImpl implements ClientModel{
                         Message.builder().text(text).build(),
                         true)
                 .thenApply(AsyncRequestHandler.mapperOf(Message.class))
-                .thenAccept(message -> changeSupport.firePropertyChange("newSelectedMessages", null, List.of(message)));
+                .thenAccept(message -> {
+                    changeSupport.firePropertyChange("newSelectedMessages", null, List.of(message));
+                    changeSupport.firePropertyChange("NewMessageInSelectedChat", null, selectedChat);
+                });
     }
 
     @Override
@@ -141,6 +145,7 @@ public class ClientModelImpl implements ClientModel{
         );
         if (!splitBySelectedChat.get(true).isEmpty()){
             changeSupport.firePropertyChange("newSelectedMessages", null, splitBySelectedChat.get(true));
+            changeSupport.firePropertyChange("NewMessageInSelectedChat", null, selectedChat);
         }
         if (!splitBySelectedChat.get(false).isEmpty()) {
             updateUnreadMessagesInChats(splitBySelectedChat.get(false));
@@ -153,7 +158,10 @@ public class ClientModelImpl implements ClientModel{
         Map <Boolean, List<Message>> split = messages.stream()
                 .collect(Collectors.partitioningBy(mes -> chatById.containsKey(mes.getChatId())));
 
-        split.get(true).forEach(message -> chatById.get(message.getChatId()).incrementUnreadCount());
+        split.get(true).forEach(message -> {
+            chatById.get(message.getChatId()).incrementUnreadCount();
+            changeSupport.firePropertyChange("UpdateUnreadCount", null, chatById.get(message.getChatId()));
+        });
 
         split.get(false).forEach(message -> createDialogFromNewMessage(message.getAuthor()));
     }
