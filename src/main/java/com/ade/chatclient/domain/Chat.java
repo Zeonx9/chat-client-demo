@@ -26,6 +26,10 @@ public class Chat {
         }
     }
 
+    public boolean isUnreadChat() {
+        return unreadCount != null && unreadCount > 0;
+    }
+
     public String getChatName() {
         if (group != null) {
             return group.getName();

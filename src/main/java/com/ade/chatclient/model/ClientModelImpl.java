@@ -29,6 +29,7 @@ public class ClientModelImpl implements ClientModel{
     private Chat selectedChat;
     private List<Chat> myChats = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
+    private Long unreadChatCounter;
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
     @Override
@@ -80,7 +81,31 @@ public class ClientModelImpl implements ClientModel{
                     // этот метод запускается только один раз сразу после входа
                     changeSupport.firePropertyChange("MyChatsUpdate", null, chats);
                     setMyChats(chats);
+                    updateUnreadChatCounter();
                 });
+    }
+
+    private void updateUnreadChatCounter() {
+        unreadChatCounter = 0L;
+        myChats.forEach(chat -> {
+            if (chat.isUnreadChat()) unreadChatCounter++;
+        });
+        changeSupport.firePropertyChange("UnreadChats", null, unreadChatCounter);
+        System.out.println("new mes at login" + unreadChatCounter);
+    }
+
+    private void decrementChatCounter(Chat chat) {
+        if (chat.isUnreadChat()) {
+            System.out.println("open chat / counter" + chat);
+            changeSupport.firePropertyChange("UnreadChats", null, unreadChatCounter--);
+        }
+    }
+
+    private void incrementUnreadChatCounter(Chat chat) {
+        if (!chat.isUnreadChat()) {
+            System.out.println("new mes / counter" + chat);
+            changeSupport.firePropertyChange("UnreadChats", null, unreadChatCounter++);
+        }
     }
 
     @Override
@@ -88,6 +113,7 @@ public class ClientModelImpl implements ClientModel{
         if (selectedChat == null) {
             return;
         }
+        decrementChatCounter(selectedChat);
         handler.sendGETAsync(String.format("/chats/%d/messages?userId=%d", selectedChat.getId(), myself.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
                 .thenAccept(messages -> {
@@ -159,6 +185,7 @@ public class ClientModelImpl implements ClientModel{
                 .collect(Collectors.partitioningBy(mes -> chatById.containsKey(mes.getChatId())));
 
         split.get(true).forEach(message -> {
+            incrementUnreadChatCounter(chatById.get(message.getChatId()));
             chatById.get(message.getChatId()).incrementUnreadCount();
             changeSupport.firePropertyChange("UpdateUnreadCount", null, chatById.get(message.getChatId()));
         });
@@ -217,8 +244,10 @@ public class ClientModelImpl implements ClientModel{
     @Override
     public void createDialogFromNewMessage(User user) {
         futureChatWith(user).thenAccept(chat -> {
-            changeSupport.firePropertyChange("NewChatCreated", null, chat);
+            chat.incrementUnreadCount();
             myChats.add(chat);
+            changeSupport.firePropertyChange("NewChatCreated", null, chat);
+            incrementUnreadChatCounter(chat);
         });
     }
 
