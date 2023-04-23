@@ -1,13 +1,10 @@
 package com.ade.chatclient.view.cellfactory;
 
-import com.ade.chatclient.ClientApplication;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
 import java.util.ArrayList;
@@ -17,15 +14,11 @@ import java.util.Objects;
 public class ChatListCellFactory extends ListCell<Chat> {
     private Long selfId;
     @FXML private AnchorPane layout;
-    @FXML private ImageView image;
     @FXML private Label chatNameLabel;
     @FXML private Label lastMsgLabel;
 
     public void init(Long selfId) {
         this.selfId = selfId;
-        image.setImage(new Image(Objects.requireNonNull(
-                ClientApplication.class.getResourceAsStream("img/user_avatar_chat_icon.png")
-        )));
     }
 
     @Override

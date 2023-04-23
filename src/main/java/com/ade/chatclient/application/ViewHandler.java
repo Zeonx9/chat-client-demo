@@ -61,13 +61,7 @@ public class ViewHandler {
      */
     public void openView(Views viewType) {
         FXMLLoader fxmlLoader = new FXMLLoader(LogInView.class.getResource(viewType.fxmlFileName + ".fxml"));
-        Parent root;
-        try {
-            root = fxmlLoader.load();
-        } catch (Exception e) {
-            System.out.println("cannot open the view: " + viewType.fxmlFileName);
-            throw new RuntimeException(e);
-        }
+        Parent root = load(fxmlLoader);
 
         AbstractView<AbstractViewModel<?>> view = fxmlLoader.getController();
         view.init(viewType.viewModelGetter.apply(viewModelProvider));
@@ -85,13 +79,7 @@ public class ViewHandler {
      */
     public void openPane(Views paneType, Pane placeHolder) {
         FXMLLoader fxmlLoader = new FXMLLoader(LogInView.class.getResource(paneType.fxmlFileName + ".fxml"));
-        Node paneRoot;
-        try {
-            paneRoot = fxmlLoader.load();
-        } catch (Exception e) {
-            System.out.println("cannot open the pane: " + paneType.fxmlFileName);
-            throw new RuntimeException(e);
-        }
+        Parent paneRoot = load(fxmlLoader);
 
         AbstractView<AbstractChildViewModel<?>> pane = fxmlLoader.getController();
         pane.init((AbstractChildViewModel<?>) paneType.viewModelGetter.apply(viewModelProvider));
@@ -102,6 +90,14 @@ public class ViewHandler {
         placeHolder.getChildren().setAll(paneRoot);
         if (placeHolder instanceof AnchorPane) {
             anchorPaneInParent(paneRoot);
+        }
+    }
+
+    private static Parent load(FXMLLoader fxmlLoader) {
+        try {
+            return fxmlLoader.load();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -28,8 +28,7 @@
                 <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                     <Image url="@../img/search_icon.png" />
                 </ImageView>
-                <Label layoutY="60.0" prefHeight="43.0" prefWidth="319.0" styleClass="header" text="Select user (users)" />
-            <Label layoutY="85.0" prefHeight="43.0" prefWidth="314.0" styleClass="header" text="to create chat" />
+                <Label layoutY="60.0" prefHeight="43.0" prefWidth="319.0" styleClass="header" text="List of all users" />
             </Group>
         </top>
     </BorderPane>

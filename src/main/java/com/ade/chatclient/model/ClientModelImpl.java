@@ -107,7 +107,11 @@ public class ClientModelImpl implements ClientModel{
                         Message.builder().text(text).build(),
                         true)
                 .thenApply(AsyncRequestHandler.mapperOf(Message.class))
-                .thenAccept(message -> changeSupport.firePropertyChange("newSelectedMessages", null, List.of(message)));
+                .thenAccept(message -> {
+                            changeSupport.firePropertyChange("newSelectedMessages", null, List.of(message));
+                            selectedChat.setLastMessage(message);
+                        }
+                );
     }
 
     @Override
