@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="layout" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
+         xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.cellfactory.ChatListCellFactory">
+   <ImageView fx:id="image" pickOnBounds="true" preserveRatio="true"/>
+   <Label fx:id="chatNameLabel" layoutX="60.0" style="-fx-text-fill: white"/>
+   <Label fx:id="lastMsgLabel" layoutX="60.0" layoutY="30.0" style="-fx-text-fill: lightgray"/>
+</AnchorPane>

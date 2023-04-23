@@ -1,22 +1,18 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.ClientApplication;
 import com.ade.chatclient.application.AbstractChildViewModel;
+import com.ade.chatclient.application.ViewHandler;
+import com.ade.chatclient.application.ViewModelUtils;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.application.ViewHandler;
+import com.ade.chatclient.view.cellfactory.ChatListCellFactory;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import lombok.Getter;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
@@ -49,38 +45,12 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         model.getMessages();
     }
 
-    private String prepareChatToBeShown(Chat chat) {
-        List<String> memberNames = new ArrayList<>();
-        chat.getMembers().forEach(member -> {
-            if (!Objects.equals(member.getId(), model.getMyself().getId()))
-                memberNames.add(member.getUsername());
-        });
-        var res = String.join(", ", memberNames);
-        if (chat.getUnreadCount() != null && chat.getUnreadCount() > 0) {
-            res += " (" + chat.getUnreadCount() + ")";
-        }
-        return res;
-    }
-
     public ListCell<Chat> getChatListCellFactory() {
-        return new ListCell<>() {
-            private final ImageView imageView = new ImageView();
-            @Override
-            protected void updateItem(Chat item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
-                    return;
-                }
-                setText(prepareChatToBeShown(item));
-                var imgStream = ClientApplication.class.getResourceAsStream("img/user_avatar_chat_icon.png");
-                if (imgStream == null) {
-                    throw new RuntimeException("image stream is null");
-                }
-                imageView.setImage(new Image(imgStream));
-                setGraphic(imageView);
-            }
-        };
+        ChatListCellFactory factory = ViewModelUtils.loadCellFactory(
+                ChatListCellFactory.class,
+                "chat-list-cell-factory.fxml"
+        );
+        factory.init(model.getMyself().getId());
+        return factory;
     }
 }

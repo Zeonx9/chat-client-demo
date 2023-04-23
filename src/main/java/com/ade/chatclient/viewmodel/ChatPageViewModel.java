@@ -1,21 +1,19 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.application.AbstractViewModel;
+import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.application.Views;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.application.ViewHandler;
+import com.ade.chatclient.view.cellfactory.MessageListCellFactory;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
 
 import java.beans.PropertyChangeEvent;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -86,30 +84,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         showUsersButtonDisabled.set(!param);
     }
 
-    private String prepareMessageToBeShown(Message msg) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm, dd.MM");
-        return msg.getText() + " at " + msg.getDateTime().format(dtf);
-    }
-
     public ListCell<Message> getMessageCellFactory() {
-        return new ListCell<>() {
-            private final Label label = new Label();
-            @Override
-            protected void updateItem(Message item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                } else {
-                    if (item.getAuthor().getId().equals(model.getMyself().getId())) {
-                        setAlignment(Pos.CENTER_RIGHT);
-                    }
-                    else {
-                        setAlignment(Pos.CENTER_LEFT);
-                    }
-                    label.setText(prepareMessageToBeShown(item));
-                    setGraphic(label);
-                }
-            }
-        };
+        return new MessageListCellFactory(model.getMyself().getId());
     }
 }

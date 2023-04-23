@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class BackgroundService {
     private final ClientModel model;
-    boolean isActive = false;
+    static boolean isActive = false;
 
     public void run() {
         if (isActive) {

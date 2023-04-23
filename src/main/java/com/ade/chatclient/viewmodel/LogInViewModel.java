@@ -31,6 +31,7 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
 
         System.out.println("Авторизация успешна, переход к окну чатов");
         errorMessageProperty.set("Success!");
+
         viewHandler.startBackGroundServices();
         viewHandler.openView(CHAT_PAGE_VIEW);
     }

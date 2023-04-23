@@ -120,7 +120,6 @@ public class ClientModelImpl implements ClientModel{
                     return userList;
                 })
                 .thenAccept(userList -> {
-                    //TODO sorting
                     changeSupport.firePropertyChange("AllUsers", allUsers, userList);
                     setAllUsers(userList);
                 });

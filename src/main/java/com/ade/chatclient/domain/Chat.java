@@ -16,6 +16,7 @@ public class Chat {
     private Boolean isPrivate;
     private List<User> members;
     private GroupChatInfo group;
+    private Message lastMessage;
     private Long unreadCount;
 
     public void incrementUnreadCount() {

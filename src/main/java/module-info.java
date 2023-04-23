@@ -33,4 +33,7 @@ module com.ade.chatclient {
 
     exports com.ade.chatclient.application;
     opens com.ade.chatclient.application to javafx.fxml;
+
+    exports com.ade.chatclient.view.cellfactory;
+    opens com.ade.chatclient.view.cellfactory to javafx.fxml;
 }

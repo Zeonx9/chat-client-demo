@@ -4,11 +4,13 @@ import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 public class ViewModelUtils {
@@ -35,6 +37,16 @@ public class ViewModelUtils {
                 action.run();
             }
         };
+    }
+
+    public static <T> T loadCellFactory(Class<T> cellFactoryClass, String fxmlFileName) {
+        FXMLLoader loader = new FXMLLoader(cellFactoryClass.getResource(fxmlFileName));
+        try {
+            loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return  loader.getController();
     }
 
 }
