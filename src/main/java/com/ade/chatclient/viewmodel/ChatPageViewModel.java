@@ -41,6 +41,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         List<Message> messages = (List<Message>) event.getNewValue();
         messageListProperty.clear();
         messageListProperty.addAll(messages);
+        System.out.println("message history in chat " + model.getSelectedChat().getId() + " received");
         userNameProperty.setValue(model.getSelectedChat().getChatName());
         bottomScroller.run();
     }

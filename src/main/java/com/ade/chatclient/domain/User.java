@@ -2,6 +2,8 @@ package com.ade.chatclient.domain;
 
 import lombok.*;
 
+import java.util.Objects;
+
 /**
  * Класс, который представляет пользователя
  */
@@ -12,4 +14,16 @@ import lombok.*;
 public class User {
     private Long id;
     private String username;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return id.equals(user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

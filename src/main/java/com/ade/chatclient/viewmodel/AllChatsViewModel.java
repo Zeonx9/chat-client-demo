@@ -25,6 +25,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
 
         model.addListener("MyChatsUpdate", runLaterListener(listReplacer(chatListProperty)));
         model.addListener("NewChatCreated", runLaterListener(this::newChatCreated));
+        model.addListener("selectedChatModified", runLaterListener(this::selectedChatModified));
     }
 
     @Override
@@ -34,15 +35,22 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
 
     private void newChatCreated(PropertyChangeEvent event) {
         Chat chat = (Chat) event.getNewValue();
-        chatListProperty.add(chat);
+        chatListProperty.add(0, chat);
+    }
+
+    private void selectedChatModified(PropertyChangeEvent evt) {
+        System.out.println("on modification");
+        Chat chat = (Chat) evt.getNewValue();
+        int index = chatListProperty.indexOf(chat);
+        chatListProperty.set(index, chat);
     }
 
     public void onSelectedItemChange(Chat newValue) {
-        if (newValue == null) {
+        if (newValue == null || model.getSelectedChat() != null && model.getSelectedChat().equals(newValue)) {
             return;
         }
+        System.out.println("on change of chat selected");
         model.setSelectedChat(newValue);
-        model.getMessages();
     }
 
     public ListCell<Chat> getChatListCellFactory() {

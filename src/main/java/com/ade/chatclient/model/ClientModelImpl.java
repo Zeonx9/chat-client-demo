@@ -88,13 +88,24 @@ public class ClientModelImpl implements ClientModel{
         if (selectedChat == null) {
             return;
         }
-        handler.sendGETAsync(String.format("/chats/%d/messages?userId=%d", selectedChat.getId(), myself.getId()))
+        handler.sendGETAsync(
+                    String.format("/chats/%d/messages", selectedChat.getId()),
+                    Map.of("userId", myself.getId().toString())
+                )
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
                 .thenAccept(messages -> {
+                    System.out.println("fetching messages for chat " + selectedChat.getId() + "...");
                     // только для обновления сообщений при выборе нового чата
                     changeSupport.firePropertyChange("MessageUpdate", null, messages);
                     selectedChat.setUnreadCount(0L);
                 });
+    }
+
+    @Override
+    public void setSelectedChat(Chat chat) {
+        selectedChat = chat;
+        System.out.println("getMessages on changing selected chat");
+        getMessages();
     }
 
     @Override
@@ -105,11 +116,13 @@ public class ClientModelImpl implements ClientModel{
         handler.sendPOSTAsync(
                         String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
                         Message.builder().text(text).build(),
-                        true)
+                        true
+                )
                 .thenApply(AsyncRequestHandler.mapperOf(Message.class))
                 .thenAccept(message -> {
                             changeSupport.firePropertyChange("newSelectedMessages", null, List.of(message));
                             selectedChat.setLastMessage(message);
+                            changeSupport.firePropertyChange("selectedChatModified", null, selectedChat);
                         }
                 );
     }
@@ -124,7 +137,7 @@ public class ClientModelImpl implements ClientModel{
                     return userList;
                 })
                 .thenAccept(userList -> {
-                    changeSupport.firePropertyChange("AllUsers", allUsers, userList);
+                    changeSupport.firePropertyChange("AllUsers", null, userList);
                     setAllUsers(userList);
                 });
     }
@@ -137,11 +150,9 @@ public class ClientModelImpl implements ClientModel{
     }
 
     private void acceptNewMessages(List<Message> newMessages) {
-        Map<Boolean, List<Message>> splitBySelectedChat = newMessages.stream().collect(
-                Collectors.partitioningBy(
-                        message -> selectedChat != null && message.getChatId().equals(selectedChat.getId())
-                )
-        );
+        Map<Boolean, List<Message>> splitBySelectedChat = newMessages.stream().collect(Collectors.partitioningBy(
+                message -> selectedChat != null && message.getChatId().equals(selectedChat.getId())
+        ));
         if (!splitBySelectedChat.get(true).isEmpty()){
             changeSupport.firePropertyChange("newSelectedMessages", null, splitBySelectedChat.get(true));
         }
@@ -153,12 +164,27 @@ public class ClientModelImpl implements ClientModel{
     private void updateUnreadMessagesInChats(List<Message> messages) {
         Map<Long, Chat> chatById = myChats.stream()
                 .collect(Collectors.toMap(Chat::getId, Function.identity()));
-        Map <Boolean, List<Message>> split = messages.stream()
+        Map <Boolean, List<Message>> msgInExistingChat = messages.stream()
                 .collect(Collectors.partitioningBy(mes -> chatById.containsKey(mes.getChatId())));
 
-        split.get(true).forEach(message -> chatById.get(message.getChatId()).incrementUnreadCount());
 
-        split.get(false).forEach(message -> createDialogFromNewMessage(message.getAuthor()));
+        for (Message msg : msgInExistingChat.get(true)) {
+            chatById.get(msg.getChatId()).incrementUnreadCount();
+        }
+
+        Set<Long> newChatIds = (msgInExistingChat.get(false).stream()
+                .map(Message::getChatId)
+                .collect(Collectors.toSet()));
+        newChatIds.forEach(this::fetchChatFromServer);
+    }
+
+    private void fetchChatFromServer(Long chatId) {
+        handler.sendGETAsync("chats/" + chatId)
+                .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
+                .thenAccept(chat -> {
+                    changeSupport.firePropertyChange("NewChatCreated", null, chat);
+                    myChats.add(chat);
+                });
     }
 
 
@@ -167,6 +193,7 @@ public class ClientModelImpl implements ClientModel{
                 .thenApply(AsyncRequestHandler.mapperOf(Chat.class));
     }
 
+    @Deprecated
     private CompletableFuture<Chat> futureGroupWith(ArrayList<User> users) {
         return handler.sendPOSTAsync(
                         "/chat?isPrivate=false",
@@ -177,6 +204,7 @@ public class ClientModelImpl implements ClientModel{
     }
 
     @Override
+    @Deprecated
     public Chat createGroupFromAllUsers(ArrayList<User> users) {
         System.out.println(Stream.concat(users.stream().map(User::getId).toList().stream(), Stream.of(myself.getId())).toList());
         try {
@@ -194,12 +222,13 @@ public class ClientModelImpl implements ClientModel{
 
 
     @Override
+    @Deprecated
     public Chat createDialogFromAllUsers(User user) {
         try {
             Chat chat = futureChatWith(user).get();
             if (!myChats.contains(chat)) {
                 changeSupport.firePropertyChange("NewChatCreated", null, chat);
-                myChats.add(chat);
+                myChats.add(0, chat);
             }
             return chat;
         } catch (Exception e) {
@@ -210,6 +239,7 @@ public class ClientModelImpl implements ClientModel{
     }
 
     @Override
+    @Deprecated
     public void createDialogFromNewMessage(User user) {
         futureChatWith(user).thenAccept(chat -> {
             changeSupport.firePropertyChange("NewChatCreated", null, chat);
