@@ -1,5 +1,6 @@
 package com.ade.chatclient.viewmodel;
 
+import com.ade.chatclient.ClientApplication;
 import com.ade.chatclient.application.AbstractChildViewModel;
 import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.application.ViewModelUtils;
@@ -10,9 +11,14 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import lombok.Getter;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
@@ -26,6 +32,29 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         model.addListener("MyChatsUpdate", runLaterListener(listReplacer(chatListProperty)));
         model.addListener("NewChatCreated", runLaterListener(this::newChatCreated));
         model.addListener("selectedChatModified", runLaterListener(this::selectedChatModified));
+        model.addListener("UpdateUnreadCount", runLaterListener(this::riseChat));
+        model.addListener("MarkAsRead", runLaterListener(this::markAsRead));
+        model.addListener("NewMessageInSelectedChat", runLaterListener(this::riseChat));
+        model.addListener("UnreadChats", runLaterListener(this::updateUnreadChatsCounter));
+    }
+
+    private void updateUnreadChatsCounter(PropertyChangeEvent event) {
+        //todo счетчик непрочитанных чатов
+        Long unreadChatCounter = (Long) event.getNewValue();
+    }
+
+    private void markAsRead(PropertyChangeEvent event) {
+        for (Chat chat : chatListProperty) {
+            if (chat.equals(event.getNewValue())) {
+                chat.setUnreadCount(0L);
+                break;
+            }
+        }
+    }
+
+    private void riseChat(PropertyChangeEvent event) {
+        chatListProperty.remove((Chat) event.getNewValue());
+        chatListProperty.add(0, (Chat) event.getNewValue());
     }
 
     @Override
