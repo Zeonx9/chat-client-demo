@@ -29,8 +29,8 @@ public class ClientModelImpl implements ClientModel{
     private Chat selectedChat;
     private List<Chat> myChats = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
-    private Long unreadChatCounter;
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+    private long unreadChatCounter;
 
     @Override
     public boolean Authorize(String login, String password) {
@@ -71,27 +71,23 @@ public class ClientModelImpl implements ClientModel{
     }
 
     @Override
-    public void updateMyChats() {
+    public void fetchChats() {
         if (myself == null) {
             return;
         }
         handler.sendGETAsync(String.format("/users/%d/chats", myself.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfChat))
                 .thenAccept(chats -> {
-                    // этот метод запускается только один раз сразу после входа
-                    changeSupport.firePropertyChange("MyChatsUpdate", null, chats);
+                    changeSupport.firePropertyChange("gotChats", null, chats);
                     setMyChats(chats);
                     updateUnreadChatCounter();
                 });
     }
 
     private void updateUnreadChatCounter() {
-        unreadChatCounter = 0L;
-        myChats.forEach(chat -> {
-            if (chat.isUnreadChat()) unreadChatCounter++;
-        });
+        unreadChatCounter = myChats.stream().filter(Chat::isUnreadChat).count();
+        System.out.println("New messages at login " + unreadChatCounter);
         changeSupport.firePropertyChange("UnreadChats", null, unreadChatCounter);
-        System.out.println("new mes at login" + unreadChatCounter);
     }
 
     private void decrementChatCounter(Chat chat) {
@@ -109,7 +105,7 @@ public class ClientModelImpl implements ClientModel{
     }
 
     @Override
-    public void getMessages() {
+    public void fetchChatMessages() {
         if (selectedChat == null) {
             return;
         }
@@ -121,17 +117,15 @@ public class ClientModelImpl implements ClientModel{
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
                 .thenAccept(messages -> {
                     System.out.println("fetching messages for chat " + selectedChat.getId() + "...");
-                    // только для обновления сообщений при выборе нового чата
-                    changeSupport.firePropertyChange("MessageUpdate", null, messages);
-                    selectedChat.setUnreadCount(0L);
+                    changeSupport.firePropertyChange("gotMessages", null, messages);
+                    selectedChat.setUnreadCount(0);
                 });
     }
 
     @Override
-    public void setSelectedChat(Chat chat) {
+    public void selectChat(Chat chat) {
         selectedChat = chat;
-        System.out.println("getMessages on changing selected chat");
-        getMessages();
+        fetchChatMessages();
     }
 
     @Override
@@ -146,16 +140,14 @@ public class ClientModelImpl implements ClientModel{
                 )
                 .thenApply(AsyncRequestHandler.mapperOf(Message.class))
                 .thenAccept(message -> {
-                            changeSupport.firePropertyChange("newSelectedMessages", null, List.of(message));
                             selectedChat.setLastMessage(message);
-                            changeSupport.firePropertyChange("selectedChatModified", null, selectedChat);
-                            changeSupport.firePropertyChange("NewMessageInSelectedChat", null, selectedChat);
-                }
-                );
+                            changeSupport.firePropertyChange("newMessagesInSelected", null, List.of(message));
+                            changeSupport.firePropertyChange("chatReceivedMessages", null, selectedChat);
+                });
     }
 
     @Override
-    public void updateAllUsers() {
+    public void fetchUsers() {
         //TODO change to company/users
         handler.sendGETAsync("/users")
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfUser))
@@ -164,42 +156,43 @@ public class ClientModelImpl implements ClientModel{
                     return userList;
                 })
                 .thenAccept(userList -> {
-                    changeSupport.firePropertyChange("AllUsers", null, userList);
                     setAllUsers(userList);
+                    changeSupport.firePropertyChange("AllUsers", null, userList);
                 });
     }
 
     @Override
-    public void updateMessages() {
+    public void fetchNewMessages() {
         handler.sendGETAsync(String.format("/users/%d/undelivered_messages", myself.getId()))
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
                 .thenAccept(this::acceptNewMessages);
     }
 
     private void acceptNewMessages(List<Message> newMessages) {
-        Map<Boolean, List<Message>> splitBySelectedChat = newMessages.stream().collect(Collectors.partitioningBy(
+        Map<Boolean, List<Message>> msgInSelectedChat = newMessages.stream().collect(Collectors.partitioningBy(
                 message -> selectedChat != null && message.getChatId().equals(selectedChat.getId())
         ));
-        if (!splitBySelectedChat.get(true).isEmpty()){
-            changeSupport.firePropertyChange("newSelectedMessages", null, splitBySelectedChat.get(true));
-            changeSupport.firePropertyChange("NewMessageInSelectedChat", null, selectedChat);
+        if (!msgInSelectedChat.get(true).isEmpty()){
+            changeSupport.firePropertyChange("newMessagesInSelected", null, msgInSelectedChat.get(true));
+            changeSupport.firePropertyChange("chatReceivedMessages", null, selectedChat);
         }
-        if (!splitBySelectedChat.get(false).isEmpty()) {
-            updateUnreadMessagesInChats(splitBySelectedChat.get(false));
+        if (!msgInSelectedChat.get(false).isEmpty()) {
+            processMessagesInOtherChats(msgInSelectedChat.get(false));
         }
     }
 
-    private void updateUnreadMessagesInChats(List<Message> messages) {
+    private void processMessagesInOtherChats(List<Message> messages) {
         Map<Long, Chat> chatById = myChats.stream()
                 .collect(Collectors.toMap(Chat::getId, Function.identity()));
         Map <Boolean, List<Message>> msgInExistingChat = messages.stream()
                 .collect(Collectors.partitioningBy(mes -> chatById.containsKey(mes.getChatId())));
 
-
         for (Message msg : msgInExistingChat.get(true)) {
-            incrementUnreadChatCounter(chatById.get(msg.getChatId()));
-            chatById.get(msg.getChatId()).incrementUnreadCount();
-            changeSupport.firePropertyChange("UpdateUnreadCount", null, chatById.get(msg.getChatId()));
+            Chat chatOfMessage = chatById.get(msg.getChatId());
+            chatOfMessage.incrementUnreadCount();
+            incrementUnreadChatCounter(chatOfMessage);
+            // вот это может быть опасно с точки зрения синхронизации (которой у нас нет, ахах)
+            changeSupport.firePropertyChange("chatReceivedMessages", null, chatOfMessage);
         }
 
         Set<Long> newChatIds = (msgInExistingChat.get(false).stream()
@@ -213,7 +206,7 @@ public class ClientModelImpl implements ClientModel{
                 .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
                 .thenAccept(chat -> {
                     changeSupport.firePropertyChange("NewChatCreated", null, chat);
-                    myChats.add(chat);
+                    myChats.add(0, chat);
                 });
     }
 

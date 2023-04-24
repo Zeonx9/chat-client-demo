@@ -18,18 +18,14 @@ public class Chat {
     private List<User> members;
     private GroupChatInfo group;
     private Message lastMessage;
-    private Long unreadCount;
+    private int unreadCount;
 
     public void incrementUnreadCount() {
-        if (unreadCount == null) {
-            unreadCount = 1L;
-        } else {
-            unreadCount += 1L;
-        }
+        unreadCount++;
     }
 
     public boolean isUnreadChat() {
-        return unreadCount != null && unreadCount > 0;
+        return unreadCount > 0;
     }
 
     public String getChatName() {

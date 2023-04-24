@@ -32,16 +32,15 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     public ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
 
-        model.addListener("MessageUpdate", runLaterListener(this::updateMessages));
-        model.addListener("newSelectedMessages", runLaterListener(this::newSelectedMessages));
+        model.addListener("gotMessages", runLaterListener(this::fillMessageHistory));
+        model.addListener("newMessagesInSelected", runLaterListener(this::newSelectedMessages));
     }
 
-    private void updateMessages(PropertyChangeEvent event) {
+    private void fillMessageHistory(PropertyChangeEvent event) {
         @SuppressWarnings("unchecked")
         List<Message> messages = (List<Message>) event.getNewValue();
         messageListProperty.clear();
         messageListProperty.addAll(messages);
-        System.out.println("message history in chat " + model.getSelectedChat().getId() + " received");
         userNameProperty.setValue(model.getSelectedChat().getChatName());
         bottomScroller.run();
     }

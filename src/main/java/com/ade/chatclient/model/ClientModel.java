@@ -34,15 +34,9 @@ public interface ClientModel {
      * если чат в есть в списке чатов пользователя
      * @param chat чат, историю которого хотят получить
      */
-    void setSelectedChat(Chat chat);
+    void selectChat(Chat chat);
 
     Chat getSelectedChat();
-
-    /**
-     *  отправляет GET запрос на историю, выбранного чата
-     *  присваивает полученные сообщения в selectedChatMessages
-     */
-    void getMessages();
 
     /**
      * отправляет POST запрос с сообщением в selectedChat
@@ -50,7 +44,28 @@ public interface ClientModel {
      */
     void sendMessageToChat(String text);
 
-    Chat createGroupFromAllUsers(ArrayList<User> users);
+    /**
+     *  отправляет GET запрос на историю, выбранного чата
+     *  присваивает полученные сообщения в selectedChatMessages
+     */
+    void fetchChatMessages();
+
+    /**
+     * отправляет GET запрос на получение списка всех чатов авторизованного пользователя
+     * присваивает полученные чаты в myChats
+     */
+    void fetchChats();
+
+    /**
+     * Отправляет GET запрос на получение списка всех пользователей
+     */
+    void fetchUsers();
+
+    /**
+     * Отправляет GET запрос на получение undelivered_messages, то есть те, который есть на сервере
+     * но еще не были получены пользователем
+     */
+    void fetchNewMessages();
 
     /**
      * отправляет POST запрос на создание личного чата между авторизованными пользователем и выбранным
@@ -58,17 +73,7 @@ public interface ClientModel {
      */
     Chat createDialogFromAllUsers(User user);
 
-    /**
-     * отправляет GET запрос на получение списка всех чатов авторизованного пользователя
-     * присваивает полученные чаты в myChats
-     */
-    void updateMyChats();
-
-    //TODO доделать документацию
-
-    void updateAllUsers();
-
-    void updateMessages();
-
     void createDialogFromNewMessage(User user);
+
+    Chat createGroupFromAllUsers(ArrayList<User> users);
 }

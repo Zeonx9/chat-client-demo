@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -16,6 +15,7 @@ import java.util.concurrent.CompletableFuture;
  * Вспомогательный класс, который помогает настроить приложение во время запуска
  */
 public class StartClientApp {
+    private static ViewModelProvider viewModelProvider;
 
     /**
      * Асинхронно отправляет запрос к серверу ngrok и ставит в очередь метод по обработке
@@ -90,10 +90,14 @@ public class StartClientApp {
                     return unused;
                 });
 
-        ViewModelProvider viewModelProvider = new ViewModelProvider(modelFactory);
+        viewModelProvider = new ViewModelProvider(modelFactory);
         ViewHandler viewHandler = new ViewHandler(stage, viewModelProvider);
 
         // включает начальное вью
         viewHandler.start();
+    }
+
+    public static void stop() {
+        viewModelProvider.getBackgroundService().stop();
     }
 }

@@ -47,7 +47,7 @@ public class ChatListCellFactory extends ListCell<Chat> {
                 memberNames.add(member.getUsername());
         });
         var res = String.join(", ", memberNames);
-        if (chat.getUnreadCount() != null && chat.getUnreadCount() > 0) {
+        if (chat.getUnreadCount() > 0) {
             res += " (" + chat.getUnreadCount() + ")";
         }
         return res;

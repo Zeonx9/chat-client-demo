@@ -25,4 +25,10 @@ public class ClientApplication extends Application {
         stage.getIcons().add(image);
         StartClientApp.start(stage);
     }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        StartClientApp.stop();
+    }
 }

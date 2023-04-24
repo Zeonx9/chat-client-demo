@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class BackgroundService {
     private final ClientModel model;
     static boolean isActive = false;
+    private ScheduledExecutorService service;
 
     public void run() {
         if (isActive) {
@@ -20,16 +21,22 @@ public class BackgroundService {
         isActive = true;
 
         // call updates that should be called once
-        model.updateAllUsers();
-        model.updateMyChats();
+        model.fetchUsers();
+        model.fetchChats();
 
         // schedule actions that need to be run in background
         runAutoUpdateMessages();
     }
 
     private void runAutoUpdateMessages() {
-        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(model::updateMessages, 0, 700, TimeUnit.MILLISECONDS);
+        service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(model::fetchNewMessages, 0, 700, TimeUnit.MILLISECONDS);
     }
 
+    public void stop() {
+        if (isActive) {
+            service.shutdown();
+        }
+        isActive = false;
+    }
 }
