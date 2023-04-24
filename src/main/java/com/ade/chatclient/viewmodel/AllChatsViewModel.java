@@ -27,20 +27,12 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         model.addListener("NewChatCreated", runLaterListener(this::newChatCreated));
         model.addListener("selectedChatModified", runLaterListener(this::selectedChatModified));
         model.addListener("chatReceivedMessages", runLaterListener(this::raiseChat));
-        model.addListener("MarkAsRead", runLaterListener(this::markAsRead));
         model.addListener("UnreadChats", runLaterListener(this::updateUnreadChatsCounter));
     }
 
     private void updateUnreadChatsCounter(PropertyChangeEvent event) {
         //todo счетчик непрочитанных чатов
         Long unreadChatCounter = (Long) event.getNewValue();
-    }
-
-    private void markAsRead(PropertyChangeEvent event) {
-        Chat chat = (Chat) event.getNewValue();
-        chat.setUnreadCount(0);
-        int index = chatListProperty.indexOf(chat);
-        chatListProperty.set(index, chat);
     }
 
     private void raiseChat(PropertyChangeEvent event) {

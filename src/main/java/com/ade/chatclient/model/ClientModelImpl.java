@@ -117,8 +117,9 @@ public class ClientModelImpl implements ClientModel{
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
                 .thenAccept(messages -> {
                     System.out.println("fetching messages for chat " + selectedChat.getId() + "...");
-                    changeSupport.firePropertyChange("gotMessages", null, messages);
                     selectedChat.setUnreadCount(0);
+                    changeSupport.firePropertyChange("gotMessages", null, messages);
+                    changeSupport.firePropertyChange("selectedChatModified", null, selectedChat);
                 });
     }
 
@@ -198,10 +199,10 @@ public class ClientModelImpl implements ClientModel{
         Set<Long> newChatIds = (msgInExistingChat.get(false).stream()
                 .map(Message::getChatId)
                 .collect(Collectors.toSet()));
-        newChatIds.forEach(this::fetchChatFromServer);
+        newChatIds.forEach(this::fetchNewChatFromServer);
     }
 
-    private void fetchChatFromServer(Long chatId) {
+    private void fetchNewChatFromServer(Long chatId) {
         handler.sendGETAsync("chats/" + chatId)
                 .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
                 .thenAccept(chat -> {
@@ -234,7 +235,7 @@ public class ClientModelImpl implements ClientModel{
             Chat chat = futureGroupWith(users).get();
             if (!myChats.contains(chat)) {
                 changeSupport.firePropertyChange("NewChatCreated", null, chat);
-                myChats.add(chat);
+                myChats.add(0, chat);
             }
             return chat;
         } catch (Exception e) {
@@ -266,7 +267,7 @@ public class ClientModelImpl implements ClientModel{
     public void createDialogFromNewMessage(User user) {
         futureChatWith(user).thenAccept(chat -> {
             chat.incrementUnreadCount();
-            myChats.add(chat);
+            myChats.add(0, chat);
             changeSupport.firePropertyChange("NewChatCreated", null, chat);
             incrementUnreadChatCounter(chat);
         });
