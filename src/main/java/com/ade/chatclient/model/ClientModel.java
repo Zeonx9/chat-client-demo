@@ -5,6 +5,7 @@ import com.ade.chatclient.domain.User;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 
 // an interface that a model should implement, used to add flexibility to model structure
 public interface ClientModel {
@@ -69,6 +70,8 @@ public interface ClientModel {
     void updateAllUsers();
 
     void updateMessages();
+
+    List<User> getAllUsers();
 
     void createDialogFromNewMessage(User user);
 }

@@ -19,12 +19,32 @@
     -fx-text-fill: #FFFFFF;
 }
 
+.header2 {
+    -fx-font-family: "Poppins SemiBold";
+    -fx-font-size: 20;
+    -fx-text-fill: #FFFFFF;
+}
+
+.header3 {
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 17;
+    -fx-text-fill: #FFFFFF;
+}
+
 .text-input {
     -fx-font-family: "Poppins Regular";
     -fx-font-size: 17;
     -fx-text-fill: #1D1E20;
     -fx-background-radius: 15px;
     -fx-background-color: #F2F2F2;
+}
+
+.createButton {
+    -fx-font-family: "Poppins Regular";
+    -fx-font-size: 17;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 50px;
+    -fx-background-color: #1A1A22;
 }
 
 .buttonSend {
@@ -121,6 +141,45 @@
 
 .chatListView .list-cell:empty {
     -fx-background-color: #272833;
+}
+
+.userListView .list-cell {
+    -fx-background-color: #272833;
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 17;
+    -fx-text-fill: #FFFFFF;
+    -fx-pref-height: 60px;
+}
+
+.userListView .list-cell:hover {
+    -fx-background-color: #14141A;
+}
+
+.userListView .list-cell:focused {
+    -fx-background-color: #14141A;
+}
+
+.userListView .list-cell:empty {
+    -fx-background-color: #3A3C4D;
+}
+
+.selectedListView .list-cell{
+    -fx-background-color: transparent;
+}
+
+.selectedListView .list-cell .label{
+    display: inline-block;
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 13;
+    -fx-text-fill: #FFFFFF;
+    -fx-background: #1A1A22;
+    -fx-background-color: -fx-background ;
+    -fx-background-radius: 25px;
+    -fx-padding: 12px ;
+}
+
+.selectedListView .list-cell:empty .label {
+    -fx-background-color: transparent;
 }
 
 .chatsPane {
