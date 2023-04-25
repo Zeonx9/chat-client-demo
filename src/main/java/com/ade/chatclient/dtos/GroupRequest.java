@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -13,7 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GroupRequest {
-    private List<Long> ids;
+    @Builder.Default
+    private List<Long> ids = new ArrayList<>();
     private GroupChatInfo groupInfo;
 }
 

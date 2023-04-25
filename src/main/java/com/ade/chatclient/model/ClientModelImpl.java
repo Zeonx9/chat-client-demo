@@ -7,6 +7,7 @@ import com.ade.chatclient.domain.TypeReferences;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.AuthResponse;
+import com.ade.chatclient.dtos.GroupRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -222,22 +223,21 @@ public class ClientModelImpl implements ClientModel{
                 .thenApply(AsyncRequestHandler.mapperOf(Chat.class));
     }
 
-    @Deprecated
-    private CompletableFuture<Chat> futureGroupWith(ArrayList<User> users) {
+
+    private CompletableFuture<Chat> futureGroupWith(GroupRequest groupRequest) {
         return handler.sendPOSTAsync(
-                        "/chat?isPrivate=false",
-                        Stream.concat(users.stream().map(User::getId).toList().stream(), Stream.of(myself.getId())).toList(),
+                        "/group_chat",
+                        groupRequest,
                         true
                 )
                 .thenApply(AsyncRequestHandler.mapperOf(Chat.class));
     }
 
     @Override
-    @Deprecated
-    public Chat createGroupFromAllUsers(ArrayList<User> users) {
-        System.out.println(Stream.concat(users.stream().map(User::getId).toList().stream(), Stream.of(myself.getId())).toList());
+    public Chat createGroupChat(GroupRequest groupRequest) {
         try {
-            Chat chat = futureGroupWith(users).get();
+            groupRequest.getIds().add(myself.getId());
+            Chat chat = futureGroupWith(groupRequest).get();
             if (!myChats.contains(chat)) {
                 changeSupport.firePropertyChange("NewChatCreated", null, chat);
                 myChats.add(0, chat);
@@ -251,7 +251,6 @@ public class ClientModelImpl implements ClientModel{
 
 
     @Override
-    @Deprecated
     public Chat createDialogFromAllUsers(User user) {
         try {
             Chat chat = futureChatWith(user).get();
@@ -267,16 +266,6 @@ public class ClientModelImpl implements ClientModel{
         }
     }
 
-    @Override
-    @Deprecated
-    public void createDialogFromNewMessage(User user) {
-        futureChatWith(user).thenAccept(chat -> {
-            chat.incrementUnreadCount();
-            myChats.add(0, chat);
-            changeSupport.firePropertyChange("NewChatCreated", null, chat);
-            incrementUnreadChatCounter(chat);
-        });
-    }
 
     @Override
     public void addListener(String eventName, PropertyChangeListener listener) {

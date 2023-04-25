@@ -2,6 +2,7 @@ package com.ade.chatclient.model;
 
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
+import com.ade.chatclient.dtos.GroupRequest;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -73,7 +74,10 @@ public interface ClientModel {
      */
     Chat createDialogFromAllUsers(User user);
 
-    void createDialogFromNewMessage(User user);
-
-    Chat createGroupFromAllUsers(ArrayList<User> users);
+    /**
+     * отправляет POST запрос на создание группового чата между авторизованным и выбранными пользователями
+     * @param groupRequest содержит информацию для создания чата
+     * @return созданный чат
+     */
+    Chat createGroupChat(GroupRequest groupRequest);
 }
