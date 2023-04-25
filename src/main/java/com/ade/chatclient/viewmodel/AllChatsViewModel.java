@@ -82,6 +82,9 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         dialog.init(model.getAllUsers(), new GroupCreationDialogModel());
 
         Optional<GroupRequest> answer = dialog.showAndWait();
-        System.out.println(answer.orElse(null));
+        if (answer.isPresent()) {
+            System.out.println(answer.get());
+            model.createGroupChat(answer.get());
+        }
     }
 }

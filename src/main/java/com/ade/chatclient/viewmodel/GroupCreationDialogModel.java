@@ -53,10 +53,9 @@ public class GroupCreationDialogModel {
             return null;
         }
         GroupChatInfo info = GroupChatInfo.builder().name(nameOfGroup.getValue()).build();
-        return GroupRequest.builder()
-                .groupInfo(info)
-                .ids(selectedUsersListProperty.stream().map(User::getId).toList())
-                .build();
+        GroupRequest request = GroupRequest.builder().groupInfo(info).build();
+        request.getIds().addAll(selectedUsersListProperty.stream().map(User::getId).toList());
+        return request;
     }
 
     public static ListCell<User> getSelectedUsersCellFactory() {

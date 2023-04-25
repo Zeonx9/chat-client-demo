@@ -14,11 +14,13 @@ import lombok.Setter;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @RequiredArgsConstructor
@@ -225,24 +227,21 @@ public class ClientModelImpl implements ClientModel{
 
 
     private CompletableFuture<Chat> futureGroupWith(GroupRequest groupRequest) {
-        return handler.sendPOSTAsync(
-                        "/group_chat",
-                        groupRequest,
-                        true
-                )
+        return handler.sendPOSTAsync("/group_chat", groupRequest, true)
                 .thenApply(AsyncRequestHandler.mapperOf(Chat.class));
     }
 
     @Override
-    public Chat createGroupChat(GroupRequest groupRequest) {
+    public void createGroupChat(GroupRequest groupRequest) {
         try {
             groupRequest.getIds().add(myself.getId());
+            groupRequest.getGroupInfo().setCreator(myself);
+
             Chat chat = futureGroupWith(groupRequest).get();
             if (!myChats.contains(chat)) {
                 changeSupport.firePropertyChange("NewChatCreated", null, chat);
                 myChats.add(0, chat);
             }
-            return chat;
         } catch (Exception e) {
             System.out.println("Fail to Create dialog");
             throw new RuntimeException(e);

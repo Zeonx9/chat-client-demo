@@ -2,8 +2,10 @@ package com.ade.chatclient.model;
 
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
+import com.ade.chatclient.dtos.GroupRequest;
 
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 // an interface that a model should implement, used to add flexibility to model structure
 public interface ClientModel {
@@ -18,7 +20,7 @@ public interface ClientModel {
     /**
      * отправляет POST запрос для регистрации/входа
      * @param login логин пользователя, который хочет авторизоваться
-     * @return true - если авторизацция прошла успешно, иначе false
+     * @return true - если авторизация прошла успешно, иначе false
      */
     // method that authorize the user with given login(name)
     boolean Authorize(String login, String password);
@@ -37,6 +39,7 @@ public interface ClientModel {
 
     Chat getSelectedChat();
 
+    List<User> getAllUsers();
     /**
      * отправляет POST запрос с сообщением в selectedChat
      * @param text сообщение
@@ -62,7 +65,7 @@ public interface ClientModel {
 
     /**
      * Отправляет GET запрос на получение undelivered_messages, то есть те, который есть на сервере
-     * но еще не были получены пользователем
+     * Но еще не были получены пользователем
      */
     void fetchNewMessages();
 
@@ -74,8 +77,8 @@ public interface ClientModel {
 
     /**
      * отправляет POST запрос на создание группового чата между авторизованным и выбранными пользователями
+     *
      * @param groupRequest содержит информацию для создания чата
-     * @return созданный чат
      */
-    Chat createGroupChat(GroupRequest groupRequest);
+    void createGroupChat(GroupRequest groupRequest);
 }
