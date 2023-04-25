@@ -199,13 +199,18 @@ public class ClientModelImpl implements ClientModel{
         Set<Long> newChatIds = (msgInExistingChat.get(false).stream()
                 .map(Message::getChatId)
                 .collect(Collectors.toSet()));
+        if (newChatIds.size() > 0) {
+            System.out.println("New chats recieved! (" + newChatIds.size() + ")");
+        }
         newChatIds.forEach(this::fetchNewChatFromServer);
     }
 
     private void fetchNewChatFromServer(Long chatId) {
-        handler.sendGETAsync("chats/" + chatId)
+        System.out.println("chat fetched");
+        handler.sendGETAsync("/chats/" + chatId)
                 .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
                 .thenAccept(chat -> {
+                    System.out.println("creation of new chat:" + chat.getId());
                     changeSupport.firePropertyChange("NewChatCreated", null, chat);
                     myChats.add(0, chat);
                 });
