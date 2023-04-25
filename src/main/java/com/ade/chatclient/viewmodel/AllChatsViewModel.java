@@ -4,7 +4,9 @@ import com.ade.chatclient.application.AbstractChildViewModel;
 import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.application.ViewModelUtils;
 import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.view.GroupCreationDialog;
 import com.ade.chatclient.view.cellfactory.ChatListCellFactory;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -13,6 +15,7 @@ import javafx.scene.control.ListCell;
 import lombok.Getter;
 
 import java.beans.PropertyChangeEvent;
+import java.util.Optional;
 
 import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
@@ -72,5 +75,13 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         );
         factory.init(model.getMyself().getId());
         return factory;
+    }
+
+    public void showDialogAndWait() {
+        GroupCreationDialog dialog = GroupCreationDialog.getInstance();
+        dialog.init(model.getAllUsers(), new GroupCreationDialogModel());
+
+        Optional<GroupRequest> answer = dialog.showAndWait();
+        System.out.println(answer.orElse(null));
     }
 }

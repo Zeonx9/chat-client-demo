@@ -2,10 +2,8 @@ package com.ade.chatclient.model;
 
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
-import com.ade.chatclient.dtos.GroupRequest;
 
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 
 // an interface that a model should implement, used to add flexibility to model structure
 public interface ClientModel {
