@@ -55,6 +55,12 @@ public class ChatListCellFactory extends ListCell<Chat> {
 
     private String prepareLastMessage(Chat chat) {
         Message msg = chat.getLastMessage();
-        return msg != null ? msg.getText() : null;
+        if (msg == null) {
+            return null;
+        }
+        if (msg.getText().length() < 20) {
+            return msg.getText();
+        }
+        return msg.getText().substring(0, 20) + "...";
     }
 }

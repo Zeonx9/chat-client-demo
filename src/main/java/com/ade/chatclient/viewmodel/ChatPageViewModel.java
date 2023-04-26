@@ -2,6 +2,7 @@ package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.application.AbstractViewModel;
 import com.ade.chatclient.application.ViewHandler;
+import com.ade.chatclient.application.ViewModelUtils;
 import com.ade.chatclient.application.Views;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.model.ClientModel;
@@ -85,6 +86,11 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     }
 
     public ListCell<Message> getMessageCellFactory() {
-        return new MessageListCellFactory(model.getMyself().getId());
+        MessageListCellFactory factory = ViewModelUtils.loadCellFactory(
+                MessageListCellFactory.class,
+                "message-list-cell-factory.fxml"
+        );
+        factory.init(model.getMyself().getId());
+        return factory;
     }
 }

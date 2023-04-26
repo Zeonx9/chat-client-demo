@@ -1,17 +1,26 @@
 package com.ade.chatclient.view.cellfactory;
 
 import com.ade.chatclient.domain.Message;
+import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import lombok.RequiredArgsConstructor;
 
 import java.time.format.DateTimeFormatter;
 
 @RequiredArgsConstructor
 public class MessageListCellFactory extends ListCell<Message> {
-    private final Label label = new Label();
-    private final Long selfId;
+    private Long selfId;
+    @FXML private VBox wrapper;
+    @FXML private AnchorPane layout;
+    @FXML private Label messageText;
+    @FXML private Label dataText;
+    public void init(Long selfId) {
+        this.selfId = selfId;
+    }
 
     @Override
     protected void updateItem(Message item, boolean empty) {
@@ -22,14 +31,27 @@ public class MessageListCellFactory extends ListCell<Message> {
             return;
         }
 
-        label.setText(prepareMessageToBeShown(item));
-        setAlignment(item.getAuthor().getId().equals(selfId) ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
-        setGraphic(label);
+        messageText.setText(prepareMessageToBeShown(item));
+        dataText.setText(prepareMessageDataToBeShown(item));
+
+        if (item.getAuthor().getId().equals(selfId)) {
+            AnchorPane.setRightAnchor(wrapper, 0.0);
+            wrapper.setAlignment(Pos.CENTER_RIGHT);
+        }
+        else {
+            AnchorPane.setLeftAnchor(wrapper, 0.0);
+        }
+        setGraphic(layout);
     }
 
     private String prepareMessageToBeShown(Message msg) {
+        System.out.println(msg.getText());
+        return msg.getText();
+    }
+
+    private String prepareMessageDataToBeShown(Message msg) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm, dd.MM");
-        return msg.getText() + " at " + msg.getDateTime().format(dtf);
+        return msg.getAuthor().getUsername() + ", " + msg.getDateTime().format(dtf);
     }
 }
 

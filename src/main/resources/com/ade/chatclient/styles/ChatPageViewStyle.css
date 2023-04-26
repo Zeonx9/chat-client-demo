@@ -104,20 +104,39 @@
     -fx-opacity: 30%;
 }
 
+.messageListView .list-cell .messageLayout {
+    display: inline-block;
+    -fx-background-color: #1A1A22;
+    -fx-background-radius: 30px;
+    -fx-padding: 12px ;
+}
+
+.messageListView .list-cell .messageText {
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 15;
+    -fx-text-fill: #FFFFFF;
+}
+
+.messageListView .list-cell .dataText {
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 12;
+    -fx-text-fill: #3A3C4D;
+}
+
 .messageListView .list-cell{
     -fx-background-color: transparent;
 }
 
-.messageListView .list-cell .label{
-    display: inline-block;
-    -fx-font-family: "Poppins Medium";
-    -fx-font-size: 15;
-    -fx-text-fill: #FFFFFF;
-    -fx-background: #1A1A22;
-    -fx-background-color: -fx-background ;
-    -fx-background-radius: 30px;
-    -fx-padding: 12px ;
-}
+/*.messageListView .list-cell .label{*/
+/*    display: inline-block;*/
+/*    -fx-font-family: "Poppins Medium";*/
+/*    -fx-font-size: 15;*/
+/*    -fx-text-fill: #FFFFFF;*/
+/*    -fx-background: #1A1A22;*/
+/*    -fx-background-color: -fx-background ;*/
+/*    -fx-background-radius: 30px;*/
+/*    -fx-padding: 12px ;*/
+/*}*/
 
 .messageListView .list-cell:empty .label {
     -fx-background-color: transparent;

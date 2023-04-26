@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="layout" style="-fx-background-color: transparent;" stylesheets="@../../styles/ChatPageViewStyle.css"
+            xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.ade.chatclient.view.cellfactory.MessageListCellFactory">
+   <VBox fx:id="wrapper" styleClass="messageLayout">
+      <Label fx:id="messageText" styleClass="messageText" text="Label"/>
+      <Label fx:id="dataText" layoutY="13.0" styleClass="dataText" text="Label"/>
+   </VBox>
+</AnchorPane>
