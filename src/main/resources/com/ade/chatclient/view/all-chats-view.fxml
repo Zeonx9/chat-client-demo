@@ -22,7 +22,7 @@
                                 <Image url="@../img/search_icon.png" />
                             </ImageView>
             <Label layoutY="70.0" styleClass="header" text="All chats" />
-            <Button layoutX="190.0" layoutY="79.0" text="create new group chat" onAction="#onNewChatClicked" />
+            <Button fx:id="createGroupButton" layoutX="184.0" layoutY="78.0" onAction="#onNewChatClicked" styleClass="createGroupButton" text="create new group chat" />
         </Group>
     </top>
     <center>
