@@ -4,22 +4,33 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane fx:id="createGroupDialog" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="480.0" styleClass="mainPane" stylesheets="@../styles/ChatPageViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.GroupCreationDialog">
+<DialogPane fx:id="createGroupDialog" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="700.0" prefWidth="480.0" styleClass="mainPane"
+            stylesheets="@../styles/ChatPageViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.GroupCreationDialog">
     <header>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="480.0">
-            <TextField fx:id="groupName" layoutX="182.0" layoutY="120.0" prefHeight="36.0" prefWidth="250.0" styleClass="messageInput" />
-            <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="50.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true">
-                <Image url="@../img/group_icon.png" />
+            <TextField fx:id="groupName" layoutX="182.0" layoutY="120.0" prefHeight="36.0" prefWidth="250.0"
+                       styleClass="messageInput"/>
+            <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="50.0" layoutY="70.0" pickOnBounds="true"
+                       preserveRatio="true">
+                <Image url="@../img/group_icon.png"/>
             </ImageView>
-            <Label layoutX="48.0" layoutY="26.0" styleClass="header2" text="Create group" />
-            <Label layoutX="182.0" layoutY="86.0" styleClass="header3" text="Enter group name" />
+            <Label layoutX="48.0" layoutY="26.0" styleClass="header2" text="Create group"/>
+            <Label layoutX="182.0" layoutY="86.0" styleClass="header3" text="Enter group name"/>
         </AnchorPane>
     </header>
     <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="415.0" prefWidth="480.0">
-            <ListView fx:id="listOfUsers" layoutX="50.0" layoutY="90.0" prefHeight="300.0" prefWidth="380.0" style="-fx-background-color: transparent;" styleClass="userListView" />
-            <ListView fx:id="selectedUsers" focusTraversable="false" layoutX="50.0" layoutY="7.0" orientation="HORIZONTAL" prefHeight="65.0" prefWidth="380.0" style="-fx-background-color: transparent;" styleClass="selectedListView" />
-            <Button fx:id="createGroupButton" layoutX="180.0" layoutY="413.0" mnemonicParsing="false" onAction="#OnCreateGroupButtonClicked" prefHeight="40.0" prefWidth="120.0" styleClass="createButton" text="Create" />
+            <ListView fx:id="listOfUsers" layoutX="50.0" layoutY="90.0" prefHeight="300.0" prefWidth="380.0"
+                      style="-fx-background-color: transparent;" styleClass="userListView"/>
+            <ListView fx:id="selectedUsers" focusTraversable="false" layoutX="50.0" layoutY="7.0"
+                      orientation="HORIZONTAL" prefHeight="65.0" prefWidth="380.0"
+                      style="-fx-background-color: transparent;" styleClass="selectedListView"/>
+            <Button fx:id="createGroupButton" layoutX="180.0" layoutY="413.0" mnemonicParsing="false"
+                    onAction="#OnCreateGroupButtonClicked" prefHeight="40.0" prefWidth="120.0" styleClass="createButton"
+                    text="Create"/>
         </AnchorPane>
     </content>
+    <ButtonType fx:constant="CLOSE"/>
 </DialogPane>

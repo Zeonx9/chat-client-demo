@@ -7,6 +7,7 @@ import com.ade.chatclient.viewmodel.AllUsersViewModel;
 import com.ade.chatclient.viewmodel.GroupCreationDialogModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import lombok.Getter;
 
@@ -26,6 +27,7 @@ public class GroupCreationDialog extends Dialog<GroupRequest> {
         this.viewModel = viewModel;
         setTitle("Creation group");
         setResultConverter(viewModel::resultConverter);
+        makeButtonInvisible();
 
         groupName.textProperty().bindBidirectional(viewModel.getNameOfGroup());
         groupName.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onTextChanged));
@@ -44,7 +46,6 @@ public class GroupCreationDialog extends Dialog<GroupRequest> {
                 .addListener(ViewModelUtils.changeListener((viewModel::onAlreadySelectedClickListener)));
 
         viewModel.populateUserList(userList);
-
     }
 
     public static GroupCreationDialog getInstance(){
@@ -62,5 +63,11 @@ public class GroupCreationDialog extends Dialog<GroupRequest> {
 
     public void OnCreateGroupButtonClicked() {
         setResult(viewModel.onCreateClicked());
+    }
+
+    public void makeButtonInvisible () {
+        Node closeButton = createGroupDialog.lookupButton(ButtonType.CLOSE);
+        closeButton.managedProperty().bind(closeButton.visibleProperty());
+        closeButton.setVisible(false);
     }
 }
