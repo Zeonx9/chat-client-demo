@@ -16,6 +16,7 @@ public class ChatListCellFactory extends ListCell<Chat> {
     @FXML private AnchorPane layout;
     @FXML private Label chatNameLabel;
     @FXML private Label lastMsgLabel;
+    @FXML private Label countUnreadMessages;
 
     public void init(Long selfId) {
         this.selfId = selfId;
@@ -33,6 +34,16 @@ public class ChatListCellFactory extends ListCell<Chat> {
 
         chatNameLabel.setText(prepareChatToBeShown(item));
         lastMsgLabel.setText(prepareLastMessage(item));
+
+        if (item.getUnreadCount() != 0) {
+            countUnreadMessages.setText(String.valueOf(item.getUnreadCount()));
+            countUnreadMessages.setStyle("-fx-background-color: #3D77A3");
+        }
+        else {
+            countUnreadMessages.setText("");
+            countUnreadMessages.setStyle("-fx-background-color: transparent");
+        }
+
         setGraphic(layout);
     }
 
@@ -46,11 +57,7 @@ public class ChatListCellFactory extends ListCell<Chat> {
             if (!Objects.equals(member.getId(), selfId))
                 memberNames.add(member.getUsername());
         });
-        var res = String.join(", ", memberNames);
-        if (chat.getUnreadCount() > 0) {
-            res += " (" + chat.getUnreadCount() + ")";
-        }
-        return res;
+        return String.join(", ", memberNames);
     }
 
     private String prepareLastMessage(Chat chat) {

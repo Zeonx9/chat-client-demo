@@ -127,6 +127,61 @@
     -fx-background-color: transparent;
 }
 
+.messageListView .scroll-bar .track, .selectedListView .scroll-bar .track{
+    -fx-background-color: #3A3C4D;
+}
+
+.messageListView .scroll-bar .thumb, .selectedListView .scroll-bar .thumb {
+    -fx-background-color: #4F5168;
+}
+
+.messageListView .scroll-bar .increment-button, .messageListView .scroll-bar .decrement-button{
+    -fx-background-color: #3A3C4D;
+    -fx-border-color: #3A3C4D;
+    -fx-text-fill: #3A3C4D;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.selectedListView .scroll-bar .increment-button, .selectedListView .scroll-bar .decrement-button{
+    -fx-background-color: #3A3C4D;
+    -fx-border-color: #3A3C4D;
+    -fx-text-fill: #3A3C4D;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.chatListView .scroll-bar .track{
+    -fx-background-color: #272833;
+}
+
+.chatListView .scroll-bar .thumb {
+    -fx-background-color: #4F5168;
+}
+
+.chatListView .scroll-bar .increment-button, .chatListView .scroll-bar .decrement-button{
+    -fx-background-color: #272833;
+    -fx-border-color: #272833;
+    -fx-text-fill: #272833;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.userListView .scroll-bar .track{
+    -fx-background-color: #272833;
+    -fx-border-color: #272833;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.userListView .scroll-bar .thumb {
+    -fx-background-color: #4F5168;
+}
+
+.userListView .scroll-bar .increment-button, .userListView .scroll-bar .decrement-button{
+    -fx-background-color: #272833;
+    -fx-border-color: #272833;
+    -fx-text-fill: #272833;
+    -fx-background-insets: 0 0 0 0;
+}
+
+
 /*.messageListView .list-cell .label{*/
 /*    display: inline-block;*/
 /*    -fx-font-family: "Poppins Medium";*/
@@ -194,7 +249,7 @@
     -fx-background: #1A1A22;
     -fx-background-color: -fx-background ;
     -fx-background-radius: 25px;
-    -fx-padding: 12px ;
+    -fx-padding: 5px;
 }
 
 .selectedListView .list-cell:empty .label {
@@ -207,4 +262,30 @@
 
 .mainPane {
     -fx-background-color: #3A3C4D;
+}
+
+.createGroupButton {
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 13;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-color: #3A3C4D;
+}
+
+.createGroupButton:hover {
+    -fx-background-color: #14141A;
+}
+
+.createGroupButton:focused {
+    -fx-background-color: #272833;
+}
+
+.countUnreadMessages {
+    display: inline-block;
+        -fx-font-family: "Poppins Medium";
+        -fx-font-size: 12;
+        -fx-text-fill: #FFFFFF;
+        -fx-background: #3D77A3;
+        -fx-background-color: -fx-background ;
+        -fx-background-radius: 30px;
+        -fx-padding: 6px ;
 }
