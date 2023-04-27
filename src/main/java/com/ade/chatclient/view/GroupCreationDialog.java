@@ -5,7 +5,6 @@ import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.viewmodel.AllUsersViewModel;
 import com.ade.chatclient.viewmodel.GroupCreationDialogModel;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -29,6 +28,9 @@ public class GroupCreationDialog extends Dialog<GroupRequest> {
         setResultConverter(viewModel::resultConverter);
 
         groupName.textProperty().bindBidirectional(viewModel.getNameOfGroup());
+        groupName.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onTextChanged));
+        createGroupButton.disableProperty().bind(viewModel.getIsFilled());
+
 
         listOfUsers.itemsProperty().bind(viewModel.getUserListProperty());
         listOfUsers.setCellFactory(param -> AllUsersViewModel.getUserListCellFactory());
@@ -59,6 +61,6 @@ public class GroupCreationDialog extends Dialog<GroupRequest> {
     }
 
     public void OnCreateGroupButtonClicked() {
-
+        setResult(viewModel.onCreateClicked());
     }
 }

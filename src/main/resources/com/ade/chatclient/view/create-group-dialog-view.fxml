@@ -18,10 +18,8 @@
     <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="415.0" prefWidth="480.0">
             <ListView fx:id="listOfUsers" layoutX="50.0" layoutY="90.0" prefHeight="300.0" prefWidth="380.0" style="-fx-background-color: transparent;" styleClass="userListView" />
-            <ListView fx:id="selectedUsers" focusTraversable="false" layoutX="50.0" layoutY="7.0" orientation="HORIZONTAL" prefHeight="50.0" prefWidth="380.0" style="-fx-background-color: transparent;" styleClass="selectedListView" />
+            <ListView fx:id="selectedUsers" focusTraversable="false" layoutX="50.0" layoutY="7.0" orientation="HORIZONTAL" prefHeight="65.0" prefWidth="380.0" style="-fx-background-color: transparent;" styleClass="selectedListView" />
             <Button fx:id="createGroupButton" layoutX="180.0" layoutY="413.0" mnemonicParsing="false" onAction="#OnCreateGroupButtonClicked" prefHeight="40.0" prefWidth="120.0" styleClass="createButton" text="Create" />
         </AnchorPane>
     </content>
-    <ButtonType fx:constant="CLOSE" />
-   <ButtonType fx:constant="OK" />
 </DialogPane>

@@ -195,6 +195,7 @@ public class ClientModelImpl implements ClientModel{
             Chat chatOfMessage = chatById.get(msg.getChatId());
             chatOfMessage.incrementUnreadCount();
             incrementUnreadChatCounter(chatOfMessage);
+            chatOfMessage.setLastMessage(msg);
             // вот это может быть опасно с точки зрения синхронизации (которой у нас нет, ахах)
             changeSupport.firePropertyChange("chatReceivedMessages", null, chatOfMessage);
         }

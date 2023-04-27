@@ -4,10 +4,7 @@ import com.ade.chatclient.domain.GroupChatInfo;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.view.cellfactory.SelectedUsersCellFactory;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListCell;
@@ -21,6 +18,7 @@ public class GroupCreationDialogModel {
     private final ListProperty<User> userListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final ListProperty<User> selectedUsersListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final StringProperty nameOfGroup = new SimpleStringProperty();
+    private final BooleanProperty isFilled = new SimpleBooleanProperty(true);
     private User selected;
 
     public void populateUserList(List<User> userList) {
@@ -39,6 +37,13 @@ public class GroupCreationDialogModel {
             selected = user;
             System.out.println(selected);
         }
+    }
+
+    public void onTextChanged(String newText) {
+        if (newText == null) {
+            newText = "";
+        }
+        isFilled.set(newText.isBlank());
     }
 
     public void onMouseClickedListener(MouseEvent evt) {
@@ -60,5 +65,8 @@ public class GroupCreationDialogModel {
 
     public static ListCell<User> getSelectedUsersCellFactory() {
         return new SelectedUsersCellFactory();
+    }
+    public GroupRequest onCreateClicked() {
+        return resultConverter(ButtonType.OK);
     }
 }
