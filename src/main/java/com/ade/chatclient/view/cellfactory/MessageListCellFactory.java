@@ -33,6 +33,7 @@ public class MessageListCellFactory extends ListCell<Message> {
 
         messageText.setText(prepareMessageToBeShown(item));
         dataText.setText(prepareMessageDataToBeShown(item));
+        AnchorPane.clearConstraints(wrapper);
 
         if (item.getAuthor().getId().equals(selfId)) {
             AnchorPane.setRightAnchor(wrapper, 0.0);
@@ -40,6 +41,7 @@ public class MessageListCellFactory extends ListCell<Message> {
         }
         else {
             AnchorPane.setLeftAnchor(wrapper, 0.0);
+            wrapper.setAlignment(Pos.CENTER_LEFT);
         }
         setGraphic(layout);
     }
