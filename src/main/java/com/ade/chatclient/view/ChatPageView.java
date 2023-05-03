@@ -14,6 +14,7 @@ import javafx.scene.layout.Pane;
 import lombok.Getter;
 
 public class ChatPageView extends AbstractView<ChatPageViewModel> {
+    @FXML private Button showUserProfileButton;
     @FXML private Button showChatsButton;
     @FXML private Button showUsersButton;
     @FXML private Label userNameLabel;
@@ -33,6 +34,7 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         userNameLabel.textProperty().bind(viewModel.getUserNameProperty());
         showChatsButton.disableProperty().bind(viewModel.getShowChatsButtonDisabled());
         showUsersButton.disableProperty().bind(viewModel.getShowUsersButtonDisabled());
+        showUserProfileButton.disableProperty().bind(viewModel.getShowUserProfileDisabled());
         messageListView.itemsProperty().bind(viewModel.getMessageListProperty());
 
         messageListView.setCellFactory(messageListView -> viewModel.getMessageCellFactory());
@@ -54,5 +56,9 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
     @FXML
     protected void onShowUsersClicked() {
         viewModel.openUsersPane();
+    }
+
+    public void onShowUserProfileClicked() {
+        viewModel.openProfilePane();
     }
 }

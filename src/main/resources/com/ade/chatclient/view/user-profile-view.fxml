@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="400.0" stylesheets="@../styles/ChatPageViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.UserProfileView">
+   <BorderPane prefHeight="600.0" prefWidth="400.0" styleClass="chatsPane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <top>
+         <Label styleClass="header2" text="Your profile" BorderPane.alignment="CENTER_LEFT">
+            <BorderPane.margin>
+               <Insets left="50.0" top="50.0" />
+            </BorderPane.margin>
+         </Label>
+      </top>
+      <center>
+         <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <Label alignment="BOTTOM_LEFT" layoutX="50.0" layoutY="90.0" minHeight="24.0" styleClass="header4" text="Full name" />
+            <Label fx:id="fullName" alignment="TOP_LEFT" layoutX="50.0" layoutY="114.0" maxWidth="200.0" prefHeight="60.0" prefWidth="200.0" styleClass="header2" wrapText="true" />
+            <Label alignment="BOTTOM_LEFT" layoutX="50.0" layoutY="199.0" minHeight="24.0" styleClass="header4" text="Birthdate" />
+            <Label fx:id="birthDate" alignment="TOP_LEFT" layoutX="50.0" layoutY="223.0" maxWidth="200.0" prefHeight="28.0" prefWidth="136.0" styleClass="header2" wrapText="true" />
+            <Label alignment="BOTTOM_LEFT" layoutX="50.0" layoutY="274.0" minHeight="24.0" styleClass="header4" text="Login" />
+            <Label fx:id="userName" alignment="TOP_LEFT" layoutX="50.0" layoutY="298.0" maxWidth="271.0" prefHeight="28.0" prefWidth="271.0" styleClass="header2" wrapText="true" />
+            <Button focusTraversable="false" layoutX="47.0" layoutY="351.0" mnemonicParsing="false" onAction="#onChangeButtonClicked" prefHeight="30.0" prefWidth="200.0" styleClass="createGroupButton" text="Change password" />
+         </Pane>
+      </center>
+   </BorderPane>
+</AnchorPane>
