@@ -3,7 +3,6 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
@@ -14,17 +13,14 @@
             <BorderPane.margin>
                 <Insets top="25.0" />
             </BorderPane.margin>
-            <TextField focusTraversable="false" prefHeight="30.0" prefWidth="350.0" promptText="Search" styleClass="text-input">
+            <TextField fx:id="searchText" focusTraversable="false" prefHeight="30.0" prefWidth="350.0" promptText="Search" styleClass="text-input">
                 <padding>
-                    <Insets left="40.0" />
+                    <Insets left="10.0" />
                 </padding>
                <font>
                   <Font size="10.0" />
                </font>
             </TextField>
-                            <ImageView fitHeight="22.0" fitWidth="22.0" layoutX="10.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@../img/search_icon.png" />
-                            </ImageView>
             <Label layoutY="40.0" maxWidth="94.0" prefHeight="28.0" prefWidth="94.0" styleClass="header2" text="All chats" wrapText="true" />
             <Button fx:id="createGroupButton" layoutX="184.0" layoutY="40.0" onAction="#onNewChatClicked" styleClass="createGroupButton" text="create new group chat" />
         </Group>

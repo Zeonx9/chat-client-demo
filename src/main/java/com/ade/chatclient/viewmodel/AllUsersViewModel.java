@@ -42,4 +42,13 @@ public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
     public static ListCell<User> getUserListCellFactory() {
         return new UserListCellFactory();
     }
+
+    public void onTextChanged(String newText) {
+        if (newText == null || newText.isBlank()) {
+            usersListProperty.clear();
+            model.fetchChats();
+        }
+        usersListProperty.clear();
+        usersListProperty.addAll(model.searchUser(newText));
+    }
 }
