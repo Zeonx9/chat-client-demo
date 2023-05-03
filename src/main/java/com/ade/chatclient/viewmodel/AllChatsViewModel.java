@@ -59,7 +59,6 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         if (changedChat == null || changedChat.equals(model.getSelectedChat())) {
             return;
         }
-        System.out.println("on change of chat selected");
         model.selectChat(changedChat);
     }
 

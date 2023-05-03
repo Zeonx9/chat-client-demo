@@ -47,7 +47,6 @@ public class MessageListCellFactory extends ListCell<Message> {
     }
 
     private String prepareMessageToBeShown(Message msg) {
-        System.out.println(msg.getText());
         return msg.getText();
     }
 

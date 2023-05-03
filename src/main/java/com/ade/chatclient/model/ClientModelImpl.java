@@ -9,7 +9,6 @@ import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.AuthResponse;
 import com.ade.chatclient.dtos.GroupRequest;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.beans.PropertyChangeListener;
@@ -23,7 +22,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
-@RequiredArgsConstructor
 @Getter
 @Setter
 public class ClientModelImpl implements ClientModel{
@@ -34,6 +32,11 @@ public class ClientModelImpl implements ClientModel{
     private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
     private long unreadChatCounter;
+
+    public ClientModelImpl(AsyncRequestHandler handler) {
+        System.out.println("model created!");
+        this.handler = handler;
+    }
 
     @Override
     public boolean Authorize(String login, String password) {
@@ -75,6 +78,7 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void fetchChats() {
+        System.out.println("chats fetched");
         if (myself == null) {
             return;
         }
@@ -112,6 +116,7 @@ public class ClientModelImpl implements ClientModel{
         if (selectedChat == null) {
             return;
         }
+        System.out.println("fetch messages " + selectedChat.getId());
         decrementChatCounter(selectedChat);
         handler.sendGETAsync(
                     String.format("/chats/%d/messages", selectedChat.getId()),
@@ -119,7 +124,6 @@ public class ClientModelImpl implements ClientModel{
                 )
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
                 .thenAccept(messages -> {
-                    System.out.println("fetching messages for chat " + selectedChat.getId() + "...");
                     selectedChat.setUnreadCount(0);
                     changeSupport.firePropertyChange("gotMessages", null, messages);
                     changeSupport.firePropertyChange("selectedChatModified", null, selectedChat);
@@ -128,6 +132,7 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void selectChat(Chat chat) {
+        System.out.println("chat selected!");
         selectedChat = chat;
         fetchChatMessages();
     }
@@ -137,6 +142,7 @@ public class ClientModelImpl implements ClientModel{
         if (selectedChat == null) {
             return;
         }
+        System.out.println("sending message...");
         handler.sendPOSTAsync(
                         String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
                         Message.builder().text(text).build(),
@@ -152,6 +158,7 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void fetchUsers() {
+        System.out.println("fetching users");
         //TODO change to company/users
         handler.sendGETAsync("/users")
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfUser))
@@ -173,10 +180,15 @@ public class ClientModelImpl implements ClientModel{
     }
 
     private void acceptNewMessages(List<Message> newMessages) {
+        if (newMessages.isEmpty()) {
+            return;
+        }
+        System.out.println("new messages!");
         Map<Boolean, List<Message>> msgInSelectedChat = newMessages.stream().collect(Collectors.partitioningBy(
                 message -> selectedChat != null && message.getChatId().equals(selectedChat.getId())
         ));
         if (!msgInSelectedChat.get(true).isEmpty()){
+            selectedChat.setLastMessage(msgInSelectedChat.get(true).get(0));
             changeSupport.firePropertyChange("newMessagesInSelected", null, msgInSelectedChat.get(true));
             changeSupport.firePropertyChange("chatReceivedMessages", null, selectedChat);
         }
@@ -210,7 +222,7 @@ public class ClientModelImpl implements ClientModel{
     }
 
     private void fetchNewChatFromServer(Long chatId) {
-        System.out.println("chat fetched");
+        System.out.println("fetching one chat");
         handler.sendGETAsync("/chats/" + chatId)
                 .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
                 .thenAccept(chat -> {
@@ -234,6 +246,7 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void createGroupChat(GroupRequest groupRequest) {
+        System.out.println("creating group");
         try {
             groupRequest.getIds().add(myself.getId());
             groupRequest.getGroupInfo().setCreator(myself);
@@ -253,8 +266,10 @@ public class ClientModelImpl implements ClientModel{
     @Override
     public Chat createDialogFromAllUsers(User user) {
         try {
+            System.out.println("opening chat wiht " + user.getId());
             Chat chat = futureChatWith(user).get();
             if (!myChats.contains(chat)) {
+                System.out.println("it was a new chat");
                 changeSupport.firePropertyChange("NewChatCreated", null, chat);
                 myChats.add(0, chat);
             }
