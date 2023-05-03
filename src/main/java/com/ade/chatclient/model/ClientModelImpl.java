@@ -281,6 +281,26 @@ public class ClientModelImpl implements ClientModel{
         }
     }
 
+    private String getChatNameForSearch(Chat chat) {
+        if (chat.getGroup() != null) {
+            return chat.getGroup().getName();
+        }
+        var result = chat.getMembers().stream().map(User::getUsername)
+                .filter(username -> !username.equals(myself.getUsername())).toList();
+        return String.join("", result);
+    }
+
+    public List<Chat> searchChat(String request) {
+        return myChats.stream()
+                .filter(chat -> getChatNameForSearch(chat).contains(request))
+                .toList();
+    }
+
+    public List<User> searchUser(String request) {
+        return allUsers.stream()
+                .filter(chat -> chat.getUsername().contains(request))
+                .toList();
+    }
 
     @Override
     public void addListener(String eventName, PropertyChangeListener listener) {
