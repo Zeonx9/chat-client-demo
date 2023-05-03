@@ -21,6 +21,6 @@ public class UserProfileView extends AbstractView<UserProfileViewModel> {
     }
 
     public void onChangeButtonClicked() {
-
+        viewModel.showDialogAndWait();
     }
 }

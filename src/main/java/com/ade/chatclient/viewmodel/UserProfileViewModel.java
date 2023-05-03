@@ -4,6 +4,7 @@ import com.ade.chatclient.application.AbstractChildViewModel;
 import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.view.ChangingPasswordDialog;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
@@ -29,6 +30,12 @@ public class UserProfileViewModel extends AbstractChildViewModel<ClientModel> {
         fullNameProperty.set("Дементьев Егор Васильевич");
         birthDateProperty.set("23.06.2003");
         userNameProperty.set(me.getUsername());
+    }
+    public void showDialogAndWait() {
+        ChangingPasswordDialog dialog = ChangingPasswordDialog.getInstance();
+        dialog.init(new ChangingPasswordDialogModel());
+
+        dialog.showAndWait();
     }
 
 }
