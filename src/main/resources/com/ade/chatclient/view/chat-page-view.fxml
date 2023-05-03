@@ -14,12 +14,13 @@
                 </cursor>
                 <Button fx:id="showChatsButton" focusTraversable="false" layoutY="100.0" mnemonicParsing="false" onAction="#onShowChatsClicked" prefHeight="50.0" prefWidth="50.0" styleClass="showChatsBtn" />
                 <Button fx:id="showUsersButton" focusTraversable="false" mnemonicParsing="false" onAction="#onShowUsersClicked" prefHeight="50.0" prefWidth="50.0" styleClass="ShowUsersBtn" />
+            <Button fx:id="showUserProfileButton" layoutY="-100.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="ShowUserDataBtn" focusTraversable="false" onAction="#onShowUserProfileClicked"/>
             </Group>
         </center>
     </BorderPane>
 
         <VBox prefHeight="600.0" prefWidth="1000.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <Label fx:id="userNameLabel" prefHeight="50.0" prefWidth="479.0" styleClass="header">
+      <Label fx:id="userNameLabel" prefHeight="50.0" prefWidth="479.0" styleClass="header2">
          <VBox.margin>
             <Insets left="25.0" top="20.0" />
          </VBox.margin>

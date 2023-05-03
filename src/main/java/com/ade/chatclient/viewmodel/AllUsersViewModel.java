@@ -27,7 +27,7 @@ public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
 
     @Override
     public void actionInParentOnOpen() {
-        viewHandler.getViewModelProvider().getChatPageViewModel().changeButtonsParam(false);
+        viewHandler.getViewModelProvider().getChatPageViewModel().changeButtonsParam(1);
     }
 
     public void onSelectedItemChange(User newValue) {
