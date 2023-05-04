@@ -81,4 +81,8 @@ public interface ClientModel {
      * @param groupRequest содержит информацию для создания чата
      */
     void createGroupChat(GroupRequest groupRequest);
+
+    List<Chat> searchChat(String request);
+
+    List<User> searchUser(String request);
 }

@@ -22,6 +22,7 @@ import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 @Getter
 public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     private final ListProperty<Chat> chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private Boolean isSearching = false;
 
     public AllChatsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
@@ -39,17 +40,20 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     }
 
     private void raiseChat(PropertyChangeEvent event) {
+        if (isSearching) return;
         Chat chat = (Chat) event.getNewValue();
         chatListProperty.remove(chat);
         chatListProperty.add(0, chat);
     }
 
     private void newChatCreated(PropertyChangeEvent event) {
+        if (isSearching) return;
         Chat chat = (Chat) event.getNewValue();
         chatListProperty.add(0, chat);
     }
 
     private void selectedChatModified(PropertyChangeEvent evt) {
+        if (isSearching) return;
         Chat chat = (Chat) evt.getNewValue();
         int index = chatListProperty.indexOf(chat);
         chatListProperty.set(index, chat);
@@ -64,7 +68,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
 
     @Override
     public void actionInParentOnOpen() {
-        viewHandler.getViewModelProvider().getChatPageViewModel().changeButtonsParam(true);
+        viewHandler.getViewModelProvider().getChatPageViewModel().changeButtonsParam(2);
     }
 
     public ListCell<Chat> getChatListCellFactory() {
@@ -85,5 +89,16 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             System.out.println(answer.get());
             model.createGroupChat(answer.get());
         }
+    }
+
+    public void onTextChanged(String newText) {
+        if (newText == null || newText.isBlank()) {
+            isSearching = false;
+            model.fetchChats();
+            return;
+        }
+        isSearching = true;
+        chatListProperty.clear();
+        chatListProperty.addAll(model.searchChat(newText));
     }
 }

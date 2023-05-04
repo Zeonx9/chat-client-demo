@@ -3,8 +3,8 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="600.0" prefWidth="400.0" stylesheets="@../styles/ChatPageViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.AllChatsView">
     <BorderPane prefHeight="600.0" prefWidth="400.0" styleClass="chatsPane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -13,22 +13,22 @@
             <BorderPane.margin>
                 <Insets top="25.0" />
             </BorderPane.margin>
-            <TextField focusTraversable="false" prefHeight="50.0" prefWidth="350.0" promptText="Search">
+            <TextField fx:id="searchText" focusTraversable="false" prefHeight="30.0" prefWidth="350.0" promptText="Search" styleClass="text-input">
                 <padding>
-                    <Insets left="70.0" />
+                    <Insets left="10.0" />
                 </padding>
+               <font>
+                  <Font size="10.0" />
+               </font>
             </TextField>
-                            <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@../img/search_icon.png" />
-                            </ImageView>
-            <Label layoutY="70.0" styleClass="header" text="All chats" />
-            <Button fx:id="createGroupButton" layoutX="184.0" layoutY="78.0" onAction="#onNewChatClicked" styleClass="createGroupButton" text="create new group chat" />
+            <Label layoutY="40.0" maxWidth="94.0" prefHeight="28.0" prefWidth="94.0" styleClass="header2" text="All chats" wrapText="true" />
+            <Button fx:id="createGroupButton" layoutX="184.0" layoutY="40.0" onAction="#onNewChatClicked" styleClass="createGroupButton" text="create new group chat" />
         </Group>
     </top>
     <center>
-        <ListView fx:id="chatListView" prefHeight="406.0" prefWidth="400.0" style="-fx-background-color: transparent;" styleClass="chatListView" BorderPane.alignment="CENTER">
+        <ListView fx:id="chatListView" prefHeight="486.0" prefWidth="400.0" style="-fx-background-color: transparent;" styleClass="chatListView" BorderPane.alignment="CENTER">
             <BorderPane.margin>
-                                    <Insets bottom="25.0" top="25.0" />
+                                    <Insets top="25.0" />
             </BorderPane.margin>
         </ListView>
     </center>

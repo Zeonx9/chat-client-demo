@@ -27,7 +27,7 @@ public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
 
     @Override
     public void actionInParentOnOpen() {
-        viewHandler.getViewModelProvider().getChatPageViewModel().changeButtonsParam(false);
+        viewHandler.getViewModelProvider().getChatPageViewModel().changeButtonsParam(1);
     }
 
     public void onSelectedItemChange(User newValue) {
@@ -41,5 +41,14 @@ public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
 
     public static ListCell<User> getUserListCellFactory() {
         return new UserListCellFactory();
+    }
+
+    public void onTextChanged(String newText) {
+        if (newText == null || newText.isBlank()) {
+            usersListProperty.clear();
+            model.fetchChats();
+        }
+        usersListProperty.clear();
+        usersListProperty.addAll(model.searchUser(newText));
     }
 }

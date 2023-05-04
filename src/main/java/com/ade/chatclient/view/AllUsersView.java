@@ -12,13 +12,14 @@ import lombok.Getter;
 
 @Getter
 public class AllUsersView extends AbstractView<AllUsersViewModel> {
-    @FXML private TextField searchUsersTextField;
+    @FXML private TextField searchText;
     @FXML private ListView<User> userListView;
 
     @Override
     public void init(AllUsersViewModel allUsersViewModel) {
         super.init(allUsersViewModel);
 
+        searchText.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onTextChanged));
         userListView.itemsProperty().bind(viewModel.getUsersListProperty());
         userListView.setCellFactory(param -> AllUsersViewModel.getUserListCellFactory());
         userListView.getSelectionModel().selectedItemProperty()

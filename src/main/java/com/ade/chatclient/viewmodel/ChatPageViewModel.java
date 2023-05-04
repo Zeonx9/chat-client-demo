@@ -26,6 +26,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final StringProperty messageTextProperty = new SimpleStringProperty();
     private final BooleanProperty showChatsButtonDisabled = new SimpleBooleanProperty(true);
     private final BooleanProperty showUsersButtonDisabled = new SimpleBooleanProperty(false);
+    private final BooleanProperty showUserProfileDisabled = new SimpleBooleanProperty(false);
     private final StringProperty userNameProperty = new SimpleStringProperty();
     private Runnable bottomScroller;
     private Consumer<Views> paneSwitcher;
@@ -71,6 +72,9 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     public void openUsersPane() {
         paneSwitcher.accept(Views.ALL_USERS_VIEW);
     }
+    public void openProfilePane() {
+        paneSwitcher.accept(Views.USER_PROFILE_VIEW);
+    }
 
     public void sendMessage() {
         if (messageTextProperty.get().isBlank()) {
@@ -80,9 +84,10 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         messageTextProperty.set("");
     }
 
-    public void changeButtonsParam(Boolean param) {
-        showChatsButtonDisabled.set(param);
-        showUsersButtonDisabled.set(!param);
+    public void changeButtonsParam(Integer index) {
+        showUserProfileDisabled.set(index == 0);
+        showUsersButtonDisabled.set(index == 1);
+        showChatsButtonDisabled.set(index == 2);
     }
 
     public ListCell<Message> getMessageCellFactory() {
