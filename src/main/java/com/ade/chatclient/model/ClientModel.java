@@ -1,6 +1,7 @@
 package com.ade.chatclient.model;
 
 import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.domain.Company;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.dtos.GroupRequest;
@@ -91,4 +92,5 @@ public interface ClientModel {
     List<Chat> searchChat(String request);
 
     List<User> searchUser(String request);
+    Company getCompany();
 }

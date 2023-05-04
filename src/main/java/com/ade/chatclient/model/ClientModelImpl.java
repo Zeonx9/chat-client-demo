@@ -299,6 +299,7 @@ public class ClientModelImpl implements ClientModel{
                         changeSupport.firePropertyChange("passwordChangeResponded", null, "successfully!")
                 ).exceptionally(e -> {
                     changeSupport.firePropertyChange("passwordChangeResponded", null, "unsuccessful attempt!");
+                    System.out.println(e.getMessage());
                     return null;
                 });
 

@@ -1,6 +1,8 @@
 package com.ade.chatclient.view;
 
 import com.ade.chatclient.application.ViewModelUtils;
+import com.ade.chatclient.domain.User;
+import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.viewmodel.ChangingPasswordDialogModel;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -10,25 +12,25 @@ import javafx.scene.control.*;
 
 import java.io.IOException;
 
-public class ChangingPasswordDialog extends Dialog {
+public class ChangingPasswordDialog extends Dialog<ChangePasswordRequest> {
     @FXML private DialogPane changePasswordDialog;
     @FXML private PasswordField currentPassword;
     @FXML private PasswordField newPassword;
     @FXML private Button changeButton;
     @FXML private Label errorMessage;
     private ChangingPasswordDialogModel viewModel;
-    public void init(ChangingPasswordDialogModel viewModel) {
+    public void init(User user, ChangingPasswordDialogModel viewModel) {
         this.viewModel = viewModel;
         setTitle("Changing password");
-//        setResultConverter(viewModel::resultConverter);
+        setResultConverter(viewModel::resultConverter);
+        makeButtonInvisible();
 
         currentPassword.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onCurPasswordTextChanged));
         newPassword.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onNewPasswordTextChanged));
         changeButton.disableProperty().bind(Bindings.or(viewModel.getIsCurPasswordBlank(), viewModel.getIsNewPasswordBlank()));
         errorMessage.textProperty().bind(viewModel.getErrorMessageProperty());
 
-        makeButtonInvisible();
-
+        viewModel.populateUser(user);
     }
 
     public static ChangingPasswordDialog getInstance() {
@@ -46,7 +48,7 @@ public class ChangingPasswordDialog extends Dialog {
 
 
     public void onChangePasswordClicked() {
-//        setResult(viewModel.onChangeClicked());
+        setResult(viewModel.onChangeClicked(currentPassword.getText(), newPassword.getText()));
         System.out.println(currentPassword.getText());
         System.out.println(newPassword.getText());
     }
