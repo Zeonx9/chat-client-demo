@@ -8,15 +8,17 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
+import lombok.Setter;
 
 import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
 
 @Getter
+@Setter
 public class LogInViewModel extends AbstractViewModel<ClientModel> {
-    private final StringProperty loginTextProperty = new SimpleStringProperty();
-    private final StringProperty passwordProperty = new SimpleStringProperty();
-    private final StringProperty errorMessageProperty = new SimpleStringProperty();
-    private final BooleanProperty disableButtonProperty = new SimpleBooleanProperty(true);
+    private StringProperty loginTextProperty = new SimpleStringProperty();
+    private StringProperty passwordProperty = new SimpleStringProperty();
+    private StringProperty errorMessageProperty = new SimpleStringProperty();
+    private BooleanProperty disableButtonProperty = new SimpleBooleanProperty(true);
 
     public LogInViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);

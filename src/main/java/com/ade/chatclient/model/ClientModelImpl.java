@@ -247,7 +247,7 @@ public class ClientModelImpl implements ClientModel{
                 myChats.add(0, chat);
             }
         } catch (Exception e) {
-            System.out.println("Fail to Create dialog");
+            System.out.println("Fail to Create group");
             throw new RuntimeException(e);
         }
     }
@@ -308,4 +308,5 @@ public class ClientModelImpl implements ClientModel{
     public void addListener(String eventName, PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(eventName, listener);
     }
+
 }
