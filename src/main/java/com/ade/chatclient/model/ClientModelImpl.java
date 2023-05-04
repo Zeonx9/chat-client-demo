@@ -4,6 +4,7 @@ import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.domain.*;
 import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.AuthResponse;
+import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.dtos.GroupRequest;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +26,6 @@ public class ClientModelImpl implements ClientModel{
     private final AsyncRequestHandler handler;
     private User myself;
     private Chat selectedChat;
-
     private Company company;
     private List<Chat> myChats = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
@@ -56,13 +56,11 @@ public class ClientModelImpl implements ClientModel{
 
     private boolean authorizeRequest(String login, String password, String request) {
         try {
-            AuthResponse auth = handler.sendPOSTAsync(
-                            "/auth/" + request,
-                            AuthRequest.builder().login(login).password(password).build(),
-                            false
-                    )
-                    .thenApply(AsyncRequestHandler.mapperOf(AuthResponse.class))
-                    .get();
+            AuthResponse auth = handler.sendPost(
+                    "/auth/" + request,
+                    AuthRequest.builder().login(login).password(password).build(),
+                    AuthResponse.class, false
+            ).get();
 
             setMyself(auth.getUser());
             setCompany(auth.getCompany());
@@ -82,8 +80,7 @@ public class ClientModelImpl implements ClientModel{
         if (myself == null) {
             return;
         }
-        handler.sendGETAsync(String.format("/users/%d/chats", myself.getId()))
-                .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfChat))
+        handler.sendGet(String.format("/users/%d/chats", myself.getId()), TypeReferences.ListOfChat)
                 .thenAccept(chats -> {
                     changeSupport.firePropertyChange("gotChats", null, chats);
                     setMyChats(chats);
@@ -118,11 +115,11 @@ public class ClientModelImpl implements ClientModel{
         }
         System.out.println("fetch messages " + selectedChat.getId());
         decrementChatCounter(selectedChat);
-        handler.sendGETAsync(
+        handler.sendGet(
                     String.format("/chats/%d/messages", selectedChat.getId()),
-                    Map.of("userId", myself.getId().toString())
+                    Map.of("userId", myself.getId().toString()),
+                    TypeReferences.ListOfMessage
                 )
-                .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
                 .thenAccept(messages -> {
                     selectedChat.setUnreadCount(0);
                     changeSupport.firePropertyChange("gotMessages", null, messages);
@@ -143,12 +140,11 @@ public class ClientModelImpl implements ClientModel{
             return;
         }
         System.out.println("sending message...");
-        handler.sendPOSTAsync(
+        handler.sendPost(
                         String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
                         Message.builder().text(text).build(),
-                        true
+                        Message.class, true
                 )
-                .thenApply(AsyncRequestHandler.mapperOf(Message.class))
                 .thenAccept(message -> {
                             selectedChat.setLastMessage(message);
                             changeSupport.firePropertyChange("newMessagesInSelected", null, List.of(message));
@@ -159,8 +155,7 @@ public class ClientModelImpl implements ClientModel{
     @Override
     public void fetchUsers() {
         System.out.println("fetching users");
-        handler.sendGETAsync("/company/" + company.getId() + "/users")
-                .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfUser))
+        handler.sendGet("/company/" + company.getId() + "/users", TypeReferences.ListOfUser)
                 .thenApply(userList -> {
                     userList.remove(myself);
                     return userList;
@@ -173,8 +168,7 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void fetchNewMessages() {
-        handler.sendGETAsync(String.format("/users/%d/undelivered_messages", myself.getId()))
-                .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfMessage))
+        handler.sendGet(String.format("/users/%d/undelivered_messages", myself.getId()), TypeReferences.ListOfMessage)
                 .thenAccept(this::acceptNewMessages);
     }
 
@@ -207,7 +201,7 @@ public class ClientModelImpl implements ClientModel{
             chatOfMessage.incrementUnreadCount();
             incrementUnreadChatCounter(chatOfMessage);
             chatOfMessage.setLastMessage(msg);
-            // вот это может быть опасно с точки зрения синхронизации (которой у нас нет, ахах)
+
             changeSupport.firePropertyChange("chatReceivedMessages", null, chatOfMessage);
         }
 
@@ -222,8 +216,7 @@ public class ClientModelImpl implements ClientModel{
 
     private void fetchNewChatFromServer(Long chatId) {
         System.out.println("fetching one chat");
-        handler.sendGETAsync("/chats/" + chatId)
-                .thenApply(AsyncRequestHandler.mapperOf(Chat.class))
+        handler.sendGet("/chats/" + chatId, Chat.class)
                 .thenAccept(chat -> {
                     System.out.println("creation of new chat:" + chat.getId());
                     changeSupport.firePropertyChange("NewChatCreated", null, chat);
@@ -233,14 +226,12 @@ public class ClientModelImpl implements ClientModel{
 
 
     private CompletableFuture<Chat> futureChatWith(User user) {
-        return handler.sendGETAsync(String.format("/private_chat/%d/%d", myself.getId(), user.getId()))
-                .thenApply(AsyncRequestHandler.mapperOf(Chat.class));
+        return handler.sendGet(String.format("/private_chat/%d/%d", myself.getId(), user.getId()), Chat.class);
     }
 
 
     private CompletableFuture<Chat> futureGroupWith(GroupRequest groupRequest) {
-        return handler.sendPOSTAsync("/group_chat", groupRequest, true)
-                .thenApply(AsyncRequestHandler.mapperOf(Chat.class));
+        return handler.sendPost("/group_chat", groupRequest, Chat.class, true);
     }
 
     @Override
@@ -299,6 +290,18 @@ public class ClientModelImpl implements ClientModel{
         return allUsers.stream()
                 .filter(chat -> chat.getUsername().contains(request))
                 .toList();
+    }
+
+    public void changePassword(ChangePasswordRequest request) {
+        request.getAuthRequest().setLogin(myself.getUsername());
+        handler.sendPut("/user/password", request, AuthResponse.class)
+                .thenAccept(response ->
+                        changeSupport.firePropertyChange("passwordChangeResponded", null, "successfully!")
+                ).exceptionally(e -> {
+                    changeSupport.firePropertyChange("passwordChangeResponded", null, "unsuccessful attempt!");
+                    return null;
+                });
+
     }
 
     @Override

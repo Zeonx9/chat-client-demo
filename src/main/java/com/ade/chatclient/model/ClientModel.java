@@ -2,6 +2,7 @@ package com.ade.chatclient.model;
 
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
+import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.dtos.GroupRequest;
 
 import java.beans.PropertyChangeListener;
@@ -70,6 +71,12 @@ public interface ClientModel {
     void fetchNewMessages();
 
     /**
+     * отправляет на сервер запрос на изменение пароля о своем результате сообщает через
+     * лисенер "passwordChangeResponded", который надо подключить к модели
+     */
+    void changePassword(ChangePasswordRequest request);
+
+    /**
      * отправляет POST запрос на создание личного чата между авторизованными пользователем и выбранным
      * @param user выбранный пользователь
      */
@@ -77,7 +84,6 @@ public interface ClientModel {
 
     /**
      * отправляет POST запрос на создание группового чата между авторизованным и выбранными пользователями
-     *
      * @param groupRequest содержит информацию для создания чата
      */
     void createGroupChat(GroupRequest groupRequest);
