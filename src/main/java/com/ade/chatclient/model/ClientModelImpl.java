@@ -1,10 +1,7 @@
 package com.ade.chatclient.model;
 
 import com.ade.chatclient.application.AsyncRequestHandler;
-import com.ade.chatclient.domain.Chat;
-import com.ade.chatclient.domain.Message;
-import com.ade.chatclient.domain.TypeReferences;
-import com.ade.chatclient.domain.User;
+import com.ade.chatclient.domain.*;
 import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.AuthResponse;
 import com.ade.chatclient.dtos.GroupRequest;
@@ -28,6 +25,8 @@ public class ClientModelImpl implements ClientModel{
     private final AsyncRequestHandler handler;
     private User myself;
     private Chat selectedChat;
+
+    private Company company;
     private List<Chat> myChats = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
@@ -66,6 +65,7 @@ public class ClientModelImpl implements ClientModel{
                     .get();
 
             setMyself(auth.getUser());
+            setCompany(auth.getCompany());
             handler.setAuthToken(auth.getToken());
         }
         catch (Exception e) {
@@ -159,8 +159,7 @@ public class ClientModelImpl implements ClientModel{
     @Override
     public void fetchUsers() {
         System.out.println("fetching users");
-        //TODO change to company/users
-        handler.sendGETAsync("/users")
+        handler.sendGETAsync("/company/" + company.getId() + "/users")
                 .thenApply(AsyncRequestHandler.mapperOf(TypeReferences.ListOfUser))
                 .thenApply(userList -> {
                     userList.remove(myself);

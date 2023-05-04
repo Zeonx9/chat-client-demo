@@ -2,6 +2,7 @@ package com.ade.chatclient.domain;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -14,6 +15,9 @@ import java.util.Objects;
 public class User {
     private Long id;
     private String username;
+    private String realName;
+    private String surname;
+    private LocalDate dateOfBirth;
 
     @Override
     public boolean equals(Object o) {
