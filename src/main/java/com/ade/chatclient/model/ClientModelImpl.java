@@ -19,7 +19,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-
 @Getter
 @Setter
 public class ClientModelImpl implements ClientModel{
@@ -282,14 +281,18 @@ public class ClientModelImpl implements ClientModel{
 
     public List<Chat> searchChat(String request) {
         return myChats.stream()
-                .filter(chat -> getChatNameForSearch(chat).contains(request))
+                .filter(chat -> getChatNameForSearch(chat).toLowerCase().startsWith(request.toLowerCase()))
                 .toList();
     }
 
+    private boolean isRequested(User user, String request) {
+        return user.getUsername().toLowerCase().startsWith(request)
+                || (user.getRealName() != null && user.getSurname().toLowerCase().startsWith(request))
+                || (user.getRealName() != null && user.getRealName().toLowerCase().startsWith(request));
+    }
+
     public List<User> searchUser(String request) {
-        return allUsers.stream()
-                .filter(chat -> chat.getUsername().contains(request))
-                .toList();
+        return allUsers.stream().filter(user -> isRequested(user, request.toLowerCase())).toList();
     }
 
     public void changePassword(ChangePasswordRequest request) {

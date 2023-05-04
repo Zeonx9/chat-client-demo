@@ -46,7 +46,7 @@ public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
     public void onTextChanged(String newText) {
         if (newText == null || newText.isBlank()) {
             usersListProperty.clear();
-            model.fetchChats();
+            model.getAllUsers();
         }
         usersListProperty.clear();
         usersListProperty.addAll(model.searchUser(newText));
