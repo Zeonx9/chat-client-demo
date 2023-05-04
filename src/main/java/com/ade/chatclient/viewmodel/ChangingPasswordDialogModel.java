@@ -1,6 +1,5 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 import javafx.beans.property.BooleanProperty;
@@ -15,7 +14,6 @@ public class ChangingPasswordDialogModel {
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
     private final BooleanProperty isCurPasswordBlank = new SimpleBooleanProperty(true);
     private final BooleanProperty isNewPasswordBlank = new SimpleBooleanProperty(true);
-    private User mySelf;
     private String curPassword;
     private String newPassword;
     public void onCurPasswordTextChanged(String newText) {
@@ -34,7 +32,7 @@ public class ChangingPasswordDialogModel {
         if (buttonType != ButtonType.OK) {
             return null;
         }
-        AuthRequest info = AuthRequest.builder().login(mySelf.getUsername()).password(curPassword).build();
+        AuthRequest info = AuthRequest.builder().password(curPassword).build();
         return ChangePasswordRequest.builder().authRequest(info).newPassword(newPassword).build();
     }
 
@@ -42,9 +40,5 @@ public class ChangingPasswordDialogModel {
         curPassword = curP;
         newPassword = newP;
         return resultConverter(ButtonType.OK);
-    }
-
-    public void populateUser(User user) {
-        mySelf = user;
     }
 }

@@ -10,6 +10,7 @@ public class UserProfileView extends AbstractView<UserProfileViewModel> {
     @FXML private Label birthDate;
     @FXML private Label userName;
     @FXML private Label companyName;
+    @FXML private Label passwordResultMessage;
     @Override
     public void init(UserProfileViewModel viewModel) {
         super.init(viewModel);
@@ -18,8 +19,9 @@ public class UserProfileView extends AbstractView<UserProfileViewModel> {
         birthDate.textProperty().bind(viewModel.getBirthDateProperty());
         userName.textProperty().bind(viewModel.getUserNameProperty());
         companyName.textProperty().bind(viewModel.getCompanyNameProperty());
+        passwordResultMessage.textProperty().bind(viewModel.getResultMessageProperty());
 
-        viewModel.getPersonalUserData();
+        viewModel.setUserPersonalData();
     }
 
     public void onChangeButtonClicked() {
