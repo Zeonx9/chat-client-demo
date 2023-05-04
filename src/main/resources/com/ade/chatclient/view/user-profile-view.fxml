@@ -16,12 +16,15 @@
       <center>
          <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <Label alignment="BOTTOM_LEFT" layoutX="50.0" layoutY="90.0" minHeight="24.0" styleClass="header4" text="Full name" />
-            <Label fx:id="fullName" alignment="TOP_LEFT" layoutX="50.0" layoutY="114.0" maxWidth="200.0" prefHeight="60.0" prefWidth="200.0" styleClass="header2" wrapText="true" />
-            <Label alignment="BOTTOM_LEFT" layoutX="50.0" layoutY="199.0" minHeight="24.0" styleClass="header4" text="Birthdate" />
-            <Label fx:id="birthDate" alignment="TOP_LEFT" layoutX="50.0" layoutY="223.0" maxWidth="200.0" prefHeight="28.0" prefWidth="136.0" styleClass="header2" wrapText="true" />
-            <Label alignment="BOTTOM_LEFT" layoutX="50.0" layoutY="274.0" minHeight="24.0" styleClass="header4" text="Login" />
-            <Label fx:id="userName" alignment="TOP_LEFT" layoutX="50.0" layoutY="298.0" maxWidth="271.0" prefHeight="28.0" prefWidth="271.0" styleClass="header2" wrapText="true" />
-            <Button focusTraversable="false" layoutX="47.0" layoutY="351.0" mnemonicParsing="false" onAction="#onChangeButtonClicked" prefHeight="30.0" prefWidth="200.0" styleClass="createGroupButton" text="Change password" />
+            <Label fx:id="fullName" alignment="TOP_LEFT" layoutX="50.0" layoutY="114.0" maxWidth="200.0" prefHeight="28.0" prefWidth="200.0" styleClass="header2" wrapText="true" />
+            <Label alignment="BOTTOM_LEFT" layoutX="50.0" layoutY="167.0" minHeight="24.0" styleClass="header4" text="Birthdate" />
+            <Label fx:id="birthDate" alignment="TOP_LEFT" layoutX="50.0" layoutY="191.0" maxWidth="200.0" prefHeight="28.0" prefWidth="136.0" styleClass="header2" wrapText="true" />
+            <Label alignment="BOTTOM_LEFT" layoutX="50.0" layoutY="244.0" minHeight="24.0" styleClass="header4" text="Login" />
+            <Label fx:id="userName" alignment="TOP_LEFT" layoutX="50.0" layoutY="268.0" maxWidth="271.0" prefHeight="28.0" prefWidth="271.0" styleClass="header2" wrapText="true" />
+            <Button focusTraversable="false" layoutX="50.0" layoutY="400.0" mnemonicParsing="false" onAction="#onChangeButtonClicked" prefHeight="30.0" prefWidth="200.0" styleClass="createGroupButton" text="Change password" />
+            <Label alignment="BOTTOM_LEFT" layoutX="50.0" layoutY="321.0" minHeight="24.0" styleClass="header4" text="Company" />
+            <Label fx:id="companyName" alignment="TOP_LEFT" layoutX="51.0" layoutY="345.0" maxWidth="271.0" prefHeight="28.0" prefWidth="271.0" styleClass="header2" wrapText="true" />
+            <Label fx:id="passwordResultMessage" alignment="TOP_LEFT" layoutX="65.0" layoutY="459.0" maxWidth="271.0" prefHeight="28.0" prefWidth="271.0" styleClass="header2" wrapText="true" />
          </Pane>
       </center>
    </BorderPane>

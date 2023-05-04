@@ -1,6 +1,7 @@
 package com.ade.chatclient.view;
 
 import com.ade.chatclient.application.ViewModelUtils;
+import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.viewmodel.ChangingPasswordDialogModel;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -10,7 +11,7 @@ import javafx.scene.control.*;
 
 import java.io.IOException;
 
-public class ChangingPasswordDialog extends Dialog {
+public class ChangingPasswordDialog extends Dialog<ChangePasswordRequest> {
     @FXML private DialogPane changePasswordDialog;
     @FXML private PasswordField currentPassword;
     @FXML private PasswordField newPassword;
@@ -20,15 +21,13 @@ public class ChangingPasswordDialog extends Dialog {
     public void init(ChangingPasswordDialogModel viewModel) {
         this.viewModel = viewModel;
         setTitle("Changing password");
-//        setResultConverter(viewModel::resultConverter);
+        setResultConverter(viewModel::resultConverter);
+        makeButtonInvisible();
 
         currentPassword.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onCurPasswordTextChanged));
         newPassword.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onNewPasswordTextChanged));
         changeButton.disableProperty().bind(Bindings.or(viewModel.getIsCurPasswordBlank(), viewModel.getIsNewPasswordBlank()));
         errorMessage.textProperty().bind(viewModel.getErrorMessageProperty());
-
-        makeButtonInvisible();
-
     }
 
     public static ChangingPasswordDialog getInstance() {
@@ -44,9 +43,8 @@ public class ChangingPasswordDialog extends Dialog {
         return controller;
     }
 
-
     public void onChangePasswordClicked() {
-//        setResult(viewModel.onChangeClicked());
+        setResult(viewModel.onChangeClicked(currentPassword.getText(), newPassword.getText()));
         System.out.println(currentPassword.getText());
         System.out.println(newPassword.getText());
     }
