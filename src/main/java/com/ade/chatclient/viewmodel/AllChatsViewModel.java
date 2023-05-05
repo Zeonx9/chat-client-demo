@@ -12,6 +12,7 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
+import javafx.scene.input.MouseEvent;
 import lombok.Getter;
 
 import java.beans.PropertyChangeEvent;
@@ -23,6 +24,7 @@ import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     private final ListProperty<Chat> chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private Boolean isSearching = false;
+    private Chat selected;
 
     public AllChatsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
@@ -44,12 +46,18 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         Chat chat = (Chat) event.getNewValue();
         chatListProperty.remove(chat);
         chatListProperty.add(0, chat);
+
+//        selected = chat;
+//        model.selectChat(null);
     }
 
     private void newChatCreated(PropertyChangeEvent event) {
         if (isSearching) return;
         Chat chat = (Chat) event.getNewValue();
         chatListProperty.add(0, chat);
+
+//        selected = chat;
+//        model.selectChat(selected);
     }
 
     private void selectedChatModified(PropertyChangeEvent evt) {
@@ -63,7 +71,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         if (changedChat == null || changedChat.equals(model.getSelectedChat())) {
             return;
         }
-        model.selectChat(changedChat);
+        selected = changedChat;
     }
 
     @Override
@@ -100,5 +108,11 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         isSearching = true;
         chatListProperty.clear();
         chatListProperty.addAll(model.searchChat(newText));
+    }
+
+    public void onMouseClickedListener(MouseEvent mouseEvent) {
+        if (selected != null) {
+            model.selectChat(selected);
+        }
     }
 }
