@@ -39,19 +39,23 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     }
 
     private void fillMessageHistory(PropertyChangeEvent event) {
-        @SuppressWarnings("unchecked")
-        List<Message> messages = (List<Message>) event.getNewValue();
-        messageListProperty.clear();
-        messageListProperty.addAll(messages);
-        userNameProperty.setValue(model.getSelectedChat().getChatName());
-        bottomScroller.run();
+        synchronized (messageListProperty) {
+            @SuppressWarnings("unchecked")
+            List<Message> messages = (List<Message>) event.getNewValue();
+            messageListProperty.clear();
+            messageListProperty.addAll(messages);
+            userNameProperty.setValue(model.getSelectedChat().getChatName());
+            bottomScroller.run();
+        }
     }
 
     private void newSelectedMessages(PropertyChangeEvent event) {
-        @SuppressWarnings("unchecked")
-        List<Message> selectedChatMessages = (List<Message>) event.getNewValue();
-        messageListProperty.addAll(selectedChatMessages);
-        bottomScroller.run();
+        synchronized (messageListProperty) {
+            @SuppressWarnings("unchecked")
+            List<Message> selectedChatMessages = (List<Message>) event.getNewValue();
+            messageListProperty.addAll(selectedChatMessages);
+            bottomScroller.run();
+        }
     }
 
     public <T> void addBottomScroller(ListView<T> listView) {

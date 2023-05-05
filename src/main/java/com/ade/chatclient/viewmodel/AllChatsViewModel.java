@@ -41,22 +41,28 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
 
     private void raiseChat(PropertyChangeEvent event) {
         if (isSearching) return;
-        Chat chat = (Chat) event.getNewValue();
-        chatListProperty.remove(chat);
-        chatListProperty.add(0, chat);
+        synchronized (chatListProperty) {
+            Chat chat = (Chat) event.getNewValue();
+            chatListProperty.remove(chat);
+            chatListProperty.add(0, chat);
+        }
     }
 
     private void newChatCreated(PropertyChangeEvent event) {
         if (isSearching) return;
-        Chat chat = (Chat) event.getNewValue();
-        chatListProperty.add(0, chat);
+        synchronized (chatListProperty) {
+            Chat chat = (Chat) event.getNewValue();
+            chatListProperty.add(0, chat);
+        }
     }
 
     private void selectedChatModified(PropertyChangeEvent evt) {
         if (isSearching) return;
-        Chat chat = (Chat) evt.getNewValue();
-        int index = chatListProperty.indexOf(chat);
-        chatListProperty.set(index, chat);
+        synchronized (chatListProperty) {
+            Chat chat = (Chat) evt.getNewValue();
+            int index = chatListProperty.indexOf(chat);
+            chatListProperty.set(index, chat);
+        }
     }
 
     public void onSelectedItemChange(Chat changedChat) {
@@ -98,7 +104,9 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             return;
         }
         isSearching = true;
-        chatListProperty.clear();
-        chatListProperty.addAll(model.searchChat(newText));
+        synchronized (chatListProperty) {
+            chatListProperty.clear();
+            chatListProperty.addAll(model.searchChat(newText));
+        }
     }
 }

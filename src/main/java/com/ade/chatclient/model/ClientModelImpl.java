@@ -31,6 +31,7 @@ public class ClientModelImpl implements ClientModel{
     private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
     private long unreadChatCounter;
+    private static final Object LOCK_SELECTED_CHAT = new Object();
 
     public ClientModelImpl(AsyncRequestHandler handler) {
         System.out.println("model created!");
@@ -41,8 +42,6 @@ public class ClientModelImpl implements ClientModel{
     public boolean authorize(String login, String password) {
         System.out.println("Authorize request: " + login);
 
-        // действительно ли здесь надо на нулл проверять?
-        // пока у нас нет кнопки для выхода не надо
         if (myself != null) {
             System.out.println("Попытка ре-авторизации");
             return true;
@@ -127,8 +126,16 @@ public class ClientModelImpl implements ClientModel{
     @Override
     public void selectChat(Chat chat) {
         System.out.println("chat selected!");
-        selectedChat = chat;
+        synchronized (LOCK_SELECTED_CHAT) {
+            selectedChat = chat;
+        }
         fetchChatMessages();
+    }
+
+    public Chat getSelectedChat() {
+        synchronized (LOCK_SELECTED_CHAT) {
+            return selectedChat;
+        }
     }
 
     @Override
