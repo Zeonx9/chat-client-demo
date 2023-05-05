@@ -30,7 +30,7 @@ public class BackgroundService {
 
     private void runAutoUpdateMessages() {
         service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(model::fetchNewMessages, 0, 700, TimeUnit.MILLISECONDS);
+        service.scheduleAtFixedRate(model::fetchNewMessages, 0, 2, TimeUnit.SECONDS);
     }
 
     public void stop() {

@@ -25,7 +25,7 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
     }
 
     public void authorize() {
-        boolean success = model.Authorize(loginTextProperty.get(), passwordProperty.get());
+        boolean success = model.authorize(loginTextProperty.get(), passwordProperty.get());
         if (!success) {
             errorMessageProperty.set("Unsuccessful");
             return;

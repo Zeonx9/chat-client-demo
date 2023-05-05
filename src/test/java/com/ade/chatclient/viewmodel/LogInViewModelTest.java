@@ -34,9 +34,9 @@ class LogInViewModelTest {
     }
 
     @Test
-    void authorizeSuccess() {
+    void authorizeIsSuccessful() {
         //given
-        given(model.Authorize("login", "password")).willReturn(true);
+        given(model.authorize("login", "password")).willReturn(true);
         // when
         underTest.authorize();
         // then
@@ -44,9 +44,9 @@ class LogInViewModelTest {
     }
 
     @Test
-    void authorizeNotSuccess() {
+    void authorizeIsUnsuccessful() {
         //given
-        given(model.Authorize("login", "password")).willReturn(false);
+        given(model.authorize("login", "password")).willReturn(false);
         // when
         underTest.authorize();
         // then

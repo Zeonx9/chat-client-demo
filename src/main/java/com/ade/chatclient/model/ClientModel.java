@@ -25,7 +25,7 @@ public interface ClientModel {
      * @return true - если авторизация прошла успешно, иначе false
      */
     // method that authorize the user with given login(name)
-    boolean Authorize(String login, String password);
+    boolean authorize(String login, String password);
 
     /**
      * @return Авторизованного пользователя

@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class ClientModelImpl implements ClientModel{
     }
 
     @Override
-    public boolean Authorize(String login, String password) {
+    public boolean authorize(String login, String password) {
         System.out.println("Authorize request: " + login);
 
         // действительно ли здесь надо на нулл проверять?
@@ -46,17 +47,14 @@ public class ClientModelImpl implements ClientModel{
             System.out.println("Попытка ре-авторизации");
             return true;
         }
-        if (authorizeRequest(login, password, "login")) {
-            return true;
-        }
-        // если авторизация не успешна, то попробуем зарегистрировать, позже удалить
-        return authorizeRequest(login, password, "register");
+
+        return authorizeRequest(login, password);
     }
 
-    private boolean authorizeRequest(String login, String password, String request) {
+    private boolean authorizeRequest(String login, String password) {
         try {
             AuthResponse auth = handler.sendPost(
-                    "/auth/" + request,
+                    "/auth/login",
                     AuthRequest.builder().login(login).password(password).build(),
                     AuthResponse.class, false
             ).get();
@@ -66,10 +64,10 @@ public class ClientModelImpl implements ClientModel{
             handler.setAuthToken(auth.getToken());
         }
         catch (Exception e) {
-            System.out.println(request + " failed\n" + e.getMessage());
+            System.out.println("login failed\n" + e.getMessage());
             return false;
         }
-        System.out.println(request + " OK");
+        System.out.println("login OK");
         return true;
     }
 
@@ -139,16 +137,17 @@ public class ClientModelImpl implements ClientModel{
             return;
         }
         System.out.println("sending message...");
+
+        Message mes = Message.builder().text(text).author(myself).dateTime(LocalDateTime.now()).chatId(selectedChat.getId()).build();
+        changeSupport.firePropertyChange("newMessagesInSelected", null, List.of(mes));
+        selectedChat.setLastMessage(mes);
+        changeSupport.firePropertyChange("chatReceivedMessages", null, selectedChat);
+
         handler.sendPost(
                         String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
                         Message.builder().text(text).build(),
                         Message.class, true
-                )
-                .thenAccept(message -> {
-                            selectedChat.setLastMessage(message);
-                            changeSupport.firePropertyChange("newMessagesInSelected", null, List.of(message));
-                            changeSupport.firePropertyChange("chatReceivedMessages", null, selectedChat);
-                });
+                );
     }
 
     @Override

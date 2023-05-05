@@ -240,7 +240,7 @@ class ClientModelImplTest {
         )).willReturn(auth);
 
         underTest.setMyself(null);
-        underTest.Authorize("Dasha", "password");
+        underTest.authorize("Dasha", "password");
 
         assertThat(underTest.getMyself()).isEqualTo(myself);
 
@@ -257,7 +257,7 @@ class ClientModelImplTest {
         )).willReturn(auth);
 
         underTest.setMyself(null);
-        underTest.Authorize("Dasha", "password");
+        underTest.authorize("Dasha", "password");
 
         assertThat(underTest.getMyself()).isEqualTo(myself);
 
@@ -267,7 +267,7 @@ class ClientModelImplTest {
     void AuthorizeRe() {
         User myself = User.builder().username("Dasha").id(1L).build();
 
-        underTest.Authorize("Dasha", "password");
+        underTest.authorize("Dasha", "password");
 
         assertThat(underTest.getMyself()).isEqualTo(myself);
 
