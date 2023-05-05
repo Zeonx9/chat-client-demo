@@ -12,6 +12,7 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import lombok.Getter;
 
@@ -46,9 +47,10 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         Chat chat = (Chat) event.getNewValue();
         chatListProperty.remove(chat);
         chatListProperty.add(0, chat);
-
-//        selected = chat;
-//        model.selectChat(null);
+        if ((boolean) event.getOldValue()) {
+            model.selectChat(chat);
+            selected = chat;
+        }
     }
 
     private void newChatCreated(PropertyChangeEvent event) {
@@ -56,8 +58,8 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         Chat chat = (Chat) event.getNewValue();
         chatListProperty.add(0, chat);
 
-//        selected = chat;
-//        model.selectChat(selected);
+        selected = chat;
+        model.selectChat(selected);
     }
 
     private void selectedChatModified(PropertyChangeEvent evt) {
@@ -65,13 +67,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         Chat chat = (Chat) evt.getNewValue();
         int index = chatListProperty.indexOf(chat);
         chatListProperty.set(index, chat);
-    }
-
-    public void onSelectedItemChange(Chat changedChat) {
-        if (changedChat == null || changedChat.equals(model.getSelectedChat())) {
-            return;
-        }
-        selected = changedChat;
+        selected = chat;
     }
 
     @Override
@@ -111,8 +107,11 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     }
 
     public void onMouseClickedListener(MouseEvent mouseEvent) {
-        if (selected != null) {
-            model.selectChat(selected);
+        Chat changedChat = ((ListView<Chat>) mouseEvent.getSource()).getSelectionModel().getSelectedItem();
+        if (changedChat == null || changedChat.equals(model.getSelectedChat())) {
+            return;
         }
+        selected = changedChat;
+        model.selectChat(changedChat);
     }
 }

@@ -140,14 +140,16 @@ public class ClientModelImpl implements ClientModel{
 
         Message mes = Message.builder().text(text).author(myself).dateTime(LocalDateTime.now()).chatId(selectedChat.getId()).build();
         changeSupport.firePropertyChange("newMessagesInSelected", null, List.of(mes));
-        selectedChat.setLastMessage(mes);
-        changeSupport.firePropertyChange("chatReceivedMessages", null, selectedChat);
 
         handler.sendPost(
                         String.format("/users/%d/chats/%d/message", myself.getId(), selectedChat.getId()),
                         Message.builder().text(text).build(),
                         Message.class, true
-                );
+                ).thenAccept(message -> {
+            selectedChat.setLastMessage(mes);
+            changeSupport.firePropertyChange("chatReceivedMessages", true, selectedChat);
+        });
+
     }
 
     @Override
@@ -181,7 +183,7 @@ public class ClientModelImpl implements ClientModel{
         if (!msgInSelectedChat.get(true).isEmpty()){
             selectedChat.setLastMessage(msgInSelectedChat.get(true).get(0));
             changeSupport.firePropertyChange("newMessagesInSelected", null, msgInSelectedChat.get(true));
-            changeSupport.firePropertyChange("chatReceivedMessages", null, selectedChat);
+            changeSupport.firePropertyChange("chatReceivedMessages", true, selectedChat);
         }
         if (!msgInSelectedChat.get(false).isEmpty()) {
             processMessagesInOtherChats(msgInSelectedChat.get(false));
@@ -200,7 +202,7 @@ public class ClientModelImpl implements ClientModel{
             incrementUnreadChatCounter(chatOfMessage);
             chatOfMessage.setLastMessage(msg);
 
-            changeSupport.firePropertyChange("chatReceivedMessages", null, chatOfMessage);
+            changeSupport.firePropertyChange("chatReceivedMessages", false, chatOfMessage);
         }
 
         Set<Long> newChatIds = (msgInExistingChat.get(false).stream()
