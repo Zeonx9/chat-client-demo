@@ -33,7 +33,7 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
         super(viewHandler, model);
     }
 
-    private void getSavedLoginAndPassword() {
+    public void fillSavedLoginAndPassword() {
         try(Reader reader = Files.newBufferedReader(Paths.
                 get("src/main/resources/com/ade/chatclient/login-password/package.json"))){
             ObjectMapper mapper = new ObjectMapper();
