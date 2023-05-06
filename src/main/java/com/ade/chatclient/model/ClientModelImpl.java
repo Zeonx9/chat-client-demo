@@ -51,6 +51,15 @@ public class ClientModelImpl implements ClientModel{
         return authorizeRequest(login, password);
     }
 
+    public void clearModel() {
+        myself = null;
+        selectedChat = null;
+        company = null;
+        myChats.clear();
+        allUsers.clear();
+        unreadChatCounter = 0;
+    }
+
     private boolean authorizeRequest(String login, String password) {
         try {
             AuthResponse auth = handler.sendPost(

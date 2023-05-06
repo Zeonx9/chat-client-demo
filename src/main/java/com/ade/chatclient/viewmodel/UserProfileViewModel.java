@@ -1,7 +1,6 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.application.AbstractChildViewModel;
-import com.ade.chatclient.application.ViewHandler;
+import com.ade.chatclient.application.*;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.model.ClientModel;
@@ -16,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
+import static com.ade.chatclient.application.Views.LOG_IN_VIEW;
 
 @Getter
 public class UserProfileViewModel extends AbstractChildViewModel<ClientModel> {
@@ -74,5 +74,11 @@ public class UserProfileViewModel extends AbstractChildViewModel<ClientModel> {
 
     private String thisOrEmpty(String value) {
         return value != null ? value : "";
+    }
+
+    public void logOut() {
+        model.clearModel();
+        StartClientApp.stop();
+        viewHandler.openView(LOG_IN_VIEW);
     }
 }
