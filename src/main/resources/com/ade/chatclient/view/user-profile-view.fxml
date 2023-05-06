@@ -25,6 +25,7 @@
             <Label alignment="BOTTOM_LEFT" layoutX="50.0" layoutY="321.0" minHeight="24.0" styleClass="header4" text="Company" />
             <Label fx:id="companyName" alignment="TOP_LEFT" layoutX="51.0" layoutY="345.0" maxWidth="271.0" prefHeight="28.0" prefWidth="271.0" styleClass="header2" wrapText="true" />
             <Label fx:id="passwordResultMessage" alignment="TOP_LEFT" layoutX="65.0" layoutY="459.0" maxWidth="271.0" prefHeight="28.0" prefWidth="271.0" styleClass="header2" wrapText="true" />
+            <Button focusTraversable="false" layoutX="50.0" layoutY="455.0" mnemonicParsing="false" onAction="#onLogOutButtonClicked" prefHeight="30.0" prefWidth="200.0" styleClass="createGroupButton" text="Log out" />
          </Pane>
       </center>
    </BorderPane>

@@ -12,9 +12,16 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
+import javafx.util.Duration;
 import lombok.Getter;
 
 import java.beans.PropertyChangeEvent;
+import java.io.File;
 import java.util.Optional;
 
 import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
@@ -22,7 +29,10 @@ import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 @Getter
 public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     private final ListProperty<Chat> chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final String mediaPath = "src/main/resources/com/ade/chatclient/sounds/sound.mp3";
+    private final MediaPlayer mediaPlayer = new MediaPlayer(new Media(new File(mediaPath).toURI().toString()));
     private Boolean isSearching = false;
+    private Chat selected;
 
     public AllChatsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
@@ -45,6 +55,11 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             Chat chat = (Chat) event.getNewValue();
             chatListProperty.remove(chat);
             chatListProperty.add(0, chat);
+            if ((boolean) event.getOldValue()) {
+                model.setSelectChat(chat);
+                selected = chat;
+            }
+            else playSound();
         }
     }
 
@@ -53,6 +68,8 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         synchronized (chatListProperty) {
             Chat chat = (Chat) event.getNewValue();
             chatListProperty.add(0, chat);
+            selected = chat;
+            model.setSelectChat(selected);
         }
     }
 
@@ -62,14 +79,8 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             Chat chat = (Chat) evt.getNewValue();
             int index = chatListProperty.indexOf(chat);
             chatListProperty.set(index, chat);
+            selected = chat;
         }
-    }
-
-    public void onSelectedItemChange(Chat changedChat) {
-        if (changedChat == null || changedChat.equals(model.getSelectedChat())) {
-            return;
-        }
-        model.setSelectChat(changedChat);
     }
 
     @Override
@@ -108,5 +119,18 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             chatListProperty.clear();
             chatListProperty.addAll(model.searchChat(newText));
         }
+    }
+
+    public void onMouseClickedListener(MouseEvent mouseEvent) {
+        Chat changedChat = ((ListView<Chat>) mouseEvent.getSource()).getSelectionModel().getSelectedItem();
+        if (changedChat == null || changedChat.equals(model.getSelectedChat())) {
+            return;
+        }
+        selected = changedChat;
+        model.setSelectChat(changedChat);
+    }
+    private void playSound(){
+        mediaPlayer.seek(Duration.ZERO);
+        mediaPlayer.play();
     }
 }

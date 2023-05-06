@@ -32,6 +32,8 @@ public interface ClientModel {
      */
     User getMyself();
 
+    void clearModel();
+
     /**
      * присваивает selectedChat значение параметра
      * если чат в есть в списке чатов пользователя

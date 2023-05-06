@@ -48,6 +48,15 @@ public class ClientModelImpl implements ClientModel{
         return authorizeRequest(login, password);
     }
 
+    public void clearModel() {
+        setMyself(null);
+        setSelectedChat(null);
+        setCompany(null);
+        getMyChats().clear();
+        getAllUsers().clear();
+        setUnreadChatCounter(0);
+    }
+
     private boolean authorizeRequest(String login, String password) {
         try {
             AuthResponse auth = handler.sendPost(
@@ -166,15 +175,18 @@ public class ClientModelImpl implements ClientModel{
             copySelectedChat = getSelectedChat();
             Message mes = Message.builder().text(text).author(myself).dateTime(LocalDateTime.now()).chatId(getSelectedChat().getId()).build();
             changeSupport.firePropertyChange("newMessagesInSelected", null, List.of(mes));
-            getSelectedChat().setLastMessage(mes);
-            changeSupport.firePropertyChange("chatReceivedMessages", null, getSelectedChat());
-        }
+            }
 
         handler.sendPost(
-                String.format("/users/%d/chats/%d/message", myself.getId(), copySelectedChat.getId()),
-                Message.builder().text(text).build(),
-                Message.class, true
-        );
+                        String.format("/users/%d/chats/%d/message", myself.getId(), copySelectedChat.getId()),
+                        Message.builder().text(text).build(),
+                        Message.class, true
+                )
+                .thenAccept(message -> {
+            selectedChat.setLastMessage(message);
+            changeSupport.firePropertyChange("chatReceivedMessages", true, selectedChat);
+        });
+
     }
 
     @Override
@@ -210,7 +222,7 @@ public class ClientModelImpl implements ClientModel{
             if (!msgInSelectedChat.get(true).isEmpty()) {
                 getSelectedChat().setLastMessage(msgInSelectedChat.get(true).get(0));
                 changeSupport.firePropertyChange("newMessagesInSelected", null, msgInSelectedChat.get(true));
-                changeSupport.firePropertyChange("chatReceivedMessages", null, getSelectedChat());
+                changeSupport.firePropertyChange("chatReceivedMessages", true, getSelectedChat());
             }
             if (!msgInSelectedChat.get(false).isEmpty()) {
                 processMessagesInOtherChats(msgInSelectedChat.get(false));
@@ -230,7 +242,7 @@ public class ClientModelImpl implements ClientModel{
             incrementUnreadChatCounter(chatOfMessage);
             chatOfMessage.setLastMessage(msg);
 
-            changeSupport.firePropertyChange("chatReceivedMessages", null, chatOfMessage);
+            changeSupport.firePropertyChange("chatReceivedMessages", false, chatOfMessage);
         }
 
         Set<Long> newChatIds = (msgInExistingChat.get(false).stream()

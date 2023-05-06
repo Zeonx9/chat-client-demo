@@ -22,8 +22,7 @@ public class AllChatsView extends AbstractView<AllChatsViewModel> {
         searchText.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onTextChanged));
         chatListView.itemsProperty().bind(viewModel.getChatListProperty());
         chatListView.setCellFactory(chatListView -> viewModel.getChatListCellFactory());
-        chatListView.getSelectionModel().selectedItemProperty()
-                .addListener(ViewModelUtils.changeListener(viewModel::onSelectedItemChange));
+        chatListView.setOnMouseClicked(viewModel::onMouseClickedListener);
         createGroupButton.setFocusTraversable(false);
     }
 

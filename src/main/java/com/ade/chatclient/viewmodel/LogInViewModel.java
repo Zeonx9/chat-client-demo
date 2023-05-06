@@ -36,6 +36,9 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
 
         viewHandler.startBackGroundServices();
         viewHandler.openView(CHAT_PAGE_VIEW);
+
+        errorMessageProperty.set("");
+        passwordProperty.set("");
     }
 
     public void onTextChanged(String newValue) {
