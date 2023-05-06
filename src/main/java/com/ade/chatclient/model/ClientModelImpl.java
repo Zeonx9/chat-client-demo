@@ -90,17 +90,23 @@ public class ClientModelImpl implements ClientModel{
     }
 
     @Override
-    public void fetchChats() {
+    public synchronized void fetchChats() {
         System.out.println("chats fetched");
         if (myself == null) {
             return;
         }
-        handler.sendGet(String.format("/users/%d/chats", myself.getId()), TypeReferences.ListOfChat)
-                .thenAccept(chats -> {
-                    changeSupport.firePropertyChange("gotChats", null, chats);
-                    setMyChats(chats);
-                    updateUnreadChatCounter();
-                });
+
+        try {
+            List<Chat> chats = handler.sendGet(String.format("/users/%d/chats", myself.getId()), TypeReferences.ListOfChat).get();
+            System.out.println(chats);
+            changeSupport.firePropertyChange("gotChats", null, chats);
+            setMyChats(chats);
+            updateUnreadChatCounter();
+        }
+        catch (Exception e){
+            System.out.println("error");
+        }
+
     }
 
     private void updateUnreadChatCounter() {
