@@ -2,13 +2,22 @@ package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.application.AbstractViewModel;
 import com.ade.chatclient.application.ViewHandler;
+import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.model.ClientModel;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
 
@@ -24,6 +33,30 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
         super(viewHandler, model);
     }
 
+    private void getSavedLoginAndPassword() {
+        try(Reader reader = Files.newBufferedReader(Paths.
+                get("src/main/resources/com/ade/chatclient/login-password/package.json"))){
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode parser = mapper.readTree(reader);
+            loginTextProperty.set(parser.path("login").asText());
+            passwordProperty.set(parser.path("password").asText());
+        }
+        catch (Exception e){
+            System.out.println("нет файла c сохраненными паролями");
+        }
+    }
+
+    private void setSavedLoginAndPassword() {
+        try(Writer writer = Files.newBufferedWriter(Paths.
+                get("src/main/resources/com/ade/chatclient/login-password/package.json"))){
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(writer, AuthRequest.builder().login(loginTextProperty.get()).password(passwordProperty.get()).build());
+        }
+        catch (Exception e){
+            System.out.println("нет файла для сохранения пароля");
+        }
+    }
+
     public void authorize() {
         boolean success = model.authorize(loginTextProperty.get(), passwordProperty.get());
         if (!success) {
@@ -34,6 +67,7 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
         System.out.println("Авторизация успешна, переход к окну чатов");
         errorMessageProperty.set("Success!");
 
+        setSavedLoginAndPassword();
         viewHandler.startBackGroundServices();
         viewHandler.openView(CHAT_PAGE_VIEW);
 
