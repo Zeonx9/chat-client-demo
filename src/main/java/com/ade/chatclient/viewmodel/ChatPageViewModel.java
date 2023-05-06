@@ -59,11 +59,13 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     }
 
     public <T> void addBottomScroller(ListView<T> listView) {
-        bottomScroller = () -> {
-            if (!messageListProperty.isEmpty()) {
-                listView.scrollTo(messageListProperty.size() - 1);
-            }
-        };
+        synchronized (messageListProperty) {
+            bottomScroller = () -> {
+                if (!messageListProperty.isEmpty()) {
+                    listView.scrollTo(messageListProperty.size() - 1);
+                }
+            };
+        }
     }
 
     public void addPaneSwitcher(Pane placeHolder) {

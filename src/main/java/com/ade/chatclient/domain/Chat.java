@@ -47,4 +47,5 @@ public class Chat {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

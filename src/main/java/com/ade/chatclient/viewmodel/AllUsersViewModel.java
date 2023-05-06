@@ -35,7 +35,7 @@ public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
             return;
         }
         Chat created = model.createDialogFromAllUsers(newValue);
-        model.selectChat(created);
+        model.setSelectChat(created);
         viewHandler.openPane(ALL_CHATS_VIEW, placeHolder);
     }
 

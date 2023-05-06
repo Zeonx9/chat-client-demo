@@ -37,7 +37,7 @@ public interface ClientModel {
      * если чат в есть в списке чатов пользователя
      * @param chat чат, историю которого хотят получить
      */
-    void selectChat(Chat chat);
+    void setSelectChat(Chat chat);
 
     Chat getSelectedChat();
 

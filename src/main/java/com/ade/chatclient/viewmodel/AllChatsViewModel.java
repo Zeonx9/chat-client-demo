@@ -69,7 +69,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         if (changedChat == null || changedChat.equals(model.getSelectedChat())) {
             return;
         }
-        model.selectChat(changedChat);
+        model.setSelectChat(changedChat);
     }
 
     @Override
