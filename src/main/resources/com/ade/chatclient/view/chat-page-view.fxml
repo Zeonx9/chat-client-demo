@@ -14,17 +14,25 @@
                 </cursor>
                 <Button fx:id="showChatsButton" focusTraversable="false" layoutY="100.0" mnemonicParsing="false" onAction="#onShowChatsClicked" prefHeight="50.0" prefWidth="50.0" styleClass="showChatsBtn" />
                 <Button fx:id="showUsersButton" focusTraversable="false" mnemonicParsing="false" onAction="#onShowUsersClicked" prefHeight="50.0" prefWidth="50.0" styleClass="ShowUsersBtn" />
-            <Button fx:id="showUserProfileButton" layoutY="-100.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="ShowUserDataBtn" focusTraversable="false" onAction="#onShowUserProfileClicked"/>
+            <Button fx:id="showUserProfileButton" focusTraversable="false" layoutY="-100.0" mnemonicParsing="false" onAction="#onShowUserProfileClicked" prefHeight="50.0" prefWidth="50.0" styleClass="ShowUserDataBtn" />
             </Group>
         </center>
     </BorderPane>
 
         <VBox prefHeight="600.0" prefWidth="1000.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <Label fx:id="userNameLabel" prefHeight="50.0" prefWidth="479.0" styleClass="header2">
-         <VBox.margin>
-            <Insets left="25.0" top="20.0" />
-         </VBox.margin>
-      </Label>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+                <Label fx:id="userNameLabel" prefHeight="50.0" prefWidth="321.0" styleClass="header2">
+                    <HBox.margin>
+                        <Insets left="25.0" top="15.0"/>
+                    </HBox.margin>
+                </Label>
+                <Button fx:id="infoButton" mnemonicParsing="false" onAction="#onInfoButtonClicked" prefHeight="20.0"
+                        prefWidth="100.0" styleClass="infoButton" text="info">
+                    <HBox.margin>
+                        <Insets left="25.0" right="10.0" top="27.0"/>
+                    </HBox.margin>
+                </Button>
+            </HBox>
         <ListView fx:id="messageListView" focusTraversable="false" prefHeight="399.0" prefWidth="520.0" style="-fx-background-color: transparent;" styleClass="messageListView" VBox.vgrow="ALWAYS">
             <BorderPane.margin>
                 <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
