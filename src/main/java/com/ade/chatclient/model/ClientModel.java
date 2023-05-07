@@ -95,4 +95,7 @@ public interface ClientModel {
 
     List<User> searchUser(String request);
     Company getCompany();
+
+    List<Chat> getMyChats();
+    void getMyChatsAfterSearching();
 }

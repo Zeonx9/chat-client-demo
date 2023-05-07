@@ -111,7 +111,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     public void onTextChanged(String newText) {
         if (newText == null || newText.isBlank()) {
             isSearching = false;
-            model.fetchChats();
+            model.getMyChatsAfterSearching();
             return;
         }
         isSearching = true;
@@ -129,6 +129,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         selected = changedChat;
         model.setSelectChat(changedChat);
     }
+
     private void playSound(){
         mediaPlayer.seek(Duration.ZERO);
         mediaPlayer.play();

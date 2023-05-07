@@ -169,6 +169,10 @@ public class ClientModelImpl implements ClientModel{
         }
     }
 
+    public void sortMyChats(Chat chat) {
+        getMyChats().remove(chat);
+        getMyChats().add(0, chat);
+    }
     @Override
     public void sendMessageToChat(String text) {
         if (selectedChat == null) {
@@ -190,7 +194,8 @@ public class ClientModelImpl implements ClientModel{
                 )
                 .thenAccept(message -> {
             selectedChat.setLastMessage(message);
-            changeSupport.firePropertyChange("chatReceivedMessages", true, selectedChat);
+            changeSupport.firePropertyChange("chatReceivedMessages", true, copySelectedChat);
+            sortMyChats(copySelectedChat);
         });
 
     }
@@ -229,6 +234,7 @@ public class ClientModelImpl implements ClientModel{
                 getSelectedChat().setLastMessage(msgInSelectedChat.get(true).get(0));
                 changeSupport.firePropertyChange("newMessagesInSelected", null, msgInSelectedChat.get(true));
                 changeSupport.firePropertyChange("chatReceivedMessages", true, getSelectedChat());
+                sortMyChats(getSelectedChat());
             }
             if (!msgInSelectedChat.get(false).isEmpty()) {
                 processMessagesInOtherChats(msgInSelectedChat.get(false));
@@ -249,6 +255,7 @@ public class ClientModelImpl implements ClientModel{
             chatOfMessage.setLastMessage(msg);
 
             changeSupport.firePropertyChange("chatReceivedMessages", false, chatOfMessage);
+            sortMyChats(chatOfMessage);
         }
 
         Set<Long> newChatIds = (msgInExistingChat.get(false).stream()
@@ -302,6 +309,10 @@ public class ClientModelImpl implements ClientModel{
         }
     }
 
+
+    public void getMyChatsAfterSearching() {
+        changeSupport.firePropertyChange("gotChats", null, getMyChats());
+    }
 
     @Override
     public Chat createDialogFromAllUsers(User user) {
