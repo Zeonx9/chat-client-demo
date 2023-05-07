@@ -185,18 +185,15 @@ public class ClientModelImpl implements ClientModel{
             copySelectedChat = getSelectedChat();
             Message mes = Message.builder().text(text).author(myself).dateTime(LocalDateTime.now()).chatId(getSelectedChat().getId()).build();
             changeSupport.firePropertyChange("newMessagesInSelected", null, List.of(mes));
-            }
-
-        handler.sendPost(
-                        String.format("/users/%d/chats/%d/message", myself.getId(), copySelectedChat.getId()),
-                        Message.builder().text(text).build(),
-                        Message.class, true
-                )
-                .thenAccept(message -> {
-            selectedChat.setLastMessage(message);
+            selectedChat.setLastMessage(mes);
             changeSupport.firePropertyChange("chatReceivedMessages", true, copySelectedChat);
             sortMyChats(copySelectedChat);
-        });
+        }
+        handler.sendPost(
+                        String.format("/users/%d/chats/%d/message", myself.getId(), copySelectedChat.getId()),
+                        Message.builder().text(text).dateTime(LocalDateTime.now()).build(),
+                        Message.class, true
+                );
 
     }
 

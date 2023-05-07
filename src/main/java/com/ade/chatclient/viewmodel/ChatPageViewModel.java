@@ -18,6 +18,7 @@ import lombok.Getter;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
@@ -107,8 +108,12 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
                     if (lastSpaceIndex != -1 && lastSpaceIndex > startIndex)
                         endIndex = lastSpaceIndex;
                 }
-                System.out.println(message.substring(startIndex, endIndex));
-                model.sendMessageToChat(message.substring(startIndex, endIndex));
+                    model.sendMessageToChat(message.substring(startIndex, endIndex));
+                try {
+                    TimeUnit.MILLISECONDS.sleep(50);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 startIndex = endIndex;
             }
         }

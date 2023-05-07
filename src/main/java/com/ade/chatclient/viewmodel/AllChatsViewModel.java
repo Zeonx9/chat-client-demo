@@ -30,7 +30,7 @@ import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 @Getter
 @Setter
 public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
-    private ListProperty<Chat> chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final ListProperty<Chat> chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final String mediaPath = "src/main/resources/com/ade/chatclient/sounds/sound.mp3";
     private MediaPlayer mediaPlayer = new MediaPlayer(new Media(new File(mediaPath).toURI().toString()));
     private Boolean isSearching = false;
@@ -60,7 +60,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             chatListProperty.add(0, chat);
             myChats.getSelectionModel().select(0);
             if ((boolean) event.getOldValue()) {
-                model.setSelectChat(chat);
+//                model.setSelectChat(chat);
                 selected = chat;
             }
             else playSound();
@@ -73,7 +73,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             Chat chat = (Chat) event.getNewValue();
             chatListProperty.add(0, chat);
             selected = chat;
-            model.setSelectChat(selected);
+//            model.setSelectChat(selected);
             myChats.getSelectionModel().select(0);
         }
     }
