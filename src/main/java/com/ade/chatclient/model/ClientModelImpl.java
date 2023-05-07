@@ -41,8 +41,6 @@ public class ClientModelImpl implements ClientModel{
     public boolean authorize(String login, String password) {
         System.out.println("Authorize request: " + login);
 
-        // действительно ли здесь надо на нулл проверять?
-        // пока у нас нет кнопки для выхода не надо
         if (myself != null) {
             System.out.println("Попытка ре-авторизации");
             return true;

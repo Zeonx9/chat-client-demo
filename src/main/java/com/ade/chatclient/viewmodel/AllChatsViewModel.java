@@ -19,6 +19,7 @@ import javafx.scene.media.MediaPlayer;
 
 import javafx.util.Duration;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.beans.PropertyChangeEvent;
 import java.io.File;
@@ -27,10 +28,11 @@ import java.util.Optional;
 import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 @Getter
+@Setter
 public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
-    private final ListProperty<Chat> chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private ListProperty<Chat> chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final String mediaPath = "src/main/resources/com/ade/chatclient/sounds/sound.mp3";
-    private final MediaPlayer mediaPlayer = new MediaPlayer(new Media(new File(mediaPath).toURI().toString()));
+    private MediaPlayer mediaPlayer = new MediaPlayer(new Media(new File(mediaPath).toURI().toString()));
     private Boolean isSearching = false;
     private Chat selected;
 
@@ -116,6 +118,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     }
 
     public void onMouseClickedListener(MouseEvent mouseEvent) {
+        @SuppressWarnings("unchecked")
         Chat changedChat = ((ListView<Chat>) mouseEvent.getSource()).getSelectionModel().getSelectedItem();
         if (changedChat == null || changedChat.equals(model.getSelectedChat())) {
             return;
@@ -123,6 +126,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         selected = changedChat;
         model.selectChat(changedChat);
     }
+
     private void playSound(){
         mediaPlayer.seek(Duration.ZERO);
         mediaPlayer.play();
