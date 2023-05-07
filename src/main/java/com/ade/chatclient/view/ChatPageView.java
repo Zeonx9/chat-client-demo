@@ -20,6 +20,7 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
     @FXML private Label userNameLabel;
     @FXML private ListView<Message> messageListView;
     @FXML private TextField messageTextField;
+    @FXML private Button infoButton;
     @Getter
     @FXML private Pane placeHolder;
 
@@ -39,6 +40,9 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
 
         messageListView.setCellFactory(messageListView -> viewModel.getMessageCellFactory());
         messageTextField.setOnKeyPressed(ViewModelUtils.enterKeyHandler(viewModel::sendMessage));
+
+        infoButton.opacityProperty().bind(viewModel.getOpacityProperty());
+        infoButton.focusTraversableProperty().bind(viewModel.getInfoButtonFocusProperty());
 
         viewModel.openChatPane();
     }
@@ -61,4 +65,6 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
     public void onShowUserProfileClicked() {
         viewModel.openProfilePane();
     }
+
+    public void onInfoButtonClicked() {viewModel.showDialog();}
 }

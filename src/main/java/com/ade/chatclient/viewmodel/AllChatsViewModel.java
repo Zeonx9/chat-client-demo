@@ -19,6 +19,7 @@ import javafx.scene.media.MediaPlayer;
 
 import javafx.util.Duration;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.beans.PropertyChangeEvent;
 import java.io.File;
@@ -27,12 +28,14 @@ import java.util.Optional;
 import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 @Getter
+@Setter
 public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
-    private final ListProperty<Chat> chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private ListProperty<Chat> chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final String mediaPath = "src/main/resources/com/ade/chatclient/sounds/sound.mp3";
-    private final MediaPlayer mediaPlayer = new MediaPlayer(new Media(new File(mediaPath).toURI().toString()));
+    private MediaPlayer mediaPlayer = new MediaPlayer(new Media(new File(mediaPath).toURI().toString()));
     private Boolean isSearching = false;
     private Chat selected;
+    public ListView<Chat> myChats;
 
     public AllChatsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
@@ -55,6 +58,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             Chat chat = (Chat) event.getNewValue();
             chatListProperty.remove(chat);
             chatListProperty.add(0, chat);
+            myChats.getSelectionModel().select(0);
             if ((boolean) event.getOldValue()) {
                 model.setSelectChat(chat);
                 selected = chat;
@@ -70,6 +74,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             chatListProperty.add(0, chat);
             selected = chat;
             model.setSelectChat(selected);
+            myChats.getSelectionModel().select(0);
         }
     }
 
@@ -80,6 +85,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             int index = chatListProperty.indexOf(chat);
             chatListProperty.set(index, chat);
             selected = chat;
+            myChats.getSelectionModel().select(model.getSelectedChat());
         }
     }
 
@@ -94,6 +100,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
                 "chat-list-cell-factory.fxml"
         );
         factory.init(model.getMyself().getId());
+        myChats.getSelectionModel().select(selected);
         return factory;
     }
 
@@ -112,6 +119,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         if (newText == null || newText.isBlank()) {
             isSearching = false;
             model.getMyChatsAfterSearching();
+            myChats.getSelectionModel().select(selected);
             return;
         }
         isSearching = true;
@@ -122,6 +130,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     }
 
     public void onMouseClickedListener(MouseEvent mouseEvent) {
+        @SuppressWarnings("unchecked")
         Chat changedChat = ((ListView<Chat>) mouseEvent.getSource()).getSelectionModel().getSelectedItem();
         if (changedChat == null || changedChat.equals(model.getSelectedChat())) {
             return;

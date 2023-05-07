@@ -6,6 +6,7 @@ import com.ade.chatclient.application.ViewModelUtils;
 import com.ade.chatclient.application.Views;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.view.GroupInfoDialog;
 import com.ade.chatclient.view.cellfactory.MessageListCellFactory;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -16,6 +17,7 @@ import lombok.Getter;
 
 import java.beans.PropertyChangeEvent;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
@@ -27,7 +29,9 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final BooleanProperty showChatsButtonDisabled = new SimpleBooleanProperty(true);
     private final BooleanProperty showUsersButtonDisabled = new SimpleBooleanProperty(false);
     private final BooleanProperty showUserProfileDisabled = new SimpleBooleanProperty(false);
+    private final BooleanProperty infoButtonFocusProperty = new SimpleBooleanProperty(false);
     private final StringProperty userNameProperty = new SimpleStringProperty();
+    private final DoubleProperty opacityProperty = new SimpleDoubleProperty(0);
     private Runnable bottomScroller;
     private Consumer<Views> paneSwitcher;
 
@@ -47,6 +51,9 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
             userNameProperty.setValue(model.getSelectedChat().getChatName());
             bottomScroller.run();
         }
+
+        if (model.getSelectedChat().getIsPrivate()) opacityProperty.set(0);
+        else opacityProperty.set(100);
     }
 
     private void newSelectedMessages(PropertyChangeEvent event) {
@@ -83,10 +90,28 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     }
 
     public void sendMessage() {
-        if (messageTextProperty.get().isBlank()) {
+        if (Objects.equals(messageTextProperty.getValue(), null) || messageTextProperty.get().isBlank()) {
             return;
         }
-        model.sendMessageToChat(messageTextProperty.get());
+
+        String message = messageTextProperty.get();
+        if (message.length() <= 250) {
+            model.sendMessageToChat(message);
+        }
+        else {
+            int startIndex = 0;
+            while (startIndex < message.length()) {
+                int endIndex = Math.min(startIndex + 250, message.length());
+                if (endIndex < message.length() && message.charAt(endIndex) != ' ' && message.charAt(endIndex - 1) != ' ') {
+                    int lastSpaceIndex = message.lastIndexOf(' ', endIndex);
+                    if (lastSpaceIndex != -1 && lastSpaceIndex > startIndex)
+                        endIndex = lastSpaceIndex;
+                }
+                System.out.println(message.substring(startIndex, endIndex));
+                model.sendMessageToChat(message.substring(startIndex, endIndex));
+                startIndex = endIndex;
+            }
+        }
         messageTextProperty.set("");
     }
 
@@ -103,5 +128,12 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         );
         factory.init(model.getMyself().getId());
         return factory;
+    }
+
+    public void showDialog() {
+        if (model.getSelectedChat().getIsPrivate()) return;
+        GroupInfoDialog dialog = GroupInfoDialog.getInstance();
+        dialog.init(model.getSelectedChat());
+        dialog.showAndWait();
     }
 }

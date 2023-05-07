@@ -37,6 +37,8 @@ public class LogInView extends AbstractView<LogInViewModel> {
         errorMessageLabel.textProperty().bind(viewModel.getErrorMessageProperty());
         loginButton.disableProperty().bind(viewModel.getDisableButtonProperty());
 
+        viewModel.fillSavedLoginAndPassword();
+
         passwordField.setOnKeyPressed(ViewModelUtils.enterKeyHandler(viewModel::authorize));
     }
 

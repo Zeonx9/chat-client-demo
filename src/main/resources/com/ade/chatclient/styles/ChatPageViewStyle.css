@@ -200,6 +200,43 @@
     -fx-background-insets: 0 0 0 0;
 }
 
+.userListOfGroup .list-cell {
+    -fx-background-color: #272833;
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 17;
+    -fx-text-fill: #FFFFFF;
+    -fx-pref-height: 60px;
+}
+
+.userListOfGroup .list-cell:hover {
+    -fx-background-color: #14141A;
+}
+
+.userListOfGroup .list-cell:focused {
+    -fx-background-color: #14141A;
+}
+
+.userListOfGroup .list-cell:empty {
+    -fx-background-color: #272833;
+}
+
+.userListOfGroup .scroll-bar .track{
+    -fx-background-color: #272833;
+    -fx-border-color: #272833;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.userListOfGroup .scroll-bar .thumb {
+    -fx-background-color: #4F5168;
+}
+
+.userListOfGroup .scroll-bar .increment-button, .userListOfGroup .scroll-bar .decrement-button{
+    -fx-background-color: #272833;
+    -fx-border-color: #272833;
+    -fx-text-fill: #272833;
+    -fx-background-insets: 0 0 0 0;
+}
+
 .messageListView .list-cell:empty .label {
     -fx-background-color: transparent;
 }
@@ -284,6 +321,21 @@
 
 .createGroupButton:focused {
     -fx-background-color: #272833;
+}
+
+.infoButton {
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 13;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-color: #14141A;
+}
+
+.infoButton:hover {
+    -fx-background-color: #272833;
+}
+
+.infoButton:focused {
+    -fx-background-color: #3A3C4D;
 }
 
 .countUnreadMessages {
