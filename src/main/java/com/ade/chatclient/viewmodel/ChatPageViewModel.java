@@ -29,6 +29,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final BooleanProperty showChatsButtonDisabled = new SimpleBooleanProperty(true);
     private final BooleanProperty showUsersButtonDisabled = new SimpleBooleanProperty(false);
     private final BooleanProperty showUserProfileDisabled = new SimpleBooleanProperty(false);
+    private final BooleanProperty infoButtonFocusProperty = new SimpleBooleanProperty(false);
     private final StringProperty userNameProperty = new SimpleStringProperty();
     private final DoubleProperty opacityProperty = new SimpleDoubleProperty(0);
     private Runnable bottomScroller;
@@ -86,7 +87,25 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         if (Objects.equals(messageTextProperty.getValue(), null) || messageTextProperty.get().isBlank()) {
             return;
         }
-        model.sendMessageToChat(messageTextProperty.get());
+
+        String message = messageTextProperty.get();
+        if (message.length() <= 250) {
+            model.sendMessageToChat(message);
+        }
+        else {
+            int startIndex = 0;
+            while (startIndex < message.length()) {
+                int endIndex = Math.min(startIndex + 250, message.length());
+                if (endIndex < message.length() && message.charAt(endIndex) != ' ' && message.charAt(endIndex - 1) != ' ') {
+                    int lastSpaceIndex = message.lastIndexOf(' ', endIndex);
+                    if (lastSpaceIndex != -1 && lastSpaceIndex > startIndex)
+                        endIndex = lastSpaceIndex;
+                }
+                System.out.println(message.substring(startIndex, endIndex));
+                model.sendMessageToChat(message.substring(startIndex, endIndex));
+                startIndex = endIndex;
+            }
+        }
         messageTextProperty.set("");
     }
 

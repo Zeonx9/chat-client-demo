@@ -42,6 +42,7 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         messageTextField.setOnKeyPressed(ViewModelUtils.enterKeyHandler(viewModel::sendMessage));
 
         infoButton.opacityProperty().bind(viewModel.getOpacityProperty());
+        infoButton.focusTraversableProperty().bind(viewModel.getInfoButtonFocusProperty());
 
         viewModel.openChatPane();
     }
