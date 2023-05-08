@@ -14,11 +14,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 
+import java.beans.PropertyChangeEvent;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+
+import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
 
 @Getter
@@ -31,6 +34,18 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
 
     public LogInViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
+        model.addListener("savePassword", runLaterListener(this::setSavedLoginAndPassword));
+    }
+
+    private void setSavedLoginAndPassword(PropertyChangeEvent propertyChangeEvent) {
+        try(Writer writer = Files.newBufferedWriter(Paths.
+                get("src/main/resources/com/ade/chatclient/login-password/package.json"))){
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(writer, AuthRequest.builder().login(loginTextProperty.get()).password((String) propertyChangeEvent.getNewValue()).build());
+        }
+        catch (Exception e){
+            System.out.println("нет файла для сохранения пароля");
+        }
     }
 
     public void fillSavedLoginAndPassword() {
@@ -46,7 +61,7 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
         }
     }
 
-    private void setSavedLoginAndPassword() {
+    public void setSavedLoginAndPassword() {
         try(Writer writer = Files.newBufferedWriter(Paths.
                 get("src/main/resources/com/ade/chatclient/login-password/package.json"))){
             ObjectMapper mapper = new ObjectMapper();

@@ -48,6 +48,7 @@ public class ChangingPasswordDialog extends Dialog<ChangePasswordRequest> {
         System.out.println(currentPassword.getText());
         System.out.println(newPassword.getText());
     }
+
     public void makeButtonInvisible () {
         Node closeButton = changePasswordDialog.lookupButton(ButtonType.CLOSE);
         closeButton.managedProperty().bind(closeButton.visibleProperty());
