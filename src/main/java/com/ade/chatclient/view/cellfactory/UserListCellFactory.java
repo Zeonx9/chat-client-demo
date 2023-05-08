@@ -29,6 +29,6 @@ public class UserListCellFactory extends ListCell<User> {
     }
 
     private static String prepareUserToBeShown(User user) {
-        return user.getUsername();
+        return user.getRealName() + " " + user.getSurname();
     }
 }

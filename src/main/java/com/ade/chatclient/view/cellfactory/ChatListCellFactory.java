@@ -55,7 +55,7 @@ public class ChatListCellFactory extends ListCell<Chat> {
         List<String> memberNames = new ArrayList<>();
         chat.getMembers().forEach(member -> {
             if (!Objects.equals(member.getId(), selfId))
-                memberNames.add(member.getUsername());
+                memberNames.add(member.getRealName() + " " + member.getSurname());
         });
         return String.join(", ", memberNames);
     }
