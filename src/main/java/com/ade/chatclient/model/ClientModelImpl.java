@@ -359,14 +359,15 @@ public class ClientModelImpl implements ClientModel{
     public void changePassword(ChangePasswordRequest request) {
         request.getAuthRequest().setLogin(myself.getUsername());
         handler.sendPut("/auth/user/password", request, AuthResponse.class)
-                .thenAccept(response ->
-                        changeSupport.firePropertyChange("passwordChangeResponded", null, "successfully!")
+                .thenAccept(response -> {
+                        changeSupport.firePropertyChange("passwordChangeResponded", null, "successfully!");
+                        changeSupport.firePropertyChange("savePassword", null, request.getNewPassword());
+                }
                 ).exceptionally(e -> {
                     changeSupport.firePropertyChange("passwordChangeResponded", null, "unsuccessful attempt!");
                     System.out.println(e.getMessage());
                     return null;
                 });
-
     }
 
     @Override
