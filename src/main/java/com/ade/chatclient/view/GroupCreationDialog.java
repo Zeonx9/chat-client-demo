@@ -10,11 +10,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.util.List;
-@Getter
 
+@Getter
+@Setter
 public class GroupCreationDialog extends Dialog<GroupRequest> {
     @FXML private TextField groupName;
     @FXML private ListView<User> listOfUsers;

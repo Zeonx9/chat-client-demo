@@ -8,9 +8,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 
+@Setter
+@Getter
 public class ChangingPasswordDialog extends Dialog<ChangePasswordRequest> {
     @FXML private DialogPane changePasswordDialog;
     @FXML private PasswordField currentPassword;

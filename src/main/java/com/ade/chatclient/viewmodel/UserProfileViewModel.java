@@ -48,6 +48,7 @@ public class UserProfileViewModel extends AbstractChildViewModel<ClientModel> {
         userNameProperty.set(me.getUsername());
         companyNameProperty.set(model.getCompany().getName());
     }
+
     public void showDialogAndWait() {
         resultMessageProperty.set("");
         ChangingPasswordDialog dialog = ChangingPasswordDialog.getInstance();

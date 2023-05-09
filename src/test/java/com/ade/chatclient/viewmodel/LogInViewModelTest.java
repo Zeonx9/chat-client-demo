@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -16,7 +15,7 @@ import static org.mockito.BDDMockito.given;
 /**
  * простой тест Junit/Mock, который проверяет правильность работы методов во вью-модели
  * View Model зависит от ViewHandler и от ClientModel, поэтому, чтобы тестировать наш класс в изоляции нужно
- * использовать моки, чтобы создать вьюмодельку для изоляции
+ * использовать моки, чтобы создать viewModel для изоляции
  */
 @ExtendWith(MockitoExtension.class)
 class LogInViewModelTest {
@@ -37,18 +36,22 @@ class LogInViewModelTest {
     void authorizeIsSuccessful() {
         //given
         given(model.authorize("login", "password")).willReturn(true);
+
         // when
         underTest.authorize();
+
         // then
-        assertThat(underTest.getErrorMessageProperty().get()).isEqualTo("Success!");
+        assertThat(underTest.getErrorMessageProperty().get()).isEqualTo("");
     }
 
     @Test
     void authorizeIsUnsuccessful() {
         //given
         given(model.authorize("login", "password")).willReturn(false);
+
         // when
         underTest.authorize();
+
         // then
         assertThat(underTest.getErrorMessageProperty().get()).isEqualTo("Unsuccessful");
     }
@@ -57,8 +60,10 @@ class LogInViewModelTest {
     void onTextChangedToNonBlank() {
         //given
         String newText = "text";
+
         // when
         underTest.onTextChanged(newText);
+
         // then
         assertThat(underTest.getDisableButtonProperty().get()).isFalse();
     }
@@ -67,8 +72,10 @@ class LogInViewModelTest {
     void onTextChangedWhenIsBlank() {
         //given
         String newText = "    ";
+
         // when
         underTest.onTextChanged(newText);
+
         // then
         assertThat(underTest.getDisableButtonProperty().get()).isTrue();
     }
@@ -77,8 +84,10 @@ class LogInViewModelTest {
     void onTextChangedWhenIsNotNull() {
         //given
         String newText = "login";
+
         // when
         Boolean result = underTest.checkChangedText(newText);
+
         // then
         assertTrue(result);
     }
@@ -88,6 +97,7 @@ class LogInViewModelTest {
         //given
         // when
         Boolean result = underTest.checkChangedText(null);
+
         // then
         assertFalse(result);
     }

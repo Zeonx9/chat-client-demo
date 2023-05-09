@@ -66,5 +66,7 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         viewModel.openProfilePane();
     }
 
-    public void onInfoButtonClicked() {viewModel.showDialog();}
+    public void onInfoButtonClicked() {
+        viewModel.showDialog();
+    }
 }

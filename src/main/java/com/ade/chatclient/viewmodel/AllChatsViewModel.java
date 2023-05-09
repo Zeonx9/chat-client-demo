@@ -44,13 +44,8 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         model.addListener("NewChatCreated", runLaterListener(this::newChatCreated));
         model.addListener("selectedChatModified", runLaterListener(this::selectedChatModified));
         model.addListener("chatReceivedMessages", runLaterListener(this::raiseChat));
-        model.addListener("UnreadChats", runLaterListener(this::updateUnreadChatsCounter));
     }
 
-    private void updateUnreadChatsCounter(PropertyChangeEvent event) {
-        //todo счетчик непрочитанных чатов
-        Long unreadChatCounter = (Long) event.getNewValue();
-    }
 
     private void raiseChat(PropertyChangeEvent event) {
         if (isSearching) return;
@@ -60,7 +55,6 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             chatListProperty.add(0, chat);
             myChats.getSelectionModel().select(0);
             if ((boolean) event.getOldValue()) {
-//                model.setSelectChat(chat);
                 selected = chat;
             }
             else playSound();
@@ -73,7 +67,6 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             Chat chat = (Chat) event.getNewValue();
             chatListProperty.add(0, chat);
             selected = chat;
-//            model.setSelectChat(selected);
             myChats.getSelectionModel().select(0);
         }
     }

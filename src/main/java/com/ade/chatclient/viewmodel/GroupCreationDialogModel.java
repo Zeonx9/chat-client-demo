@@ -10,14 +10,15 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListCell;
 import javafx.scene.input.MouseEvent;
 import lombok.Getter;
-
+import lombok.Setter;
 import java.util.List;
 
 @Getter
+@Setter
 public class GroupCreationDialogModel {
     private final ListProperty<User> userListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final ListProperty<User> selectedUsersListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
-    private final StringProperty nameOfGroup = new SimpleStringProperty();
+    private StringProperty nameOfGroup = new SimpleStringProperty();
     private final BooleanProperty isFilled = new SimpleBooleanProperty(true);
     private User selected;
 

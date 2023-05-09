@@ -137,7 +137,7 @@ public class ClientModelImpl implements ClientModel{
 
         Chat copySelectedChat = getSelectedChat();
         System.out.println(copySelectedChat.getId());
-//        decrementChatCounter(getSelectedChat());
+        decrementChatCounter(getSelectedChat());
 
         handler.sendGet(
                     String.format("/chats/%d/messages", copySelectedChat.getId()),

@@ -44,11 +44,13 @@ public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
     }
 
     public void onTextChanged(String newText) {
+        usersListProperty.clear();
+
         if (newText == null || newText.isBlank()) {
             usersListProperty.clear();
-            model.getAllUsers();
+            usersListProperty.addAll(model.getAllUsers());
+            return;
         }
-        usersListProperty.clear();
         usersListProperty.addAll(model.searchUser(newText));
     }
 }

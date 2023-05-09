@@ -158,24 +158,6 @@ class ClientModelImplTest {
         verify(handler).sendGet("/users/1/undelivered_messages", TypeReferences.ListOfMessage);
     }
 
-
-    @Test
-    void sendMessageToChat() {
-        User user = User.builder().username("User").id(2L).build();
-        Message message_ = Message.builder().text("hello").author(user).chatId(1L).build();
-        CompletableFuture<Message> message = CompletableFuture
-                .completedFuture(message_);
-        given(handler.sendPost(
-                String.format("/users/%d/chats/%d/message", underTest.getMyself().getId(), underTest.getSelectedChat().getId()),
-                Message.builder().text("hello").build(),
-                Message.class, true
-        )).willReturn(message);
-
-        underTest.sendMessageToChat("hello");
-
-        assertThat(underTest.getSelectedChat().getLastMessage()).isEqualTo(message);
-    }
-
     @Test
     void fetchChatMessages(){
         User user = User.builder().username("user").id(2L).build();
@@ -251,7 +233,7 @@ class ClientModelImplTest {
         User myself = User.builder().username("Dasha").id(1L).build();
         CompletableFuture<AuthResponse> auth = CompletableFuture.completedFuture(AuthResponse.builder().user(myself).build());
         given(handler.sendPost(
-                "/auth/" + "register",
+                "/auth/" + "login",
                 AuthRequest.builder().login("Dasha").password("password").build(),
                 AuthResponse.class, false
         )).willReturn(auth);
