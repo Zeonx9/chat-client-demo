@@ -348,16 +348,24 @@ public class ClientModelImpl implements ClientModel{
         return String.join("", result);
     }
 
+    private boolean isRequested(Chat chat, String request) {
+        return chat.getIsPrivate() && !chat.getMembers().stream()
+                .filter(user -> isRequested(user, request) && !user.equals(myself)).toList().isEmpty();
+    }
+
     public List<Chat> searchChat(String request) {
         return getMyChats().stream()
-                .filter(chat -> getChatNameForSearch(chat).toLowerCase().startsWith(request.toLowerCase()))
+                .filter(chat -> getChatNameForSearch(chat).toLowerCase().startsWith(request.toLowerCase())
+                        || isRequested(chat, request.toLowerCase()))
                 .toList();
     }
 
     private boolean isRequested(User user, String request) {
         return user.getUsername().toLowerCase().startsWith(request)
-                || (user.getRealName() != null && user.getSurname().toLowerCase().startsWith(request))
-                || (user.getRealName() != null && user.getRealName().toLowerCase().startsWith(request));
+                || (user.getSurname().toLowerCase().startsWith(request))
+                || (user.getRealName().toLowerCase().startsWith(request))
+                || ((user.getRealName().toLowerCase() + " " + user.getSurname().toLowerCase()).startsWith(request))
+                || ((user.getSurname().toLowerCase() + " " + user.getRealName().toLowerCase()).startsWith(request));
     }
 
     public List<User> searchUser(String request) {

@@ -34,7 +34,11 @@ class LogInViewTest {
 
     @BeforeAll
     static void beforeAll() throws IOException {
-       Platform.startup(() -> {});
+        try {
+            Platform.startup(() -> {});
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         loader = new FXMLLoader(LogInView.class.getResource("log-in-view.fxml"));
         loader.load();
     }
