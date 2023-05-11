@@ -1,6 +1,7 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.application.AbstractChildViewModel;
+import com.ade.chatclient.application.ListViewSelector;
 import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.application.ViewModelUtils;
 import com.ade.chatclient.domain.Chat;
@@ -35,7 +36,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     private MediaPlayer mediaPlayer = new MediaPlayer(new Media(new File(mediaPath).toURI().toString()));
     private Boolean isSearching = false;
     private Chat selected;
-    public ListView<Chat> myChats;
+    public ListViewSelector<Chat> selector;
 
     public AllChatsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
@@ -53,7 +54,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             Chat chat = (Chat) event.getNewValue();
             chatListProperty.remove(chat);
             chatListProperty.add(0, chat);
-            myChats.getSelectionModel().select(0);
+            selector.select(0);
             if ((boolean) event.getOldValue()) {
                 selected = chat;
             }
@@ -67,7 +68,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             Chat chat = (Chat) event.getNewValue();
             chatListProperty.add(0, chat);
             selected = chat;
-            myChats.getSelectionModel().select(0);
+            selector.select(0);
         }
     }
 
@@ -78,7 +79,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             int index = chatListProperty.indexOf(chat);
             chatListProperty.set(index, chat);
             selected = chat;
-            myChats.getSelectionModel().select(model.getSelectedChat());
+            selector.select(model.getSelectedChat());
         }
     }
 
@@ -93,7 +94,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
                 "chat-list-cell-factory.fxml"
         );
         factory.init(model.getMyself().getId());
-        myChats.getSelectionModel().select(selected);
+        selector.select(selected);
         return factory;
     }
 
@@ -113,7 +114,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         if (newText == null || newText.isBlank()) {
             isSearching = false;
             model.getMyChatsAfterSearching();
-            myChats.getSelectionModel().select(selected);
+            selector.select(selected);
             return;
         }
         isSearching = true;
@@ -131,6 +132,10 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         }
         selected = changedChat;
         model.setSelectChat(changedChat);
+    }
+
+    public void addSelector(ListView<Chat> listView) {
+        selector = new ListViewSelector<>(listView);
     }
 
     private void playSound(){

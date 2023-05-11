@@ -24,7 +24,7 @@ public class AllChatsView extends AbstractView<AllChatsViewModel> {
         chatListView.setCellFactory(chatListView -> viewModel.getChatListCellFactory());
         chatListView.setOnMouseClicked(viewModel::onMouseClickedListener);
 
-        viewModel.myChats = chatListView;
+        viewModel.addSelector(chatListView);
 
         createGroupButton.setFocusTraversable(false);
     }

@@ -51,7 +51,6 @@ public class AllChatsViewModelTest {
 
         String mediaPath = "src/main/resources/com/ade/chatclient/sounds/sound.mp3";
         underTest.setMediaPlayer(new MediaPlayer(new Media(new File(mediaPath).toURI().toString())));
-        underTest.setMyChats(new ListView<>());
 
     }
 
