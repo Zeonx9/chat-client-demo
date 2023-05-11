@@ -4,7 +4,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane fx:id="createGroupDialog" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+<DialogPane fx:id="dialogPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
             minWidth="-Infinity" prefHeight="700.0" prefWidth="480.0" styleClass="mainPane"
             stylesheets="@../styles/ChatPageViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.GroupCreationDialog">
@@ -28,7 +28,7 @@
                       orientation="HORIZONTAL" prefHeight="65.0" prefWidth="380.0"
                       style="-fx-background-color: transparent;" styleClass="selectedListView"/>
             <Button fx:id="createGroupButton" layoutX="180.0" layoutY="413.0" mnemonicParsing="false"
-                    onAction="#OnCreateGroupButtonClicked" prefHeight="40.0" prefWidth="120.0" styleClass="createButton"
+                    onAction="#onOkClicked" prefHeight="40.0" prefWidth="120.0" styleClass="createButton"
                     text="Create"/>
         </AnchorPane>
     </content>

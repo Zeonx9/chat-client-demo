@@ -106,7 +106,8 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
 
     public void showDialogAndWait() {
         GroupCreationDialog dialog = GroupCreationDialog.getInstance();
-        dialog.init(model.getAllUsers(), new GroupCreationDialogModel());
+        dialog.init(new GroupCreationDialogModel());
+        dialog.populateUserList(model.getAllUsers());
 
         Optional<GroupRequest> answer = dialog.showAndWait();
         if (answer.isPresent()) {

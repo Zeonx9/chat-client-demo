@@ -1,5 +1,6 @@
 package com.ade.chatclient.viewmodel;
 
+import com.ade.chatclient.application.AbstractDialogModel;
 import com.ade.chatclient.domain.GroupChatInfo;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.GroupRequest;
@@ -14,7 +15,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class GroupCreationDialogModel {
+public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> {
     private final ListProperty<User> userListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final ListProperty<User> selectedUsersListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final StringProperty nameOfGroup = new SimpleStringProperty();
@@ -53,6 +54,7 @@ public class GroupCreationDialogModel {
         }
     }
 
+    @Override
     public GroupRequest resultConverter(ButtonType buttonType) {
         if (buttonType != ButtonType.OK) {
             return null;
@@ -66,7 +68,9 @@ public class GroupCreationDialogModel {
     public static ListCell<User> getSelectedUsersCellFactory() {
         return new SelectedUsersCellFactory();
     }
-    public GroupRequest onCreateClicked() {
+
+    @Override
+    public GroupRequest onOkClicked() {
         return resultConverter(ButtonType.OK);
     }
 }
