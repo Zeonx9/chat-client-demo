@@ -28,5 +28,7 @@ public class UserProfileView extends AbstractView<UserProfileViewModel> {
         viewModel.showDialogAndWait();
     }
 
-    public void onLogOutButtonClicked() {viewModel.logOut();}
+    public void onLogOutButtonClicked() {
+        viewModel.logOut();
+    }
 }

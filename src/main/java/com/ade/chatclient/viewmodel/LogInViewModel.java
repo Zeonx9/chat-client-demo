@@ -38,10 +38,18 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
     }
 
     private void setSavedLoginAndPassword(PropertyChangeEvent propertyChangeEvent) {
+        writeInJson(AuthRequest.builder().login(loginTextProperty.get()).password((String) propertyChangeEvent.getNewValue()).build());
+    }
+
+    public void setSavedLoginAndPassword() {
+        writeInJson(AuthRequest.builder().login(loginTextProperty.get()).password(passwordProperty.get()).build());
+    }
+
+    private void writeInJson(AuthRequest authRequest) {
         try(Writer writer = Files.newBufferedWriter(Paths.
                 get("src/main/resources/com/ade/chatclient/login-password/package.json"))){
             ObjectMapper mapper = new ObjectMapper();
-            mapper.writeValue(writer, AuthRequest.builder().login(loginTextProperty.get()).password((String) propertyChangeEvent.getNewValue()).build());
+            mapper.writeValue(writer, authRequest);
         }
         catch (Exception e){
             System.out.println("нет файла для сохранения пароля");
@@ -58,17 +66,6 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
         }
         catch (Exception e){
             System.out.println("нет файла c сохраненными паролями");
-        }
-    }
-
-    public void setSavedLoginAndPassword() {
-        try(Writer writer = Files.newBufferedWriter(Paths.
-                get("src/main/resources/com/ade/chatclient/login-password/package.json"))){
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.writeValue(writer, AuthRequest.builder().login(loginTextProperty.get()).password(passwordProperty.get()).build());
-        }
-        catch (Exception e){
-            System.out.println("нет файла для сохранения пароля");
         }
     }
 

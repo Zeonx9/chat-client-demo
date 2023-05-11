@@ -10,8 +10,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class LogInView extends AbstractView<LogInViewModel> {
     @FXML private PasswordField passwordField;
     @FXML private TextField loginTextField;
