@@ -28,11 +28,14 @@ public class Chat {
         return unreadCount > 0;
     }
 
-    public String getChatName() {
+    public String getChatName(Long excludedPersonId) {
         if (group != null) {
             return group.getName();
         }
-        var names = members.stream().map(User::getUsername).toList();
+        var names = members.stream()
+                .filter(u -> !u.getId().equals(excludedPersonId))
+                .map(u ->  u.getRealName() + " " + u.getSurname())
+                .toList();
         return String.join(", ", names);
     }
 

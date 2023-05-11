@@ -23,7 +23,7 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogMo
         super.init(new EmptyDialogModel<>());
         setTitle("Group info");
 
-        groupInfo.setText("Group info     '" + chat.getChatName() + "'");
+        groupInfo.setText("Group info     '" + chat.getChatName(null) + "'");
         membersCount.setText(chat.getMembers().size() + " members");
         listMembers.getItems().setAll(chat.getMembers());
         listMembers.setCellFactory(param -> AllUsersViewModel.getUserListCellFactory());
