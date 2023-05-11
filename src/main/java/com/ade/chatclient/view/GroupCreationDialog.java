@@ -11,10 +11,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 @Getter
-
+@Setter
 public class GroupCreationDialog extends AbstractDialog<GroupRequest, GroupCreationDialogModel> {
     @FXML private TextField groupName;
     @FXML private ListView<User> listOfUsers;

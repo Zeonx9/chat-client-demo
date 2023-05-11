@@ -11,10 +11,12 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListCell;
 import javafx.scene.input.MouseEvent;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Getter
+@Setter
 public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> {
     private final ListProperty<User> userListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final ListProperty<User> selectedUsersListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());

@@ -51,10 +51,10 @@ public class ChangingPasswordDialogModelTest {
     void resultConverterOK() {
         //given
         ButtonType buttonType = ButtonType.OK;
-        underTest.setCurPassword("oldPassword");
-        underTest.setNewPassword("newPassword");
-        AuthRequest info = AuthRequest.builder().password(underTest.getCurPassword()).build();
-        ChangePasswordRequest request = ChangePasswordRequest.builder().authRequest(info).newPassword(underTest.getNewPassword()).build();
+        underTest.getCurPassword().set("oldPassword");
+        underTest.getNewPassword().set("newPassword");
+        AuthRequest info = AuthRequest.builder().password(underTest.getCurPassword().getValue()).build();
+        ChangePasswordRequest request = ChangePasswordRequest.builder().authRequest(info).newPassword(underTest.getNewPassword().getValue()).build();
         // when
         ChangePasswordRequest result = underTest.resultConverter(buttonType);
         // then
@@ -77,12 +77,14 @@ public class ChangingPasswordDialogModelTest {
         //given
         String oldP = "oldPassword";
         String newP = "newPassword";
+        underTest.getCurPassword().set(oldP);
+        underTest.getNewPassword().set(newP);
 
         AuthRequest info = AuthRequest.builder().password(oldP).build();
         ChangePasswordRequest request = ChangePasswordRequest.builder().authRequest(info).newPassword(newP).build();
 
         // when
-        ChangePasswordRequest result = underTest.onChangeClicked(oldP, newP);
+        ChangePasswordRequest result = underTest.onOkClicked();
         // then
         assertEquals(result, request);
     }

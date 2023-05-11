@@ -34,7 +34,11 @@ public class AllChatsViewModelTest {
 
     @BeforeAll
     static void initJfxRuntime() throws IOException {
-        Platform.startup(() -> {});
+        try {
+            Platform.startup(() -> {});
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         loader = new FXMLLoader(AllChatsView.class.getResource("all-chats-view.fxml"));
         loader.load();
     }

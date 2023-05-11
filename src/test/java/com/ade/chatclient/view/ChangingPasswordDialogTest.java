@@ -14,17 +14,31 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @ExtendWith(MockitoExtension.class)
 public class ChangingPasswordDialogTest {
     private static FXMLLoader loader;
-    private ChangingPasswordDialog underTest;
+    private volatile ChangingPasswordDialog underTest;
     @BeforeAll
-    static void beforeAll() throws IOException {
-//        Platform.startup(() -> {});
-        loader = new FXMLLoader(ChangingPasswordDialog.class.getResource("changing-password-dialog-view.fxml"));
-        loader.load();
+    static void beforeAll() {
+        try {
+            Platform.startup(() -> {});
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Platform.runLater(() -> {
+            loader = new FXMLLoader(ChangingPasswordDialog.class.getResource("changing-password-dialog-view.fxml"));
+            try {
+                loader.load();
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws InterruptedException {
         ChangingPasswordDialogModel viewModel = new ChangingPasswordDialogModel();
+        while (loader.getController() == null) {
+            Thread.sleep(200);
+        }
         underTest = loader.getController();
         underTest.init(viewModel);
     }

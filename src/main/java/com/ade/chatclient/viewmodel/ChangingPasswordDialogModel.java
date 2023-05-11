@@ -9,8 +9,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.ButtonType;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class ChangingPasswordDialogModel extends AbstractDialogModel<ChangePasswordRequest> {
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
     private final BooleanProperty isCurPasswordBlank = new SimpleBooleanProperty(true);

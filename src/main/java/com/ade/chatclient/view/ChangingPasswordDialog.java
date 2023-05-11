@@ -9,7 +9,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class ChangingPasswordDialog extends AbstractDialog<ChangePasswordRequest, ChangingPasswordDialogModel> {
     @FXML private PasswordField currentPassword;
     @FXML private PasswordField newPassword;
