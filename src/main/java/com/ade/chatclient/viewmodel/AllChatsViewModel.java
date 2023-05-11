@@ -86,6 +86,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     @Override
     public void actionInParentOnOpen() {
         viewHandler.getViewModelProvider().getChatPageViewModel().changeButtonsParam(2);
+        model.getMyChatsAfterSearching();
     }
 
     public ListCell<Chat> getChatListCellFactory() {
