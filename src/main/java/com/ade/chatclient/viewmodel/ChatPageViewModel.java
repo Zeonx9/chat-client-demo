@@ -31,7 +31,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final BooleanProperty showUsersButtonDisabled = new SimpleBooleanProperty(false);
     private final BooleanProperty showUserProfileDisabled = new SimpleBooleanProperty(false);
     private final BooleanProperty infoButtonFocusProperty = new SimpleBooleanProperty(false);
-    private final StringProperty userNameProperty = new SimpleStringProperty();
+    private final StringProperty selectedChatNameProperty = new SimpleStringProperty();
     private final DoubleProperty opacityProperty = new SimpleDoubleProperty(0);
     private Runnable bottomScroller;
     private Consumer<Views> paneSwitcher;
@@ -49,7 +49,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
             List<Message> messages = (List<Message>) event.getNewValue();
             messageListProperty.clear();
             messageListProperty.addAll(messages);
-            userNameProperty.setValue(model.getSelectedChat().getChatName());
+            selectedChatNameProperty.setValue(model.getSelectedChat().getChatName(model.getMyself().getId()));
             bottomScroller.run();
         }
 

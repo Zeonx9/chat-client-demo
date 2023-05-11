@@ -32,7 +32,7 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         viewModel.addPaneSwitcher(placeHolder);
 
         messageTextField.textProperty().bindBidirectional(viewModel.getMessageTextProperty());
-        userNameLabel.textProperty().bind(viewModel.getUserNameProperty());
+        userNameLabel.textProperty().bind(viewModel.getSelectedChatNameProperty());
         showChatsButton.disableProperty().bind(viewModel.getShowChatsButtonDisabled());
         showUsersButton.disableProperty().bind(viewModel.getShowUsersButtonDisabled());
         showUserProfileButton.disableProperty().bind(viewModel.getShowUserProfileDisabled());
