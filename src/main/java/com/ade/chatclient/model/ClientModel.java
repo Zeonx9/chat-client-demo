@@ -47,6 +47,7 @@ public interface ClientModel {
 
     Chat getSelectedChat();
 
+    void getAllUsersAfterSearching();
     List<User> getAllUsers();
     /**
      * отправляет POST запрос с сообщением в selectedChat

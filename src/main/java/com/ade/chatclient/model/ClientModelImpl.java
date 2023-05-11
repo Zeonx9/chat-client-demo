@@ -319,6 +319,10 @@ public class ClientModelImpl implements ClientModel{
         changeSupport.firePropertyChange("gotChats", null, getMyChats());
     }
 
+    public void getAllUsersAfterSearching() {
+        changeSupport.firePropertyChange("AllUsers", null, getAllUsers());
+    }
+
     @Override
     public Chat createDialogFromAllUsers(User user) {
         try {
