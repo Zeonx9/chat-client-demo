@@ -15,7 +15,8 @@ public enum Views {
     ALL_USERS_VIEW("all-users-view", ViewModelProvider::getAllUsersViewModel),
     ALL_CHATS_VIEW("all-chats-view", ViewModelProvider::getAllChatsViewModel),
     CHAT_PAGE_VIEW("chat-page-view", ViewModelProvider::getChatPageViewModel),
-    USER_PROFILE_VIEW("user-profile-view", ViewModelProvider::getUserProfileViewModel);
+    USER_PROFILE_VIEW("user-profile-view", ViewModelProvider::getUserProfileViewModel),
+    ADMIN_VIEW("admin-view", ViewModelProvider::getAdminViewModel);
     /**
      * Содержит имя связанного fxml файла без расширения ".fxml"
      */

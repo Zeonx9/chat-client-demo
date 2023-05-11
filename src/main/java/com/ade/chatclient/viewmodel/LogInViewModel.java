@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 
 
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
+import static com.ade.chatclient.application.Views.ADMIN_VIEW;
 import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
 
 @Getter
@@ -80,8 +81,13 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
         errorMessageProperty.set("Success!");
 
         setSavedLoginAndPassword();
-        viewHandler.startBackGroundServices();
-        viewHandler.openView(CHAT_PAGE_VIEW);
+        if (model.isAdmin()) {
+            viewHandler.openView(ADMIN_VIEW);
+        }
+        else {
+            viewHandler.startBackGroundServices();
+            viewHandler.openView(CHAT_PAGE_VIEW);
+        }
 
         errorMessageProperty.set("");
         passwordProperty.set("");

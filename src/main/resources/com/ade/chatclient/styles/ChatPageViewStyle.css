@@ -348,3 +348,7 @@
         -fx-background-radius: 30px;
         -fx-padding: 6px ;
 }
+
+.date-picker .arrow-button > {
+    -fx-background-radius: 12px;
+}
