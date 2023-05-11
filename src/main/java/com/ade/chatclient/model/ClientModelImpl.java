@@ -28,7 +28,6 @@ public class ClientModelImpl implements ClientModel{
     private List<Chat> myChats = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
-    private long unreadChatCounter;
     public ClientModelImpl(AsyncRequestHandler handler) {
         System.out.println("model created!");
         this.handler = handler;
@@ -52,7 +51,6 @@ public class ClientModelImpl implements ClientModel{
         setCompany(null);
         getMyChats().clear();
         getAllUsers().clear();
-        setUnreadChatCounter(0);
     }
 
     private boolean authorizeRequest(String login, String password) {
@@ -109,32 +107,11 @@ public class ClientModelImpl implements ClientModel{
             System.out.println(chats);
             changeSupport.firePropertyChange("gotChats", null, chats);
             setMyChats(chats);
-            updateUnreadChatCounter();
         }
         catch (Exception e){
             System.out.println("error");
         }
 
-    }
-
-    private void updateUnreadChatCounter() {
-        unreadChatCounter = getMyChats().stream().filter(Chat::isUnreadChat).count();
-        System.out.println("New messages at login " + unreadChatCounter);
-        changeSupport.firePropertyChange("UnreadChats", null, unreadChatCounter);
-    }
-
-    private void decrementChatCounter(Chat chat) {
-        if (chat.isUnreadChat()) {
-            System.out.println("open chat / counter" + chat);
-            changeSupport.firePropertyChange("UnreadChats", null, unreadChatCounter--);
-        }
-    }
-
-    private void incrementUnreadChatCounter(Chat chat) {
-        if (!chat.isUnreadChat()) {
-            System.out.println("new mes / counter" + chat);
-            changeSupport.firePropertyChange("UnreadChats", null, unreadChatCounter++);
-        }
     }
 
     @Override
@@ -145,7 +122,6 @@ public class ClientModelImpl implements ClientModel{
 
         Chat copySelectedChat = getSelectedChat();
         System.out.println(copySelectedChat.getId());
-        decrementChatCounter(getSelectedChat());
 
         handler.sendGet(
                     String.format("/chats/%d/messages", copySelectedChat.getId()),
@@ -256,7 +232,6 @@ public class ClientModelImpl implements ClientModel{
         for (Message msg : msgInExistingChat.get(true)) {
             Chat chatOfMessage = chatById.get(msg.getChatId());
             chatOfMessage.incrementUnreadCount();
-            incrementUnreadChatCounter(chatOfMessage);
             chatOfMessage.setLastMessage(msg);
 
             changeSupport.firePropertyChange("chatReceivedMessages", false, chatOfMessage);

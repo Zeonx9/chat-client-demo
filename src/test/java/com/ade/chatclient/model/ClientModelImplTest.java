@@ -2,9 +2,7 @@ package com.ade.chatclient.model;
 
 import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.domain.*;
-import com.ade.chatclient.dtos.AuthRequest;
-import com.ade.chatclient.dtos.AuthResponse;
-import com.ade.chatclient.dtos.GroupRequest;
+import com.ade.chatclient.dtos.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +12,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +30,7 @@ class ClientModelImplTest {
     @BeforeEach
     void setUp() {
         underTest = new ClientModelImpl(handler);
-        User myself = User.builder().username("Dasha").id(1L).build();
+        User myself = User.builder().username("Dasha").realName("Dasha").surname("Vav").id(1L).build();
         underTest.setMyself(myself);
         User user = User.builder().username("Egor").id(1L).build();
         Chat chat = Chat.builder().id(1L).isPrivate(true).members(List.of(underTest.getMyself(), user)).build();
@@ -61,7 +58,7 @@ class ClientModelImplTest {
     @Test
     public void SearchUser() {
         //given
-        User user = User.builder().username("Egor").id(2L).build();
+        User user = User.builder().username("Egor").realName("Egor").surname("Dem").id(2L).build();
         List<User> allUsers = List.of(user, underTest.getMyself());
         underTest.setAllUsers(allUsers);
         List<User> expectedList = List.of(user);
@@ -76,8 +73,8 @@ class ClientModelImplTest {
     @Test
     public void SearchChatForExistingChat() {
         //given
-        User user1 = User.builder().username("Egor").id(2L).build();
-        User user2 = User.builder().username("Artem").id(3L).build();
+        User user1 = User.builder().username("Egor").realName("Egor").surname("Dem").id(2L).build();
+        User user2 = User.builder().username("Artem").realName("Artem").surname("My").id(3L).build();
         Chat chat1 = Chat.builder().id(1L).isPrivate(true).members(List.of(underTest.getMyself(), user1)).build();
         Chat chat2 = Chat.builder().id(2L).isPrivate(true).members(List.of(underTest.getMyself(), user2)).build();
         underTest.setMyChats(List.of(chat1, chat2));
@@ -112,8 +109,8 @@ class ClientModelImplTest {
     @Test
     public void SearchChatForNonExistingChat() {
         //given
-        User user1 = User.builder().username("Egor").id(2L).build();
-        User user2 = User.builder().username("Artem").id(3L).build();
+        User user1 = User.builder().username("Egor").realName("Egor").surname("Dem").id(2L).build();
+        User user2 = User.builder().username("Artem").realName("Artem").surname("My").id(3L).build();
         Chat chat1 = Chat.builder().id(1L).isPrivate(true).members(List.of(underTest.getMyself(), user1)).build();
         Chat chat2 = Chat.builder().id(2L).isPrivate(true).members(List.of(underTest.getMyself(), user2)).build();
         underTest.setMyChats(List.of(chat1, chat2));
@@ -192,6 +189,7 @@ class ClientModelImplTest {
 
         assertThat(underTest.getAllUsers()).isEqualTo(users);
     }
+
     @Test
     void fetchChats(){
         User user1 = User.builder().username("Egor").id(2L).build();
@@ -212,6 +210,23 @@ class ClientModelImplTest {
     }
 
     @Test
+    void  changePassword(){
+        ChangePasswordRequest request = ChangePasswordRequest.builder()
+                .authRequest(AuthRequest.builder().login("Dasha").password("old").companyId(1L).build())
+                .newPassword("new").build();
+
+        AuthResponse response = AuthResponse.builder().user(underTest.getMyself()).build();
+        CompletableFuture<AuthResponse> expected = CompletableFuture.completedFuture(response);
+        given(handler.sendPut("/auth/user/password", request, AuthResponse.class))
+                .willReturn(expected);
+
+        underTest.changePassword(request);
+
+        verify(handler).sendPut("/auth/user/password", request, AuthResponse.class);
+
+    }
+
+    @Test
     void AuthorizeLogin() {
         User myself = User.builder().username("Dasha").id(1L).build();
         CompletableFuture<AuthResponse> auth = CompletableFuture.completedFuture(AuthResponse.builder().user(myself).build());
@@ -226,6 +241,18 @@ class ClientModelImplTest {
 
         assertThat(underTest.getMyself()).isEqualTo(myself);
 
+    }
+
+    @Test
+    void registerUser() {
+        AuthRequest auth = AuthRequest.builder().login("login").build();
+        RegisterData data = RegisterData.builder().authRequest(auth).build();
+        CompletableFuture<AuthRequest> authFuture = CompletableFuture.completedFuture(auth);
+        given(handler.sendPost("/auth/register", data, AuthRequest.class, true)).willReturn(authFuture);
+
+        AuthRequest result = underTest.registerUser(data);
+
+        assertEquals(result, auth);
     }
 
     @Test
@@ -252,6 +279,19 @@ class ClientModelImplTest {
         underTest.authorize("Dasha", "password");
 
         assertThat(underTest.getMyself()).isEqualTo(myself);
+
+    }
+
+    @Test
+    void clearModel() {
+
+        underTest.clearModel();
+
+        assertThat(underTest.getMyself()).isEqualTo(null);
+        assertThat(underTest.getSelectedChat()).isEqualTo(null);
+        assertThat(underTest.getCompany()).isEqualTo(null);
+        assertTrue(underTest.getMyChats().isEmpty());
+        assertTrue(underTest.getAllUsers().isEmpty());
 
     }
 
