@@ -3,8 +3,10 @@ package com.ade.chatclient.model;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Company;
 import com.ade.chatclient.domain.User;
+import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.dtos.GroupRequest;
+import com.ade.chatclient.dtos.RegisterData;
 
 import java.beans.PropertyChangeListener;
 import java.util.List;
@@ -26,6 +28,7 @@ public interface ClientModel {
      */
     // method that authorize the user with given login(name)
     boolean authorize(String login, String password);
+    AuthRequest registerUser(RegisterData data);
 
     /**
      * @return Авторизованного пользователя
@@ -33,6 +36,7 @@ public interface ClientModel {
     User getMyself();
 
     void clearModel();
+    boolean isAdmin();
 
     /**
      * присваивает selectedChat значение параметра

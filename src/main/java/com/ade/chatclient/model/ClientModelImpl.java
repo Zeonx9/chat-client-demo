@@ -2,10 +2,7 @@ package com.ade.chatclient.model;
 
 import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.domain.*;
-import com.ade.chatclient.dtos.AuthRequest;
-import com.ade.chatclient.dtos.AuthResponse;
-import com.ade.chatclient.dtos.ChangePasswordRequest;
-import com.ade.chatclient.dtos.GroupRequest;
+import com.ade.chatclient.dtos.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,6 +24,7 @@ public class ClientModelImpl implements ClientModel{
     private User myself;
     private Chat selectedChat;
     private Company company;
+    private boolean isAdmin;
     private List<Chat> myChats = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
@@ -67,6 +65,7 @@ public class ClientModelImpl implements ClientModel{
 
             setMyself(auth.getUser());
             setCompany(auth.getCompany());
+            setAdmin(auth.isAdmin());
             handler.setAuthToken(auth.getToken());
         }
         catch (Exception e) {
@@ -75,6 +74,15 @@ public class ClientModelImpl implements ClientModel{
         }
         System.out.println("login OK");
         return true;
+    }
+
+    public AuthRequest registerUser(RegisterData data) {
+        try {
+            return handler.sendPost("/auth/register", data, AuthRequest.class, true).get();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     public void setMyChats(List<Chat> chats){
