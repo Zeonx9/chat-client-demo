@@ -18,6 +18,7 @@ import java.beans.PropertyChangeEvent;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 
@@ -47,6 +48,15 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
     }
 
     private void writeInJson(AuthRequest authRequest) {
+        Path directoryPath = Paths.get("src/main/resources/com/ade/chatclient/login-password");
+        if (!Files.exists(directoryPath)) {
+            try {
+                Files.createDirectories(directoryPath);
+            }
+            catch (Exception e){
+                System.out.println("не удалось сохранить пароль");
+            }
+        }
         try(Writer writer = Files.newBufferedWriter(Paths.
                 get("src/main/resources/com/ade/chatclient/login-password/package.json"))){
             ObjectMapper mapper = new ObjectMapper();
