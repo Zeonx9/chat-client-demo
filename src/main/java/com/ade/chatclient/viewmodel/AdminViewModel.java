@@ -6,10 +6,7 @@ import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.RegisterData;
 import com.ade.chatclient.model.ClientModel;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -23,6 +20,7 @@ public class AdminViewModel extends AbstractViewModel<ClientModel> {
     private final StringProperty empLoginProperty = new SimpleStringProperty();
     private final StringProperty resultLoginProperty = new SimpleStringProperty("");
     private final StringProperty resultPasswordProperty = new SimpleStringProperty("");
+    private final BooleanProperty disableProperty = new SimpleBooleanProperty(true);
 
 
     public AdminViewModel(ViewHandler viewHandler, ClientModel model) {
@@ -49,7 +47,8 @@ public class AdminViewModel extends AbstractViewModel<ClientModel> {
         authRequest.setCompanyId(model.getCompany().getId());
 
         String[] data = empNameAndSurnameProperty.getValue().split(" ");
-        AuthRequest response = model.registerUser(new RegisterData(authRequest, data[0], data[1], empBirthdateProperty.getValue()));
+        AuthRequest response = model.registerUser(new RegisterData(authRequest, data[0], data[1],
+                empBirthdateProperty.getValue()));
 
         if (response == null) {
             resultLoginProperty.set("");
@@ -60,5 +59,33 @@ public class AdminViewModel extends AbstractViewModel<ClientModel> {
         resultLoginProperty.set("Employee's login: " + response.getLogin());
         resultPasswordProperty.set("Employee's password: " + response.getPassword());
         return "Result: Successfully!";
+    }
+
+    public void onCheckPassed() {
+        disableProperty.set(false);
+    }
+
+    public void onCheckFailed() {
+        disableProperty.set(true);
+    }
+
+    public Boolean checkNameChangedText(String newValue) {
+        if (newValue == null) {
+            return false;
+        }
+        return !newValue.isBlank();
+    }
+
+    public Boolean checkLoginChangedText(String newValue) {
+        if (newValue == null) {
+            return false;
+        }
+        return !newValue.isBlank() && !newValue.contains(" ");
+    }
+    public Boolean checkDataChanged(LocalDate localDate) {
+        if (localDate == null) {
+            return false;
+        }
+        return localDate.isBefore(LocalDate.now());
     }
 }

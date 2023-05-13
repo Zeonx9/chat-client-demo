@@ -15,7 +15,7 @@
    <DatePicker fx:id="birthdateEmp" focusTraversable="false" layoutX="50.0" layoutY="295.0" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #F2F2F2; -fx-background-radius: 12px;" />
    <Label layoutX="50.0" layoutY="355.0" prefHeight="20.0" styleClass="header4" text="Create login for employeer" />
    <TextField fx:id="loginEmp" focusTraversable="false" layoutX="50.0" layoutY="385.0" prefHeight="40.0" prefWidth="300.0" styleClass="text-input" />
-   <Button focusTraversable="false" layoutX="50.0" layoutY="455.0" mnemonicParsing="false" onAction="#onRegisterEmpClicked" prefHeight="40.0" prefWidth="300.0" style="-fx-background-radius: 12px;" styleClass="createGroupButton" text="Register an employee" />
+   <Button fx:id="registerButton" focusTraversable="false" layoutX="50.0" layoutY="455.0" mnemonicParsing="false" onAction="#onRegisterEmpClicked" prefHeight="40.0" prefWidth="300.0" style="-fx-background-radius: 12px;" styleClass="createGroupButton" text="Register an employee" />
    <Label fx:id="result" layoutX="500.0" layoutY="213.0" prefHeight="24.0" prefWidth="450.0" styleClass="header3" />
    <Label fx:id="resultLogin" layoutX="500.0" layoutY="283.0" prefHeight="24.0" prefWidth="450.0" styleClass="header3" text="Employee's login:" />
    <Label fx:id="resultPassword" layoutX="500.0" layoutY="315.0" prefHeight="24.0" prefWidth="450.0" styleClass="header3" text="Employee's password:" />
