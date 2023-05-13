@@ -5,7 +5,6 @@ import com.ade.chatclient.domain.GroupChatInfo;
 import com.ade.chatclient.domain.User;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.ListView;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,13 +55,9 @@ public class GroupInfoDialogTest {
         User user2 = User.builder().username("Artem").id(3L).build();
         User user3 = User.builder().username("Dasha").id(1L).build();
 
-
-        ListView<User> users = new ListView<>();
-        users.getItems().addAll(List.of(user1, user2, user3));
-
         assertThat(underTest.getGroupInfo().getText()).isEqualTo(groupInfo);
         assertThat(underTest.getMembersCount().getText()).isEqualTo(membersCount);
-        assertThat(underTest.getListMembers()).isEqualTo(users);
+        assertThat(underTest.getListMembers().getItems()).isEqualTo(List.of(user1, user2, user3));
     }
 
 }
