@@ -46,6 +46,6 @@ public class AdminView extends AbstractView<AdminViewModel> {
         viewModel.logOut();
     }
 
-    public void onRegisterEmpClicked() { result.setText("Result: " + viewModel.register());
+    public void onRegisterEmpClicked() { result.setText(viewModel.register());
     }
 }
