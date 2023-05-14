@@ -1,7 +1,7 @@
 package com.ade.chatclient.view;
 
-import com.ade.chatclient.application.AbstractDialog;
-import com.ade.chatclient.application.ViewModelUtils;
+import com.ade.chatclient.application.structure.AbstractDialog;
+import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.viewmodel.ChangingPasswordDialogModel;
 import javafx.beans.binding.Bindings;
@@ -23,15 +23,12 @@ public class ChangingPasswordDialog extends AbstractDialog<ChangePasswordRequest
     @FXML private Button changeButton;
     @FXML private Label errorMessage;
 
-    /**
-     * Вызывает метод инициализации из абстрактного класса, а так же связывает все поля интерфейса диалогового окна с соответствующими property в ChangingPasswordDialogModel
-     * @param viewModel класс DialogModel, соответствующий типу диалогового окна
-     */
-    @Override
-    public void init(ChangingPasswordDialogModel viewModel) {
-        super.init(viewModel);
-        setTitle("Changing password");
+    public static ChangingPasswordDialog getInstance() {
+        return AbstractDialog.getInstance(ChangingPasswordDialog.class, "changing-password-dialog-view.fxml");
+    }
 
+    @Override
+    protected void initialize() {
         currentPassword.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onCurPasswordTextChanged));
         currentPassword.textProperty().bindBidirectional(viewModel.getCurPassword());
         newPassword.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onNewPasswordTextChanged));
@@ -40,7 +37,8 @@ public class ChangingPasswordDialog extends AbstractDialog<ChangePasswordRequest
         errorMessage.textProperty().bind(viewModel.getErrorMessageProperty());
     }
 
-    public static ChangingPasswordDialog getInstance() {
-        return AbstractDialog.getInstance(ChangingPasswordDialog.class, "changing-password-dialog-view.fxml");
+    @Override
+    protected String getTitleString() {
+        return "Changing password";
     }
 }

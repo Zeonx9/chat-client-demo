@@ -1,8 +1,8 @@
 package com.ade.chatclient.view;
 
 
-import com.ade.chatclient.application.AbstractView;
-import com.ade.chatclient.application.ViewModelUtils;
+import com.ade.chatclient.application.structure.AbstractView;
+import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.viewmodel.AllUsersViewModel;
 import javafx.fxml.FXML;
@@ -19,9 +19,7 @@ public class AllUsersView extends AbstractView<AllUsersViewModel> {
     @FXML private ListView<User> userListView;
 
     @Override
-    public void init(AllUsersViewModel allUsersViewModel) {
-        super.init(allUsersViewModel);
-
+    protected void initialize() {
         searchText.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onTextChanged));
         userListView.itemsProperty().bind(viewModel.getUsersListProperty());
         userListView.setCellFactory(param -> AllUsersViewModel.getUserListCellFactory());

@@ -1,9 +1,9 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.application.AbstractChildViewModel;
-import com.ade.chatclient.application.ListViewSelector;
+import com.ade.chatclient.application.structure.AbstractChildViewModel;
+import com.ade.chatclient.application.util.ListViewSelector;
 import com.ade.chatclient.application.ViewHandler;
-import com.ade.chatclient.application.ViewModelUtils;
+import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.model.ClientModel;
@@ -26,8 +26,8 @@ import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.util.Optional;
 
-import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
-import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
+import static com.ade.chatclient.application.util.ViewModelUtils.listReplacer;
+import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
 
 /**
  * Класс, который связывает model с AllChatsView.

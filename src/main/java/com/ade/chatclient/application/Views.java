@@ -1,5 +1,6 @@
 package com.ade.chatclient.application;
 
+import com.ade.chatclient.application.structure.AbstractViewModel;
 import lombok.AllArgsConstructor;
 
 import java.util.function.Function;

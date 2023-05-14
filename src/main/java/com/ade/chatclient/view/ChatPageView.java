@@ -1,8 +1,8 @@
 package com.ade.chatclient.view;
 
 
-import com.ade.chatclient.application.AbstractView;
-import com.ade.chatclient.application.ViewModelUtils;
+import com.ade.chatclient.application.structure.AbstractView;
+import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.viewmodel.ChatPageViewModel;
 import javafx.fxml.FXML;
@@ -28,9 +28,7 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
     @FXML private Pane placeHolder;
 
     @Override
-    public void init(ChatPageViewModel viewModel) {
-        super.init(viewModel);
-
+    protected void initialize() {
         viewModel.addBottomScroller(messageListView);
         viewModel.addPaneSwitcher(placeHolder);
 

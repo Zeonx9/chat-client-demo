@@ -15,6 +15,10 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+/**
+ * Главный класс обрабатывающий HTTP запрос исходящие из приложения
+ * два обязательх поля, которые должны быть вставленны через сеттеры.
+ */
 @NoArgsConstructor
 public class AsyncRequestHandler {
     private final static HttpClient client = HttpClient.newHttpClient();

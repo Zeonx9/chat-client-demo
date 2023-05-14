@@ -1,5 +1,8 @@
 package com.ade.chatclient.application;
 
+import com.ade.chatclient.application.structure.AbstractChildViewModel;
+import com.ade.chatclient.application.structure.AbstractView;
+import com.ade.chatclient.application.structure.AbstractViewModel;
 import com.ade.chatclient.view.LogInView;
 import com.ade.chatclient.viewmodel.BackgroundService;
 import javafx.fxml.FXMLLoader;
@@ -60,11 +63,11 @@ public class ViewHandler {
      * @param viewType константа указывающая на нужное вью
      */
     public void openView(Views viewType) {
-        FXMLLoader fxmlLoader = new FXMLLoader(LogInView.class.getResource(viewType.fxmlFileName + ".fxml"));
+        FXMLLoader fxmlLoader = getLoader(viewType);
         Parent root = load(fxmlLoader);
 
         AbstractView<AbstractViewModel<?>> view = fxmlLoader.getController();
-        view.init(viewType.viewModelGetter.apply(viewModelProvider));
+        view.init(getViewModel(viewType));
 
         // создать сцену для нового вью и установить его на stage
         Scene scene = new Scene(root);
@@ -74,15 +77,15 @@ public class ViewHandler {
 
     /**
      * открывает заданную панель в заданном контейнере
-     * @param paneType - тип панели для открытия
-     * @param placeHolder - контейнер типа Pane или его наследник, на месте которого будет открыта новая панель
+     * @param paneType тип панели для открытия
+     * @param placeHolder контейнер типа Pane или его наследник, на месте которого будет открыта новая панель
      */
     public void openPane(Views paneType, Pane placeHolder) {
-        FXMLLoader fxmlLoader = new FXMLLoader(LogInView.class.getResource(paneType.fxmlFileName + ".fxml"));
+        FXMLLoader fxmlLoader = getLoader(paneType);
         Parent paneRoot = load(fxmlLoader);
 
         AbstractView<AbstractChildViewModel<?>> pane = fxmlLoader.getController();
-        pane.init((AbstractChildViewModel<?>) paneType.viewModelGetter.apply(viewModelProvider));
+        pane.init((AbstractChildViewModel<?>) getViewModel(paneType));
         pane.getViewModel().setPlaceHolder(placeHolder);
         pane.getViewModel().actionInParentOnOpen();
 
@@ -93,12 +96,20 @@ public class ViewHandler {
         }
     }
 
+    private AbstractViewModel<?> getViewModel(Views viewType) {
+        return viewType.viewModelGetter.apply(viewModelProvider);
+    }
+
     private static Parent load(FXMLLoader fxmlLoader) {
         try {
             return fxmlLoader.load();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static FXMLLoader getLoader(Views view) {
+        return new FXMLLoader(LogInView.class.getResource(view.fxmlFileName + ".fxml"));
     }
 
     private void anchorPaneInParent(Node child) {

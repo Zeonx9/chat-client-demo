@@ -1,7 +1,7 @@
 package com.ade.chatclient.view;
 
-import com.ade.chatclient.application.AbstractDialog;
-import com.ade.chatclient.application.EmptyDialogModel;
+import com.ade.chatclient.application.structure.AbstractDialog;
+import com.ade.chatclient.application.structure.EmptyDialogModel;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.GroupChatInfo;
 import com.ade.chatclient.domain.User;
@@ -26,10 +26,7 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogMo
      * Вызывает метод инициализации из абстрактного класса, а так же устанавливает все значения в поля интерфейса диалогового окна
      * @param chat - объект класса Chat - беседа, информацию о которой показывает диалоговое окно
      */
-    public void init(Chat chat) {
-        super.init(new EmptyDialogModel<>());
-        setTitle("Group info");
-
+    public void setChat(Chat chat) {
         groupInfo.setText("Group info     '" + chat.getChatName(null) + "'");
         membersCount.setText(chat.getMembers().size() + " members");
         listMembers.getItems().setAll(chat.getMembers());
@@ -37,6 +34,16 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogMo
     }
 
     public static GroupInfoDialog getInstance(){
-        return AbstractDialog.getInstance(GroupInfoDialog.class, "group-info-dialog-view.fxml");
+        GroupInfoDialog instance = AbstractDialog.getInstance(GroupInfoDialog.class, "group-info-dialog-view.fxml");
+        instance.init(new EmptyDialogModel<>());
+        return instance;
+    }
+
+    @Override
+    protected void initialize() {}
+
+    @Override
+    protected String getTitleString() {
+        return "Group info";
     }
 }

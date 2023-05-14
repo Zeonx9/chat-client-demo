@@ -1,6 +1,6 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.application.AbstractDialogModel;
+import com.ade.chatclient.application.structure.AbstractDialogModel;
 import com.ade.chatclient.domain.GroupChatInfo;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.GroupRequest;
@@ -99,14 +99,5 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
      */
     public static ListCell<User> getSelectedUsersCellFactory() {
         return new SelectedUsersCellFactory();
-    }
-
-    /**
-     * Метод срабатывает при нажатии на кнопку создания новой беседы
-     * @return GroupRequest - набор данных для дальнейшего запроса на создание беседы
-     */
-    @Override
-    public GroupRequest onOkClicked() {
-        return resultConverter(ButtonType.OK);
     }
 }

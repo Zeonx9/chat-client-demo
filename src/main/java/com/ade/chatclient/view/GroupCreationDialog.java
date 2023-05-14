@@ -1,7 +1,7 @@
 package com.ade.chatclient.view;
 
-import com.ade.chatclient.application.AbstractDialog;
-import com.ade.chatclient.application.ViewModelUtils;
+import com.ade.chatclient.application.structure.AbstractDialog;
+import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.viewmodel.AllUsersViewModel;
@@ -25,11 +25,20 @@ public class GroupCreationDialog extends AbstractDialog<GroupRequest, GroupCreat
     @FXML private ListView<User> selectedUsers;
     @FXML private Button createGroupButton;
 
-    @Override
-    public void init(GroupCreationDialogModel viewModel) {
-        super.init(viewModel);
-        setTitle("Creation group");
+    public static GroupCreationDialog getInstance(){
+        return AbstractDialog.getInstance(GroupCreationDialog.class, "create-group-dialog-view.fxml");
+    }
 
+    /**
+     * Метод вызывает функцию, которая заполняет ListView всеми пользователями компании
+     * @param userList список всех пользователей компании, полученный из модели
+     */
+    public void populateUserList(List<User> userList) {
+        viewModel.populateUserList(userList);
+    }
+
+    @Override
+    protected void initialize() {
         groupName.textProperty().bindBidirectional(viewModel.getNameOfGroup());
         groupName.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onTextChanged));
         createGroupButton.disableProperty().bind(viewModel.getIsFilled());
@@ -47,15 +56,8 @@ public class GroupCreationDialog extends AbstractDialog<GroupRequest, GroupCreat
                 .addListener(ViewModelUtils.changeListener((viewModel::onAlreadySelectedClickListener)));
     }
 
-    public static GroupCreationDialog getInstance(){
-        return AbstractDialog.getInstance(GroupCreationDialog.class, "create-group-dialog-view.fxml");
-    }
-
-    /**
-     * Метод вызывает функцию, которая заполняет ListView всеми пользователями компании
-     * @param userList список всех пользователей компании, полученный из модели
-     */
-    public void populateUserList(List<User> userList) {
-        viewModel.populateUserList(userList);
+    @Override
+    protected String getTitleString() {
+        return "Create a group";
     }
 }

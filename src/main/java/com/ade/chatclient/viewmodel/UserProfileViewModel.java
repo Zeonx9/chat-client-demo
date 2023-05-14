@@ -1,6 +1,7 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.application.*;
+import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.model.ClientModel;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
+import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
 import static com.ade.chatclient.application.Views.LOG_IN_VIEW;
 
 /**

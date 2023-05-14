@@ -1,4 +1,4 @@
-package com.ade.chatclient.application;
+package com.ade.chatclient.application.structure;
 
 
 import javafx.fxml.FXML;
@@ -10,35 +10,43 @@ import javafx.scene.control.DialogPane;
 
 import java.io.IOException;
 
+/**
+ * Класс, от которого наследуются все классы диалогов
+ * @param <T> тип возвращаемого из диалога результата
+ * @param <M> тип вьюмодели, который управлет этим диалоговым окном.
+ */
 public abstract class AbstractDialog<T, M extends AbstractDialogModel<T>> extends Dialog<T> {
     @FXML protected DialogPane dialogPane;
     protected M viewModel;
 
     /**
-     * Функция скрывает от пользователя кнопку close на диалоговом окне
-     */
-    private void makeButtonInvisible () {
-        Node closeButton = dialogPane.lookupButton(ButtonType.CLOSE);
-        closeButton.managedProperty().bind(closeButton.visibleProperty());
-        closeButton.setVisible(false);
-    }
-
-    /**
      * Метод инициализации диалогового окна: выполняет привязку Dialog и DialogModel, устанавливает ResultConverter и вызывает функцию, которая делает кнопку close невидимой
      * @param viewModel класс DialogModel, соответствующий типу диалогового окна
      */
-    public void init(M viewModel) {
+    public final void init(M viewModel) {
         this.viewModel = viewModel;
         setResultConverter(viewModel::resultConverter);
+        setTitle(getTitleString());
         makeButtonInvisible();
+        initialize();
     }
 
     /**
-     * Метод срабатывает при нажатии на кнопку в диалоговом окне и устанавливает результат работы диалога, вызывая соответствующий метод из DialogModel
+     * метод для обработки клика на кнопку OK
      */
-    public void onOkClicked() {
+    public final void onOkClicked() {
         setResult(viewModel.onOkClicked());
     }
+
+    /**
+     * производит binding всех необходимых property между диалогом и его вьюмоделью.
+     */
+    protected abstract void initialize();
+
+    /**
+     * предоставляет заголовок диалогового окна.
+     */
+    protected abstract String getTitleString();
 
     /**
      * Метод выполняет загрузку диалога из fxml файла
@@ -57,5 +65,11 @@ public abstract class AbstractDialog<T, M extends AbstractDialogModel<T>> extend
          C controller = loader.getController();
          controller.setDialogPane(pane);
          return controller;
+    }
+
+    private void makeButtonInvisible () {
+        Node closeButton = dialogPane.lookupButton(ButtonType.CLOSE);
+        closeButton.managedProperty().bind(closeButton.visibleProperty());
+        closeButton.setVisible(false);
     }
 }

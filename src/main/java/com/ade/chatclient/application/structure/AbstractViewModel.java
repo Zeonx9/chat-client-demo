@@ -1,5 +1,12 @@
-package com.ade.chatclient.application;
+package com.ade.chatclient.application.structure;
 
+import com.ade.chatclient.application.ViewHandler;
+
+/**
+ * Класс предназначенный для наследования классами вью-модел.
+ * Имеет ссылку на ViewHandler, для того, чтобы переключаться между представленями
+ * @param <M> класс модели, который используется внутри
+ */
 public class AbstractViewModel<M> {
     /**
      * объект управляющий переключениями вью

@@ -1,6 +1,6 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.application.AbstractViewModel;
+import com.ade.chatclient.application.structure.AbstractViewModel;
 import com.ade.chatclient.application.StartClientApp;
 import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.dtos.AuthRequest;

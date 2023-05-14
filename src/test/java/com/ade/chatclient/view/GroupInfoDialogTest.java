@@ -44,7 +44,7 @@ public class GroupInfoDialogTest {
             Thread.sleep(200);
         }
         underTest = loader.getController();
-        underTest.init(chat);
+        underTest.setChat(chat);
     }
 
     @Test

@@ -1,8 +1,10 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.application.AbstractViewModel;
+import com.ade.chatclient.application.structure.AbstractViewModel;
 import com.ade.chatclient.application.ViewHandler;
-import com.ade.chatclient.application.ViewModelUtils;
+import com.ade.chatclient.application.util.BottomScroller;
+import com.ade.chatclient.application.util.PaneSwitcher;
+import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.application.Views;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.model.ClientModel;
@@ -21,7 +23,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
+import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
 
 /**
  * Класс, связывающий model c ChatPageView.
@@ -37,8 +39,8 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final BooleanProperty infoButtonFocusProperty = new SimpleBooleanProperty(false);
     private final StringProperty selectedChatNameProperty = new SimpleStringProperty();
     private final DoubleProperty opacityProperty = new SimpleDoubleProperty(0);
-    private Runnable bottomScroller;
-    private Consumer<Views> paneSwitcher;
+    private BottomScroller<Message> scroller;
+    private PaneSwitcher paneSwitcher;
 
     public ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
@@ -58,7 +60,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
             messageListProperty.clear();
             messageListProperty.addAll(messages);
             selectedChatNameProperty.setValue(model.getSelectedChat().getChatName(model.getMyself().getId()));
-            bottomScroller.run();
+            scroller.scrollDown();
         }
 
         if (model.getSelectedChat().getIsPrivate()) opacityProperty.set(0);
@@ -74,43 +76,37 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
             @SuppressWarnings("unchecked")
             List<Message> selectedChatMessages = (List<Message>) event.getNewValue();
             messageListProperty.addAll(selectedChatMessages);
-            bottomScroller.run();
+            scroller.scrollDown();
         }
     }
 
-    public <T> void addBottomScroller(ListView<T> listView) {
-        bottomScroller = () -> {
-            synchronized (messageListProperty) {
-                if (!messageListProperty.isEmpty()) {
-                    listView.scrollTo(messageListProperty.size() - 1);
-                }
-            }
-        };
+    public void addBottomScroller(ListView<Message> listView) {
+        scroller = new BottomScroller<>(listView);
     }
 
     public void addPaneSwitcher(Pane placeHolder) {
-        paneSwitcher = viewType -> viewHandler.openPane(viewType, placeHolder);
+        paneSwitcher = new PaneSwitcher(viewHandler, placeHolder);
     }
 
     /**
      * Метод осуществляет переключение на вью со всеми чатами пользователя
      */
     public void openChatPane() {
-        paneSwitcher.accept(Views.ALL_CHATS_VIEW);
+        paneSwitcher.switchTo(Views.ALL_CHATS_VIEW);
     }
 
     /**
      * Метод осуществляет переключение на вью со всеми пользователями в компании
      */
     public void openUsersPane() {
-        paneSwitcher.accept(Views.ALL_USERS_VIEW);
+        paneSwitcher.switchTo(Views.ALL_USERS_VIEW);
     }
 
     /**
      * Метод осуществляет переключение на вью с личным кабинетом пользователя
      */
     public void openProfilePane() {
-        paneSwitcher.accept(Views.USER_PROFILE_VIEW);
+        paneSwitcher.switchTo(Views.USER_PROFILE_VIEW);
     }
 
     /**
@@ -173,9 +169,12 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
      * Метод осуществляет создание и открытие диалогового окна для просмотра информации о беседе
      */
     public void showDialog() {
-        if (model.getSelectedChat().getIsPrivate()) return;
+        if (model.getSelectedChat().getIsPrivate()) {
+            return;
+        }
+
         GroupInfoDialog dialog = GroupInfoDialog.getInstance();
-        dialog.init(model.getSelectedChat());
+        dialog.setChat(model.getSelectedChat());
         dialog.showAndWait();
     }
 }

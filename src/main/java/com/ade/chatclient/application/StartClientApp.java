@@ -18,6 +18,38 @@ public class StartClientApp {
     private static ViewModelProvider viewModelProvider;
 
     /**
+     * метод, который запрашивает адрес сервера приложения
+     * создает фабрики для компонентов приложения (модель, вью, вью-модель)
+     * передает управление на ViewHandler
+     * @param stage объект Stage, который получен от метода start в главном классе приложения
+     */
+    public static void start(Stage stage) {
+        System.out.println("Starting the application ...");
+
+        // создание фабрик для управления слоями приложения
+        ModelFactory modelFactory = new ModelFactory();
+        requestTunnelUrlAsync()
+                .thenAccept(modelFactory::injectServerUrl)
+                .handle((unused, throwable) -> {
+                    System.err.println(throwable.getMessage());
+                    return unused;
+                });
+
+        viewModelProvider = new ViewModelProvider(modelFactory);
+        ViewHandler viewHandler = new ViewHandler(stage, viewModelProvider);
+
+        // включает начальное вью
+        viewHandler.start();
+    }
+
+    /**
+     * останавливает запущенный фоновый поток.
+     */
+    public static void stop() {
+        viewModelProvider.getBackgroundService().stop();
+    }
+
+    /**
      * Асинхронно отправляет запрос к серверу ngrok и ставит в очередь метод по обработке
      * возвращенного ответа
      * @return CompletableFuture, который будет содержать строку с тунелем или выдаст ошибку
@@ -70,34 +102,5 @@ public class StartClientApp {
         System.out.println("Server is located at: " + url);
 
         return url;
-    }
-
-    /**
-     * метод, который запрашивает адрес сервера приложения
-     * создает фабрики для компонентов приложения (модель, вью, вью-модель)
-     * передает управление на ViewHandler
-     * @param stage объект Stage, который получен от метода start в главном классе приложения
-     */
-    public static void start(Stage stage) {
-        System.out.println("Starting the application ...");
-
-        // создание фабрик для управления слоями приложения
-        ModelFactory modelFactory = new ModelFactory();
-        requestTunnelUrlAsync()
-                .thenAccept(modelFactory::injectServerUrl)
-                .handle((unused, throwable) -> {
-                    System.err.println(throwable.getMessage());
-                    return unused;
-                });
-
-        viewModelProvider = new ViewModelProvider(modelFactory);
-        ViewHandler viewHandler = new ViewHandler(stage, viewModelProvider);
-
-        // включает начальное вью
-        viewHandler.start();
-    }
-
-    public static void stop() {
-        viewModelProvider.getBackgroundService().stop();
     }
 }

@@ -1,6 +1,6 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.application.AbstractViewModel;
+import com.ade.chatclient.application.structure.AbstractViewModel;
 import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.model.ClientModel;
@@ -20,7 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
+import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
 import static com.ade.chatclient.application.Views.ADMIN_VIEW;
 import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
 

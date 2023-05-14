@@ -1,7 +1,7 @@
 package com.ade.chatclient.view;
 
-import com.ade.chatclient.application.AbstractView;
-import com.ade.chatclient.application.ListenerFactoryAllChecked;
+import com.ade.chatclient.application.structure.AbstractView;
+import com.ade.chatclient.application.util.ListenerFactoryAllChecked;
 import com.ade.chatclient.viewmodel.AdminViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -24,9 +24,7 @@ public class AdminView extends AbstractView<AdminViewModel> {
     @FXML private Label resultPassword;
 
     @Override
-    public void init(AdminViewModel viewModel) {
-        super.init(viewModel);
-
+    protected void initialize() {
         var listenerFactory = new ListenerFactoryAllChecked(viewModel::onCheckPassed, viewModel::onCheckFailed);
         nameAndSurnameEmp.textProperty().addListener(listenerFactory.newListener(viewModel::checkNameChangedText));
         birthdateEmp.valueProperty().addListener(listenerFactory.newListener(viewModel::checkDataChanged));
@@ -42,7 +40,6 @@ public class AdminView extends AbstractView<AdminViewModel> {
 
         resultLogin.textProperty().bind(viewModel.getResultLoginProperty());
         resultPassword.textProperty().bind(viewModel.getResultPasswordProperty());
-
     }
 
     /**

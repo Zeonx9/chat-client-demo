@@ -1,6 +1,6 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.application.AbstractDialogModel;
+import com.ade.chatclient.application.structure.AbstractDialogModel;
 import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 import javafx.beans.property.BooleanProperty;
@@ -57,14 +57,5 @@ public class ChangingPasswordDialogModel extends AbstractDialogModel<ChangePassw
         }
         AuthRequest info = AuthRequest.builder().password(curPassword.getValue()).build();
         return ChangePasswordRequest.builder().authRequest(info).newPassword(newPassword.getValue()).build();
-    }
-
-    /**
-     * Метод срабатывает при нажатии на кнопку смены пароля и передает тип закрытия диалогового окна ОК
-     * @return ChangePasswordRequest - содержит данные для смены пароля
-     */
-    @Override
-    public ChangePasswordRequest onOkClicked() {
-        return resultConverter(ButtonType.OK);
     }
 }

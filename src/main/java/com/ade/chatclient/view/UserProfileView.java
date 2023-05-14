@@ -1,6 +1,6 @@
 package com.ade.chatclient.view;
 
-import com.ade.chatclient.application.AbstractView;
+import com.ade.chatclient.application.structure.AbstractView;
 import com.ade.chatclient.viewmodel.UserProfileViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -14,10 +14,9 @@ public class UserProfileView extends AbstractView<UserProfileViewModel> {
     @FXML private Label userName;
     @FXML private Label companyName;
     @FXML private Label passwordResultMessage;
-    @Override
-    public void init(UserProfileViewModel viewModel) {
-        super.init(viewModel);
 
+    @Override
+    protected void initialize() {
         fullName.textProperty().bind(viewModel.getFullNameProperty());
         birthDate.textProperty().bind(viewModel.getBirthDateProperty());
         userName.textProperty().bind(viewModel.getUserNameProperty());

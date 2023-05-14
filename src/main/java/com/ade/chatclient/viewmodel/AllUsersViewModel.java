@@ -1,6 +1,6 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.application.AbstractChildViewModel;
+import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
@@ -12,8 +12,8 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
 import lombok.Getter;
 
-import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
-import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
+import static com.ade.chatclient.application.util.ViewModelUtils.listReplacer;
+import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
 import static com.ade.chatclient.application.Views.ALL_CHATS_VIEW;
 
 /**

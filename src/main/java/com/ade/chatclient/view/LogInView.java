@@ -1,9 +1,9 @@
 package com.ade.chatclient.view;
 
-import com.ade.chatclient.application.AbstractView;
-import com.ade.chatclient.application.ListenerFactoryAllChecked;
+import com.ade.chatclient.application.structure.AbstractView;
+import com.ade.chatclient.application.util.ListenerFactoryAllChecked;
 import com.ade.chatclient.viewmodel.LogInViewModel;
-import com.ade.chatclient.application.ViewModelUtils;
+import com.ade.chatclient.application.util.ViewModelUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,16 +23,8 @@ public class LogInView extends AbstractView<LogInViewModel> {
     @FXML private Label errorMessageLabel;
     @FXML private Button loginButton;
 
-    /**
-     * метод, который выполняет инициализацию вместо конструктора,
-     * так как объекты вью получаться при подключении не через конструктор, а из FXMLLoader
-     * выполняет binding модели и вью модели
-     * @param logInViewModel ссылка на вью-модель, которая управляет этим вью
-     */
     @Override
-    public void init(LogInViewModel logInViewModel) {
-        super.init(logInViewModel);
-
+    protected void initialize() {
         var listenerFactory = new ListenerFactoryAllChecked(viewModel::onCheckPassed, viewModel::onCheckFailed);
         loginTextField.textProperty().addListener(listenerFactory.newListener(viewModel::checkChangedText));
         passwordField.textProperty().addListener(listenerFactory.newListener(viewModel::checkChangedText));
