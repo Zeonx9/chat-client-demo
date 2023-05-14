@@ -13,6 +13,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
 
+/**
+ * Класс выступает в роли контроллера для основного окна приложения, управляет поведением и отображением элементов на экране
+ */
 public class ChatPageView extends AbstractView<ChatPageViewModel> {
     @FXML private Button showUserProfileButton;
     @FXML private Button showChatsButton;

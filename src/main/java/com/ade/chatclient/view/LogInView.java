@@ -12,6 +12,9 @@ import javafx.scene.control.TextField;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Класс выступает в роли контроллера для окна авторизации, управляет поведением и отображением элементов на экране
+ */
 @Getter
 @Setter
 public class LogInView extends AbstractView<LogInViewModel> {

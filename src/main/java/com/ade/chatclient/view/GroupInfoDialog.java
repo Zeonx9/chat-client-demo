@@ -12,6 +12,9 @@ import javafx.scene.control.ListView;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Класс выступает в роли контроллера для диалогового окна с информацией о беседе, управляет поведением и отображением элементов на экране
+ */
 @Setter
 @Getter
 public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogModel<GroupChatInfo>> {

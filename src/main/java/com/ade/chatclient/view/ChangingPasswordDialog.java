@@ -12,6 +12,9 @@ import javafx.scene.control.PasswordField;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Класс выступает в роли контроллера для диалогового окна для смены пароля, управляет поведением и отображением элементов на экране
+ */
 @Setter
 @Getter
 public class ChangingPasswordDialog extends AbstractDialog<ChangePasswordRequest, ChangingPasswordDialogModel> {

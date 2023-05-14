@@ -5,6 +5,9 @@ import com.ade.chatclient.viewmodel.UserProfileViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
+/**
+ * Класс выступает в роли контроллера для панели личного кабинета пользователя, управляет поведением и отображением элементов на экране
+ */
 public class UserProfileView extends AbstractView<UserProfileViewModel> {
     @FXML private Label fullName;
     @FXML private Label birthDate;

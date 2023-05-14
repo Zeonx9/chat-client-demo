@@ -9,6 +9,9 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+/**
+ * Класс выступает в роли контроллера для панели админа, управляет поведением и отображением элементов на экране
+ */
 public class AdminView extends AbstractView<AdminViewModel> {
     @FXML private Label adminName;
     @FXML private Label adminCompany;

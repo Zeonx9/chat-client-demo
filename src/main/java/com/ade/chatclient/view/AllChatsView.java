@@ -10,6 +10,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import lombok.Getter;
 
+/**
+ * Класс выступает в роли контроллера для панели с чатами, управляет поведением и отображением элементов на экране
+ */
 @Getter
 public class AllChatsView extends AbstractView<AllChatsViewModel> {
     @FXML private TextField searchText;

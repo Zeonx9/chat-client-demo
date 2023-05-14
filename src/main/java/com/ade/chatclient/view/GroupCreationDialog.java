@@ -14,6 +14,9 @@ import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
 
+/**
+ * Класс выступает в роли контроллера для диалогового окна для создания бемеды, управляет поведением и отображением элементов на экране
+ */
 @Getter
 @Setter
 public class GroupCreationDialog extends AbstractDialog<GroupRequest, GroupCreationDialogModel> {

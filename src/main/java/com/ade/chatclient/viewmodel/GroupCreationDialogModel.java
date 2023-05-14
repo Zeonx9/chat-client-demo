@@ -46,6 +46,10 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
         selectedUsersListProperty.add(user);
     }
 
+    /**
+     * Метод записывает выбранного пользователя в переменную для дальнейшего удаления
+     * @param user выбранный пользователь, который должен быть удален из списка участников чата
+     */
     public void onAlreadySelectedClickListener(User user) {
         if (user != null) {
             selected = user;
@@ -90,6 +94,9 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
         return request;
     }
 
+    /**
+     * @return фабрику ячеек для листа пользователей, которые выбраны участниками будущего чата
+     */
     public static ListCell<User> getSelectedUsersCellFactory() {
         return new SelectedUsersCellFactory();
     }
