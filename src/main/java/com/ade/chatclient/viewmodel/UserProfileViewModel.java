@@ -31,15 +31,24 @@ public class UserProfileViewModel extends AbstractChildViewModel<ClientModel> {
         model.addListener("passwordChangeResponded", runLaterListener(this::showRequestResult));
     }
 
+    /**
+     * Метод устанавливает сообщение о результате смены пароля
+     */
     private void showRequestResult(PropertyChangeEvent event) {
         resultMessageProperty.set((String) event.getNewValue());
     }
 
+    /**
+     * Метод вызывается при переключении на UserProfileView, обновляет состояние боковых кнопок
+     */
     @Override
     public void actionInParentOnOpen() {
         viewHandler.getViewModelProvider().getChatPageViewModel().changeButtonsParam(0);
     }
 
+    /**
+     * Метод устанавливает получает из модели объект класса User пользователя и устанавливает личную информацию на экран
+     */
     public void setUserPersonalData() {
         User me = model.getMyself();
 
@@ -49,6 +58,9 @@ public class UserProfileViewModel extends AbstractChildViewModel<ClientModel> {
         companyNameProperty.set(model.getCompany().getName());
     }
 
+    /**
+     * Метод создает и инициализирует диалоговое окно для смены пароля, отображает его на экране, после чего собирает данные от пользователя и отправляет их в модель для смены пароля
+     */
     public void showDialogAndWait() {
         resultMessageProperty.set("");
         ChangingPasswordDialog dialog = ChangingPasswordDialog.getInstance();
@@ -58,6 +70,10 @@ public class UserProfileViewModel extends AbstractChildViewModel<ClientModel> {
         answer.ifPresent(model::changePassword);
     }
 
+    /**
+     * @param date дата рождения пользователя
+     * @return дату рождения в формате "dd.MM.yyyy"
+     */
     private String formatDOB(LocalDate date) {
         if (date == null) {
             return "-";
@@ -65,6 +81,10 @@ public class UserProfileViewModel extends AbstractChildViewModel<ClientModel> {
         return date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
+    /**
+     * @param user объект класса User - пользователь
+     * @return имя и фамилию пользователя, если она указана
+     */
     private String prepareFullName(User user) {
         String raw = thisOrEmpty(user.getRealName()) + " " + thisOrEmpty(user.getSurname());
         if (raw.isBlank()) {
@@ -77,6 +97,9 @@ public class UserProfileViewModel extends AbstractChildViewModel<ClientModel> {
         return value != null ? value : "";
     }
 
+    /**
+     * Метод запускает процесс вызхода из аккаунта, очищает данные о пользователе в модели, останавливает работу BackgroundService и открывает окно входа в аккаунт
+     */
     public void logOut() {
         model.clearModel();
         StartClientApp.stop();

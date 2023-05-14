@@ -35,12 +35,19 @@ public class AdminViewModel extends AbstractViewModel<ClientModel> {
         return model.getCompany().getName();
     }
 
+    /**
+     * Функция запускает процесс выхода из аккаунта, очищает данные о пользователе в модели, останавливает BackgroundService и открывает окно входа в аккаунт
+     */
     public void logOut() {
         model.clearModel();
         StartClientApp.stop();
         viewHandler.openView(LOG_IN_VIEW);
     }
 
+    /**
+     * Функция получает введенные данные от админа, формирует и отправляет данные для регистрации пользователя в модель
+     * @return строку - результат выполнения
+     */
     public String register() {
         AuthRequest authRequest = new AuthRequest();
         authRequest.setLogin(empLoginProperty.getValue());
@@ -61,14 +68,25 @@ public class AdminViewModel extends AbstractViewModel<ClientModel> {
         return "Result: Successfully!";
     }
 
+    /**
+     * Обновляет состояние кнопки регистрации и делает ее активной, если данные во всех полях введены корректно
+     */
     public void onCheckPassed() {
         disableProperty.set(false);
     }
 
+    /**
+     * Обновляет состояние кнопки регистрации и делает ее неактивной, если данные в полях введены неверно
+     */
     public void onCheckFailed() {
         disableProperty.set(true);
     }
 
+    /**
+     * Метод проверяет введено ли имя пользователя
+     * @param newValue строка содержащая введенную в TextField информацию
+     * @return переменную типа Boolean, означающую, пустое ли текстовое поле
+     */
     public Boolean checkNameChangedText(String newValue) {
         if (newValue == null) {
             return false;
@@ -76,12 +94,23 @@ public class AdminViewModel extends AbstractViewModel<ClientModel> {
         return !newValue.isBlank();
     }
 
+    /**
+     * Метод проверяет введен ли логин для пользователя
+     * @param newValue строка содержащая введенную в TextField информацию
+     * @return переменную типа Boolean, означающую, пустое ли текстовое поле
+     */
     public Boolean checkLoginChangedText(String newValue) {
         if (newValue == null) {
             return false;
         }
         return !newValue.isBlank() && !newValue.contains(" ");
     }
+
+    /**
+     * Метод проверяет коректно ли введена дата рождения пользователя
+     * @param localDate LocalDate содержащая введенную в DataPicker информацию
+     * @return переменную типа Boolean, означающую, введена ли и корректна ли дата рождения
+     */
     public Boolean checkDataChanged(LocalDate localDate) {
         if (localDate == null) {
             return false;

@@ -20,6 +20,10 @@ public class ChangingPasswordDialog extends AbstractDialog<ChangePasswordRequest
     @FXML private Button changeButton;
     @FXML private Label errorMessage;
 
+    /**
+     * Вызывает метод инициализации из абстрактного класса, а так же связывает все поля интерфейса диалогового окна с соответствующими property в ChangingPasswordDialogModel
+     * @param viewModel класс DialogModel, соответствующий типу диалогового окна
+     */
     @Override
     public void init(ChangingPasswordDialogModel viewModel) {
         super.init(viewModel);

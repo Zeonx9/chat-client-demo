@@ -19,6 +19,10 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogMo
     @FXML private Label membersCount;
     @FXML private ListView<User> listMembers;
 
+    /**
+     * Вызывает метод инициализации из абстрактного класса, а так же устанавливает все значения в поля интерфейса диалогового окна
+     * @param chat - объект класа Chat - беседа, информацию о которой показывает диалоговое окно
+     */
     public void init(Chat chat) {
         super.init(new EmptyDialogModel<>());
         setTitle("Group info");

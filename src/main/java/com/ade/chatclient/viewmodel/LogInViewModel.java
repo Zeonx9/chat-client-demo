@@ -80,6 +80,9 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
         }
     }
 
+    /**
+     * Метод собирает введенные пользователем данные и отправляет их в модель для входа в аккаунт, после чего либо открывает соответствующее View (пользователя или админа), либо выводит сообщение о ошибке авторизации
+     */
     public void authorize() {
         boolean success = model.authorize(loginTextProperty.get(), passwordProperty.get());
         if (!success) {
@@ -109,6 +112,11 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
         disableButtonProperty.set(newValue.isBlank() || newValue.contains(" "));
     }
 
+    /**
+     * Метод проверяет, пустая ли строка для ввода
+     * @param newValue данные, введенные пользователем в TextField
+     * @return значение типа Boolean
+     */
     public Boolean checkChangedText(String newValue) {
         if (newValue == null) {
             return false;
@@ -116,10 +124,16 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
         return !newValue.isBlank() && !newValue.contains(" ");
     }
 
+    /**
+     * Если хотябы одно поле для ввода пустое, то кнопка авторизации неактивна
+     */
     public void onCheckFailed() {
         disableButtonProperty.set(true);
     }
 
+    /**
+     * Если поля логин и пароль заполнены, то кнопка авторизации активна
+     */
     public void onCheckPassed() {
         disableButtonProperty.set(false);
     }

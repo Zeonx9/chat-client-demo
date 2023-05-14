@@ -42,10 +42,17 @@ public class AdminView extends AbstractView<AdminViewModel> {
 
     }
 
+    /**
+     * Функция запускает процесс выхода из аккаунта,
+     * срабатывает при нажатии на кнопку Log Out
+     */
     public void onLogOutClicked() {
         viewModel.logOut();
     }
 
+    /**
+     * Метод создает запрос на регистрацию нового пользователя в компании и отображает на View результат и данные от аккаунта нового пользователя в случае успешного ответа от сервера, срабатывает при нажатии на кнопку Register an employee
+     */
     public void onRegisterEmpClicked() { result.setText(viewModel.register());
     }
 }

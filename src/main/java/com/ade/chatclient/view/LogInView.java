@@ -44,6 +44,10 @@ public class LogInView extends AbstractView<LogInViewModel> {
         passwordField.setOnKeyPressed(ViewModelUtils.enterKeyHandler(viewModel::authorize));
     }
 
+    /**
+     * Метод, который вызывает функцию авторизации пользователя в системе и переключения на ChatPage или на AdminView в зависимости от аккаунта, под которым заходит пользователь
+     * Срабатывает по нажатию на кнопку Log In
+     */
     @FXML
     protected void onLoginClick() {
         viewModel.authorize();

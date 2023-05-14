@@ -48,6 +48,10 @@ public class GroupCreationDialog extends AbstractDialog<GroupRequest, GroupCreat
         return AbstractDialog.getInstance(GroupCreationDialog.class, "create-group-dialog-view.fxml");
     }
 
+    /**
+     * Метод вызывает функцию, которая заполняет ListView всеми пользователями компании
+     * @param userList список всех пользователей компании, полученный из модели
+     */
     public void populateUserList(List<User> userList) {
         viewModel.populateUserList(userList);
     }

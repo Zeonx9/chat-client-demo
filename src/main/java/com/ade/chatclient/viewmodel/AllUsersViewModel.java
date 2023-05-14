@@ -25,12 +25,19 @@ public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
         model.addListener("AllUsers", runLaterListener(listReplacer(usersListProperty)));
     }
 
+    /**
+     * Метод вызывается при переключении на AllUsersView, обновляет состояние боковых кнопок и список пользователей
+     */
     @Override
     public void actionInParentOnOpen() {
         viewHandler.getViewModelProvider().getChatPageViewModel().changeButtonsParam(1);
         model.getAllUsersAfterSearching();
     }
 
+    /**
+     * Метод срабатывает при выборе пользователя, переключает на окно с чатами и открывает диалог с данным человеком
+     * @param newValue объект класса User - выбранный пользователь
+     */
     public void onSelectedItemChange(User newValue) {
         if (newValue == null) {
             return;

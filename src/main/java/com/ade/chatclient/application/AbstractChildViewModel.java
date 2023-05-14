@@ -8,6 +8,11 @@ public class AbstractChildViewModel<M> extends AbstractViewModel<M> {
      */
     protected Pane placeHolder;
 
+    /**
+     * Вызывает метод инициализации ViewModel в абстрактном классе
+     * @param viewHandler объект управляющий переключениями вью
+     * @param model модель, является источником данных
+     */
     public AbstractChildViewModel(ViewHandler viewHandler, M model) {
         super(viewHandler, model);
     }

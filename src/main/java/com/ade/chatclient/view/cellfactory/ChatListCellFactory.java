@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Фабрика ячеек списка чатов, предназначена для генерации и настройки ячеек в ListView, определяет, как они будут выглядеть для дальнейшей автоматической генерации
+ */
 public class ChatListCellFactory extends ListCell<Chat> {
     private Long selfId;
     @FXML private AnchorPane layout;
@@ -22,6 +25,11 @@ public class ChatListCellFactory extends ListCell<Chat> {
         this.selfId = selfId;
     }
 
+    /**
+     * Метод заполняет все значения в полях ячейки, а так же устанавливает layout в качетсве графики - AnchorPane, в котором описан интерфейс одной ячейки
+     * @param item объект класса Chat - чат
+     * @param empty переменная типа boolean, показывает, является ли ячейка в списке пустой
+     */
     @Override
     protected void updateItem(Chat item, boolean empty) {
         super.updateItem(item, empty);
@@ -47,6 +55,11 @@ public class ChatListCellFactory extends ListCell<Chat> {
         setGraphic(layout);
     }
 
+    /**
+     * Метод определяет название чата: для личного диалога возвращает имя собеседника, для беседы - ее название
+     * @param chat один из чатов
+     * @return строку, которая содержит имя чата
+     */
     private String prepareChatToBeShown(Chat chat) {
         if (chat.getGroup() != null) {
             return chat.getGroup().getName();
@@ -60,6 +73,11 @@ public class ChatListCellFactory extends ListCell<Chat> {
         return String.join(", ", memberNames);
     }
 
+    /**
+     * Метод определяет последнее сообщение в диалоге и подготавливает его для отображения в ячейке чата
+     * @param chat один из чатов
+     * @return обрезанный текст последнего сообщения в диалоге
+     */
     private String prepareLastMessage(Chat chat) {
         Message msg = chat.getLastMessage();
         if (msg == null) {

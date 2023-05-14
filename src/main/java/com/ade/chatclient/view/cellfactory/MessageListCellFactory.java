@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Фабрика ячеек списка сообщений, предназначена для генерации и настройки ячеек в ListView, определяет, как они будут выглядеть для дальнейшей автоматической генерации
+ */
 @RequiredArgsConstructor
 public class MessageListCellFactory extends ListCell<Message> {
     private Long selfId;
@@ -22,6 +25,11 @@ public class MessageListCellFactory extends ListCell<Message> {
         this.selfId = selfId;
     }
 
+    /**
+     * Метод заполняет все значения в полях ячейки, а так же устанавливает layout в качетсве графики - AnchorPane, в котором описан интерфейс одной ячейки
+     * @param item объект класса Message - сообщение
+     * @param empty переменная типа boolean, показывает, является ли ячейка в списке пустой
+     */
     @Override
     protected void updateItem(Message item, boolean empty) {
         super.updateItem(item, empty);
@@ -46,10 +54,19 @@ public class MessageListCellFactory extends ListCell<Message> {
         setGraphic(layout);
     }
 
+    /**
+     * @param msg объект класса Message - сообщение
+     * @return текст сообщения
+     */
     private String prepareMessageToBeShown(Message msg) {
         return msg.getText();
     }
 
+    /**
+     * Метод выполянет подготовку данных о сообщении
+     * @param msg объект класа Message - сообщение
+     * @return автора сообщения и дату и время его отправки в формате "HH:mm, dd.MM"
+     */
     private String prepareMessageDataToBeShown(Message msg) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm, dd.MM");
         return msg.getAuthor().getUsername() + ", " + msg.getDateTime().format(dtf);

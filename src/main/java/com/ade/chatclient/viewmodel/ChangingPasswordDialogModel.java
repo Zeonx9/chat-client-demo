@@ -19,12 +19,22 @@ public class ChangingPasswordDialogModel extends AbstractDialogModel<ChangePassw
     private final BooleanProperty isNewPasswordBlank = new SimpleBooleanProperty(true);
     private final StringProperty curPassword = new SimpleStringProperty();
     private final StringProperty newPassword = new SimpleStringProperty();
+
+    /**
+     * Метод проверяет, заполнено ли поле с текущим паролем пользователя
+     * @param newText строка, введенная пользователем в TextField
+     */
     public void onCurPasswordTextChanged(String newText) {
         if (newText == null) {
             newText = "";
         }
         isCurPasswordBlank.set(newText.isBlank());
     }
+
+    /**
+     * Метод проверяет, заполнено ли поле с новым паролем пользователя
+     * @param newText строка, введенная пользователем в TextField
+     */
     public void onNewPasswordTextChanged(String newText) {
         if (newText == null) {
             newText = "";
@@ -32,6 +42,11 @@ public class ChangingPasswordDialogModel extends AbstractDialogModel<ChangePassw
         isNewPasswordBlank.set(newText.isBlank());
     }
 
+    /**
+     * Метод собирает результат работы диалогового окна и создает запрос на смену пароля
+     * @param buttonType как было закрыто диалоговое окно: используя тип OK или CLOSE
+     * @return ChangePasswordRequest - содержит данные для смены пароля
+     */
     @Override
     public ChangePasswordRequest resultConverter(ButtonType buttonType) {
         if (buttonType != ButtonType.OK) {
@@ -41,6 +56,10 @@ public class ChangingPasswordDialogModel extends AbstractDialogModel<ChangePassw
         return ChangePasswordRequest.builder().authRequest(info).newPassword(newPassword.getValue()).build();
     }
 
+    /**
+     * Метод срабатывает при нажатии на кнопку смены пароля и передает тип закрытия диалогового окна ОК
+     * @return ChangePasswordRequest - содержит данные для смены пароля
+     */
     @Override
     public ChangePasswordRequest onOkClicked() {
         return resultConverter(ButtonType.OK);

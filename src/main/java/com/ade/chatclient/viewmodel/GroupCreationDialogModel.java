@@ -24,10 +24,18 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
     private final BooleanProperty isFilled = new SimpleBooleanProperty(true);
     private User selected;
 
+    /**
+     * Заполняет ListView всеми пользователями в компании
+     * @param userList список со всеми пользователями
+     */
     public void populateUserList(List<User> userList) {
         userListProperty.setAll(userList);
     }
 
+    /**
+     * Метод срабатывает при нажатии на пользователя для добавляния его в беседу и добавляет его в список к уже ыбранным пользователям
+     * @param user выбранный пользователь
+     */
     public void onNewMemberSelected(User user) {
         if (user == null || selectedUsersListProperty.contains(user)) {
             return;
@@ -42,6 +50,10 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
         }
     }
 
+    /**
+     * Метод, который проверяет, заполнено ли поле с названием группы
+     * @param newText информация, введенная пользователем в TextField
+     */
     public void onTextChanged(String newText) {
         if (newText == null) {
             newText = "";
@@ -49,6 +61,9 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
         isFilled.set(newText.isBlank());
     }
 
+    /**
+     * Метод срабатывает при нажатии на выбранного пользователя для его удаления из списка пользователей в будущей беседе
+     */
     public void onMouseClickedListener(MouseEvent evt) {
         if (selected != null) {
             selectedUsersListProperty.remove(selected);
@@ -56,6 +71,11 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
         }
     }
 
+    /**
+     * Метод собирает введенные пользователем данные и формирует GroupRequest для создания новой беседы
+     * @param buttonType как именно было закрыто диалоговое окно (ОК или CLOSE)
+     * @return GroupRequest - данные для запроса на создание нового группового чата
+     */
     @Override
     public GroupRequest resultConverter(ButtonType buttonType) {
         if (buttonType != ButtonType.OK) {
@@ -71,6 +91,10 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
         return new SelectedUsersCellFactory();
     }
 
+    /**
+     * Метод срабатывает при нажатии на кнопку создания новой беседы
+     * @return GroupRequest - набор данных для дальнейшего запроса на создание беседы
+     */
     @Override
     public GroupRequest onOkClicked() {
         return resultConverter(ButtonType.OK);

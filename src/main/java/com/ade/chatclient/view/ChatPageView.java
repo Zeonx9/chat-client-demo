@@ -47,25 +47,40 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         viewModel.openChatPane();
     }
 
+    /**
+     * Метод отображает на экране отправленное пользователем сообщение и создает запрос на его отправку, срабатывает при нажатии на кнопку со значком отправки сообщения
+     */
     @FXML
     protected void onSendButtonClicked() {
         viewModel.sendMessage();
     }
 
+    /**
+     * Метод вызывает функцию смены Pane внутри placeHolder на окно со всеми чатами пользователя
+     */
     @FXML
     protected void onShowChatsClicked() {
         viewModel.openChatPane();
     }
 
+    /**
+     * Метод вызывает функцию смены Pane внутри placeHolder на окно со всеми пользователями в компании
+     */
     @FXML
     protected void onShowUsersClicked() {
         viewModel.openUsersPane();
     }
 
+    /**
+     * Метод вызывает функцию смены Pane внутри placeHolder на окно с личным кабинетом пользователя и функциями его управления
+     */
     public void onShowUserProfileClicked() {
         viewModel.openProfilePane();
     }
 
+    /**
+     * Метод вызывает функцию открытия диалогового окна для просмотра информации о беседе, в которой пользователь сейчас находится
+     */
     public void onInfoButtonClicked() {
         viewModel.showDialog();
     }

@@ -24,10 +24,19 @@ public class UserProfileView extends AbstractView<UserProfileViewModel> {
         viewModel.setUserPersonalData();
     }
 
+    /**
+     * Метод вызывает функцию открытия диалогового окна для смены пароля, собирает данные от пользователя
+     * и отправляет запрос на изменения пароля,
+     * срабатывает по нажатию на кнопку Change password
+     */
     public void onChangeButtonClicked() {
         viewModel.showDialogAndWait();
     }
 
+    /**
+     * Функция запускает процесс выхода из аккаунта,
+     * срабатывает при нажатии на кнопку Log Out
+     */
     public void onLogOutButtonClicked() {
         viewModel.logOut();
     }

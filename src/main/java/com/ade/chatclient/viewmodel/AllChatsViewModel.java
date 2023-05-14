@@ -83,12 +83,19 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         }
     }
 
+    /**
+     * Метод вызывается при переключении на AllChatsView, обновляет состояние боковых кнопок и список чатов
+     */
     @Override
     public void actionInParentOnOpen() {
         viewHandler.getViewModelProvider().getChatPageViewModel().changeButtonsParam(2);
         model.getMyChatsAfterSearching();
     }
 
+    /**
+     * Загружает фабрику ячеек для чатов, используя ChatListCellFactory и fxml файл с описанием интерфейса одной ячейки
+     * @return ChatListCellFactory - фабрика ячеек для чатов
+     */
     public ListCell<Chat> getChatListCellFactory() {
         ChatListCellFactory factory = ViewModelUtils.loadCellFactory(
                 ChatListCellFactory.class,
@@ -99,6 +106,9 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         return factory;
     }
 
+    /**
+     * Метод создает и запукает диалоговое окно для создания новой беседы, после чего полуает результат работы диалогового окна и отправляет данные в модель для создания нового группового чата
+     */
     public void showDialogAndWait() {
         GroupCreationDialog dialog = GroupCreationDialog.getInstance();
         dialog.init(new GroupCreationDialogModel());
@@ -125,6 +135,9 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         }
     }
 
+    /**
+     * Метод срабатывающий при нажатии на ячейку ListView со всеми чатами пользователя, осужествляет выбор этого чата для дальнейшего отображения истории сообщений из него
+     */
     public void onMouseClickedListener(MouseEvent mouseEvent) {
         @SuppressWarnings("unchecked")
         Chat changedChat = ((ListView<Chat>) mouseEvent.getSource()).getSelectionModel().getSelectedItem();
@@ -135,10 +148,14 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         model.setSelectChat(changedChat);
     }
 
+
     public void addSelector(ListView<Chat> listView) {
         selector = new ListViewSelector<>(listView);
     }
 
+    /**
+     * Метод для проигрывания звука уведомления о новом сообщении
+     */
     private void playSound(){
         mediaPlayer.seek(Duration.ZERO);
         mediaPlayer.play();

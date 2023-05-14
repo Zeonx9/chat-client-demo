@@ -29,6 +29,9 @@ public class AllChatsView extends AbstractView<AllChatsViewModel> {
         createGroupButton.setFocusTraversable(false);
     }
 
+    /**
+     * Метод вызывает функцию открытия диалогового окна для создания нового чата, после чего отправляет вызывает функцию создания беседы в Model, срабатывает при нажатии на кноку Create Group
+     */
     @FXML protected void onNewChatClicked() {
         viewModel.showDialogAndWait();
     }

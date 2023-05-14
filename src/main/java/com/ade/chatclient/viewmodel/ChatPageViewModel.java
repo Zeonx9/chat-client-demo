@@ -80,16 +80,30 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         paneSwitcher = viewType -> viewHandler.openPane(viewType, placeHolder);
     }
 
+    /**
+     * Метод осуществляет переключение на вью со всеми чатами пользователя
+     */
     public void openChatPane() {
         paneSwitcher.accept(Views.ALL_CHATS_VIEW);
     }
+
+    /**
+     * Метод осуществляет переключение на вью со всеми пользователями в компании
+     */
     public void openUsersPane() {
         paneSwitcher.accept(Views.ALL_USERS_VIEW);
     }
+
+    /**
+     * Метод осуществляет переключение на вью с личным кабинетом пользователя
+     */
     public void openProfilePane() {
         paneSwitcher.accept(Views.USER_PROFILE_VIEW);
     }
 
+    /**
+     * Метод отправляет введенное пользователем сообщение, если оно длинное, то делит его на части
+     */
     public void sendMessage() {
         if (Objects.equals(messageTextProperty.getValue(), null) || messageTextProperty.get().isBlank()) {
             return;
@@ -120,12 +134,20 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         messageTextProperty.set("");
     }
 
+    /**
+     * Функция изменяет состояние кнопок на боковой панели, в зависимости от того, какое вью открыто
+     * @param index номер вью, на которое пользователь перешел
+     */
     public void changeButtonsParam(Integer index) {
         showUserProfileDisabled.set(index == 0);
         showUsersButtonDisabled.set(index == 1);
         showChatsButtonDisabled.set(index == 2);
     }
 
+    /**
+     * Загружает фабрику ячеек для сообщений, используя MessageListCellFactory и fxml файл с описанием интерфейса одной ячейки
+     * @return MessageListCellFactory - фабрика ячеек для сообщений
+     */
     public ListCell<Message> getMessageCellFactory() {
         MessageListCellFactory factory = ViewModelUtils.loadCellFactory(
                 MessageListCellFactory.class,
@@ -135,6 +157,9 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         return factory;
     }
 
+    /**
+     * Метод осуществляет создание и открытие диалогового окна для просмотра информации о беседе
+     */
     public void showDialog() {
         if (model.getSelectedChat().getIsPrivate()) return;
         GroupInfoDialog dialog = GroupInfoDialog.getInstance();
