@@ -26,7 +26,7 @@ public class MessageListCellFactory extends ListCell<Message> {
     }
 
     /**
-     * Метод заполняет все значения в полях ячейки, а так же устанавливает layout в качетсве графики - AnchorPane, в котором описан интерфейс одной ячейки
+     * Метод заполняет все значения в полях ячейки, а так же устанавливает layout в качестве графики - AnchorPane, в котором описан интерфейс одной ячейки
      * @param item объект класса Message - сообщение
      * @param empty переменная типа boolean, показывает, является ли ячейка в списке пустой
      */
@@ -63,8 +63,8 @@ public class MessageListCellFactory extends ListCell<Message> {
     }
 
     /**
-     * Метод выполянет подготовку данных о сообщении
-     * @param msg объект класа Message - сообщение
+     * Метод выполняет подготовку данных о сообщении
+     * @param msg объект класса Message - сообщение
      * @return автора сообщения и дату и время его отправки в формате "HH:mm, dd.MM"
      */
     private String prepareMessageDataToBeShown(Message msg) {

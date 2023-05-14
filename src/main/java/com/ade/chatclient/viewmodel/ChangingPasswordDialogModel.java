@@ -11,6 +11,9 @@ import javafx.scene.control.ButtonType;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Класс отвечающий за окно для смены пароля, связан с ChangingPasswordDialog(view)
+ */
 @Getter
 @Setter
 public class ChangingPasswordDialogModel extends AbstractDialogModel<ChangePasswordRequest> {

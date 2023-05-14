@@ -21,7 +21,7 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogMo
 
     /**
      * Вызывает метод инициализации из абстрактного класса, а так же устанавливает все значения в поля интерфейса диалогового окна
-     * @param chat - объект класа Chat - беседа, информацию о которой показывает диалоговое окно
+     * @param chat - объект класса Chat - беседа, информацию о которой показывает диалоговое окно
      */
     public void init(Chat chat) {
         super.init(new EmptyDialogModel<>());

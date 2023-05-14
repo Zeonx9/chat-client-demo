@@ -23,6 +23,10 @@ import java.util.function.Consumer;
 
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 
+/**
+ * Класс, связывающий model c ChatPageView.
+ * Регистрирует 2 лисенера - "gotMessages" и "newMessagesInSelected"
+ */
 @Getter
 public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final ListProperty<Message> messageListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -43,6 +47,10 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         model.addListener("newMessagesInSelected", runLaterListener(this::newSelectedMessages));
     }
 
+    /**
+     * Заменяет messageListProperty новым значением event и прокручивает список в конец, отобразив на экране только последние сообщения
+     * @param event список сообщений из выбранного чата
+     */
     private void fillMessageHistory(PropertyChangeEvent event) {
         synchronized (messageListProperty) {
             @SuppressWarnings("unchecked")
@@ -57,6 +65,10 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         else opacityProperty.set(100);
     }
 
+    /**
+     * добавляет новое сообщение (отправленное или полученное) в messageListProperty
+     * @param event новое сообщение
+     */
     private void newSelectedMessages(PropertyChangeEvent event) {
         synchronized (messageListProperty) {
             @SuppressWarnings("unchecked")

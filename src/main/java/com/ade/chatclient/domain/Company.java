@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Класс, который представляет компанию авторизованного пользователя
+ */
 @Data
 @Builder
 @AllArgsConstructor

@@ -28,6 +28,7 @@ public class ClientModelImpl implements ClientModel{
     private List<Chat> myChats = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+
     public ClientModelImpl(AsyncRequestHandler handler) {
         System.out.println("model created!");
         this.handler = handler;
@@ -45,6 +46,7 @@ public class ClientModelImpl implements ClientModel{
         return authorizeRequest(login, password);
     }
 
+    @Override
     public void clearModel() {
         setMyself(null);
         setSelectedChat(null);
@@ -74,6 +76,7 @@ public class ClientModelImpl implements ClientModel{
         return true;
     }
 
+    @Override
     public AuthRequest registerUser(RegisterData data) {
         try {
             return handler.sendPost("/auth/register", data, AuthRequest.class, true).get();
@@ -83,12 +86,18 @@ public class ClientModelImpl implements ClientModel{
         }
     }
 
+    /**
+     * @param chats список чатов который присваивается списку чатов пользователя
+     */
     public void setMyChats(List<Chat> chats){
         synchronized (this) {
             myChats = chats;
         }
     }
 
+    /**
+     * @return возвращает значение списка чатов пользователя
+     */
     public List<Chat> getMyChats(){
         synchronized (this) {
             return myChats;
@@ -104,7 +113,6 @@ public class ClientModelImpl implements ClientModel{
 
         try {
             List<Chat> chats = handler.sendGet(String.format("/users/%d/chats", myself.getId()), TypeReferences.ListOfChat).get();
-            System.out.println(chats);
             changeSupport.firePropertyChange("gotChats", null, chats);
             setMyChats(chats);
         }
@@ -114,14 +122,12 @@ public class ClientModelImpl implements ClientModel{
 
     }
 
-    @Override
-    public void fetchChatMessages() {
+    private void fetchChatMessages() {
         if (getSelectedChat() == null) {
             return;
         }
 
         Chat copySelectedChat = getSelectedChat();
-        System.out.println(copySelectedChat.getId());
 
         handler.sendGet(
                     String.format("/chats/%d/messages", copySelectedChat.getId()),
@@ -147,16 +153,18 @@ public class ClientModelImpl implements ClientModel{
         fetchChatMessages();
     }
 
+    @Override
     public Chat getSelectedChat() {
         synchronized (this) {
             return selectedChat;
         }
     }
 
-    public void sortMyChats(Chat chat) {
+    private void sortMyChats(Chat chat) {
         getMyChats().remove(chat);
         getMyChats().add(0, chat);
     }
+
     @Override
     public void sendMessageToChat(String text) {
         if (selectedChat == null) {
@@ -285,15 +293,15 @@ public class ClientModelImpl implements ClientModel{
             }
         } catch (Exception e) {
             System.out.println("Fail to Create group");
-            throw new RuntimeException(e);
         }
     }
 
-
+    @Override
     public void getMyChatsAfterSearching() {
         changeSupport.firePropertyChange("gotChats", null, getMyChats());
     }
 
+    @Override
     public void getAllUsersAfterSearching() {
         changeSupport.firePropertyChange("AllUsers", null, getAllUsers());
     }
@@ -332,6 +340,7 @@ public class ClientModelImpl implements ClientModel{
                 .filter(user -> isRequested(user, request) && !user.equals(myself)).toList().isEmpty();
     }
 
+    @Override
     public List<Chat> searchChat(String request) {
         return getMyChats().stream()
                 .filter(chat -> getChatNameForSearch(chat).toLowerCase().startsWith(request.toLowerCase())
@@ -347,10 +356,12 @@ public class ClientModelImpl implements ClientModel{
                 || ((user.getSurname().toLowerCase() + " " + user.getRealName().toLowerCase()).startsWith(request));
     }
 
+    @Override
     public List<User> searchUser(String request) {
         return allUsers.stream().filter(user -> isRequested(user, request.toLowerCase())).toList();
     }
 
+    @Override
     public void changePassword(ChangePasswordRequest request) {
         request.getAuthRequest().setLogin(myself.getUsername());
         handler.sendPut("/auth/user/password", request, AuthResponse.class)

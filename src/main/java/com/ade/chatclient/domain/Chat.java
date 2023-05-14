@@ -20,14 +20,18 @@ public class Chat {
     private Message lastMessage;
     private int unreadCount;
 
+    /**
+     * метод увеличивает счётчик непрочитанных сообщений в чате
+     */
     public void incrementUnreadCount() {
         unreadCount++;
     }
 
-    public boolean isUnreadChat() {
-        return unreadCount > 0;
-    }
-
+    /**
+     * метод, который исключает имя человека с указанным id из названия чата
+     * @param excludedPersonId id юзера, которого не должно быть в названии чата
+     * @return строку с названием чата, которое содержит имена всех участников чата без юзера с excludedPersonId
+     */
     public String getChatName(Long excludedPersonId) {
         if (group != null) {
             return group.getName();

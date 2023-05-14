@@ -169,7 +169,7 @@ class ClientModelImplTest {
         ))
                 .willReturn(messages);
 
-        underTest.fetchChatMessages();
+        underTest.setSelectChat(Chat.builder().id(1L).build());
         verify(handler).sendGet("/chats/1/messages",
                 Map.of("userId", underTest.getMyself().getId().toString()),
                 TypeReferences.ListOfMessage

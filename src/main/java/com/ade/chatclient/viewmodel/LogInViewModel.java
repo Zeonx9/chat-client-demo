@@ -13,7 +13,6 @@ import javafx.beans.property.StringProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-
 import java.beans.PropertyChangeEvent;
 import java.io.Reader;
 import java.io.Writer;
@@ -21,11 +20,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 import static com.ade.chatclient.application.Views.ADMIN_VIEW;
 import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
 
+/**
+ * Класс, который связывает model с LogInView.
+ * Регистрирует лисенер - "savePassword"
+ */
 @Getter
 @Setter
 public class LogInViewModel extends AbstractViewModel<ClientModel> {
@@ -39,14 +41,24 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
         model.addListener("savePassword", runLaterListener(this::setSavedLoginAndPassword));
     }
 
+    /**
+     * сохраняет новый пароль после изменения пароля
+     * @param propertyChangeEvent новый пароль
+     */
     private void setSavedLoginAndPassword(PropertyChangeEvent propertyChangeEvent) {
         writeInJson(AuthRequest.builder().login(loginTextProperty.get()).password((String) propertyChangeEvent.getNewValue()).build());
     }
 
+    /**
+     * Если авторизация прошла успешно, то сохраняет пароль и логин в файл
+     */
     public void setSavedLoginAndPassword() {
         writeInJson(AuthRequest.builder().login(loginTextProperty.get()).password(passwordProperty.get()).build());
     }
 
+    /**
+     * сохраняет пароль и логин в login-password/package.json
+     */
     private void writeInJson(AuthRequest authRequest) {
         Path directoryPath = Paths.get("src/main/resources/com/ade/chatclient/login-password");
         if (!Files.exists(directoryPath)) {
@@ -67,6 +79,9 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
         }
     }
 
+    /**
+     * Заполняет поле логина и пароля данными из файла package.json, в котором сохранены данные последней авторизации
+     */
     public void fillSavedLoginAndPassword() {
         try(Reader reader = Files.newBufferedReader(Paths.
                 get("src/main/resources/com/ade/chatclient/login-password/package.json"))){
@@ -81,7 +96,7 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
     }
 
     /**
-     * Метод собирает введенные пользователем данные и отправляет их в модель для входа в аккаунт, после чего либо открывает соответствующее View (пользователя или админа), либо выводит сообщение о ошибке авторизации
+     * Метод собирает введенные пользователем данные и отправляет их в модель для входа в аккаунт, после чего: либо открывает соответствующее View (пользователя или админа), либо выводит сообщение об ошибке авторизации
      */
     public void authorize() {
         boolean success = model.authorize(loginTextProperty.get(), passwordProperty.get());
@@ -106,6 +121,10 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
         passwordProperty.set("");
     }
 
+    /**
+     * блокирует кнопку, если данные в поле логина/пароля пустые или содержат пробелы
+     * @param newValue измененные данные в TextField
+     */
     public void onTextChanged(String newValue) {
         if (newValue == null)
             newValue = "";
@@ -125,7 +144,7 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
     }
 
     /**
-     * Если хотябы одно поле для ввода пустое, то кнопка авторизации неактивна
+     * Если хотя бы одно поле для ввода пустое, то кнопка авторизации неактивна
      */
     public void onCheckFailed() {
         disableButtonProperty.set(true);

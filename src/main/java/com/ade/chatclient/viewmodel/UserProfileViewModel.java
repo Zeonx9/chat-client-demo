@@ -17,6 +17,10 @@ import java.util.Optional;
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 import static com.ade.chatclient.application.Views.LOG_IN_VIEW;
 
+/**
+ * Класс, который связывает model с UserProfileView
+ * Регистрирует лисенер - "passwordChangeResponded"
+ */
 @Getter
 public class UserProfileViewModel extends AbstractChildViewModel<ClientModel> {
     private final StringProperty fullNameProperty = new SimpleStringProperty();
@@ -32,7 +36,8 @@ public class UserProfileViewModel extends AbstractChildViewModel<ClientModel> {
     }
 
     /**
-     * Метод устанавливает сообщение о результате смены пароля
+     * Устанавливает сообщение о результате смены пароля
+     * @param event строка с результатом изменения пароля
      */
     private void showRequestResult(PropertyChangeEvent event) {
         resultMessageProperty.set((String) event.getNewValue());
@@ -47,7 +52,7 @@ public class UserProfileViewModel extends AbstractChildViewModel<ClientModel> {
     }
 
     /**
-     * Метод устанавливает получает из модели объект класса User пользователя и устанавливает личную информацию на экран
+     * Метод получает из модели объект класса User пользователя и устанавливает личную информацию на экран
      */
     public void setUserPersonalData() {
         User me = model.getMyself();
@@ -98,7 +103,7 @@ public class UserProfileViewModel extends AbstractChildViewModel<ClientModel> {
     }
 
     /**
-     * Метод запускает процесс вызхода из аккаунта, очищает данные о пользователе в модели, останавливает работу BackgroundService и открывает окно входа в аккаунт
+     * Метод запускает процесс выхода из аккаунта, очищает данные о пользователе в модели, останавливает работу BackgroundService и открывает окно входа в аккаунт
      */
     public void logOut() {
         model.clearModel();

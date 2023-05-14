@@ -14,7 +14,7 @@ public class UserListCellFactory extends ListCell<User> {
     private final ImageView imageView = new ImageView();
 
     /**
-     * Метод заполняет все значения в полях ячейки, а так же устанавливает imageView в качетсве графики - иконка пользователя
+     * Метод заполняет все значения в полях ячейки, а так же устанавливает imageView в качестве графики - иконка пользователя
      * @param item объект класса User - пользователь
      * @param empty переменная типа boolean, показывает, является ли ячейка в списке пустой
      */
@@ -39,7 +39,7 @@ public class UserListCellFactory extends ListCell<User> {
     /**
      *
      * @param user объект класса User - пользователь
-     * @return имя и фалимию пользователя
+     * @return имя и фамилию пользователя
      */
     private static String prepareUserToBeShown(User user) {
         return user.getRealName() + " " + user.getSurname();

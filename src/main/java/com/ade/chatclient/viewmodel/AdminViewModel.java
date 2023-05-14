@@ -13,6 +13,9 @@ import java.time.LocalDate;
 
 import static com.ade.chatclient.application.Views.LOG_IN_VIEW;
 
+/**
+ * Класс, который связывает model с AdminView
+ */
 @Getter
 public class AdminViewModel extends AbstractViewModel<ClientModel> {
     private final StringProperty empNameAndSurnameProperty = new SimpleStringProperty();
@@ -27,10 +30,16 @@ public class AdminViewModel extends AbstractViewModel<ClientModel> {
         super(viewHandler, model);
     }
 
+    /**
+     * @return имя авторизованного пользователя
+     */
     public String getMyName() {
         return model.getMyself().getUsername();
     }
 
+    /**
+     * @return компанию авторизованного пользователя
+     */
     public String getMyCompany() {
         return model.getCompany().getName();
     }
@@ -107,7 +116,7 @@ public class AdminViewModel extends AbstractViewModel<ClientModel> {
     }
 
     /**
-     * Метод проверяет коректно ли введена дата рождения пользователя
+     * Метод проверяет корректно ли введена дата рождения пользователя
      * @param localDate LocalDate содержащая введенную в DataPicker информацию
      * @return переменную типа Boolean, означающую, введена ли и корректна ли дата рождения
      */

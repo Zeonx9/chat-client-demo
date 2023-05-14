@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+/**
+ * Класс, который представляет информацию о групповом чате
+ */
 @Data
 @Builder
 @AllArgsConstructor

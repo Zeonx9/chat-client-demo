@@ -16,12 +16,17 @@ import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
 import static com.ade.chatclient.application.Views.ALL_CHATS_VIEW;
 
+/**
+ * Класс, который связывает model с AllUsersView.
+ * Регистрирует лисенер - "AllUsers"
+ */
 @Getter
 public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
     private final ListProperty<User> usersListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     public AllUsersViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
+        //заменяет значение usersListProperty новым значением (лист юзеров)
         model.addListener("AllUsers", runLaterListener(listReplacer(usersListProperty)));
     }
 
@@ -47,10 +52,18 @@ public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
         viewHandler.openPane(ALL_CHATS_VIEW, placeHolder);
     }
 
+    /**
+     * @return фабрику ячеек для юзеров
+     */
     public static ListCell<User> getUserListCellFactory() {
         return new UserListCellFactory();
     }
 
+    /**
+     * При изменении текста newText в поле для поиска вызывает
+     * метод model для поиска пользователей, если текст не пустой, иначе завершает поиск
+     * @param newText измененный текст
+     */
     public void onTextChanged(String newText) {
         usersListProperty.clear();
 

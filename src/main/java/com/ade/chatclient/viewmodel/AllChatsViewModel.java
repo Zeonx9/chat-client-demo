@@ -28,6 +28,11 @@ import java.util.Optional;
 
 import static com.ade.chatclient.application.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.application.ViewModelUtils.runLaterListener;
+
+/**
+ * Класс, который связывает model с AllChatsView.
+ * Регистрирует 4 лисенера - "gotChats", "NewChatCreated","selectedChatModified" и "chatReceivedMessages"
+ */
 @Getter
 @Setter
 public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
@@ -41,6 +46,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     public AllChatsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
 
+        //заменяет значение chatListProperty новым значением (лист чатов)
         model.addListener("gotChats", runLaterListener(listReplacer(chatListProperty)));
         model.addListener("NewChatCreated", runLaterListener(this::newChatCreated));
         model.addListener("selectedChatModified", runLaterListener(this::selectedChatModified));
@@ -48,6 +54,11 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     }
 
 
+    /**
+     * Перемещает чат в начало списка чатов. Если этот чат не открыт в данный момент, то воспроизводит звук уведомления.
+     * Если в чет пришло новое сообщения, а он в это момент не открыт, то счетчик новых сообщений увеличится
+     * @param event существующий чат
+     */
     private void raiseChat(PropertyChangeEvent event) {
         if (isSearching) return;
         synchronized (chatListProperty) {
@@ -62,6 +73,10 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         }
     }
 
+    /**
+     * Добавляет новый чат в начало списка чатов
+     * @param event новый чат
+     */
     private void newChatCreated(PropertyChangeEvent event) {
         if (isSearching) return;
         synchronized (chatListProperty) {
@@ -72,6 +87,10 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         }
     }
 
+    /**
+     * Обновляет счетчик непрочитанных сообщений для чата
+     * @param evt существующий чат
+     */
     private void selectedChatModified(PropertyChangeEvent evt) {
         if (isSearching) return;
         synchronized (chatListProperty) {
@@ -107,7 +126,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     }
 
     /**
-     * Метод создает и запукает диалоговое окно для создания новой беседы, после чего полуает результат работы диалогового окна и отправляет данные в модель для создания нового группового чата
+     * Метод создает и запускает диалоговое окно для создания новой беседы, после чего получает результат работы диалогового окна и отправляет данные в модель для создания нового группового чата
      */
     public void showDialogAndWait() {
         GroupCreationDialog dialog = GroupCreationDialog.getInstance();
@@ -121,6 +140,12 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         }
     }
 
+
+    /**
+     * При изменении текста newText в поле для поиска вызывает
+     * метод model для поиска чатов, если текст не пустой, иначе завершает поиск
+     * @param newText измененный текст
+     */
     public void onTextChanged(String newText) {
         if (newText == null || newText.isBlank()) {
             isSearching = false;
@@ -136,7 +161,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     }
 
     /**
-     * Метод срабатывающий при нажатии на ячейку ListView со всеми чатами пользователя, осужествляет выбор этого чата для дальнейшего отображения истории сообщений из него
+     * Метод срабатывающий при нажатии на ячейку ListView со всеми чатами пользователя, осуществляет выбор этого чата для дальнейшего отображения истории сообщений из него
      */
     public void onMouseClickedListener(MouseEvent mouseEvent) {
         @SuppressWarnings("unchecked")
@@ -149,6 +174,10 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     }
 
 
+    /**
+     * Создает объект класса ListViewSelector, который необходим для корректного отображения выбранного чата в лист ListView
+     * @param listView список чатов
+     */
     public void addSelector(ListView<Chat> listView) {
         selector = new ListViewSelector<>(listView);
     }

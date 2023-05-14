@@ -15,6 +15,9 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * Класс отвечающий за окно для создания группового чата, связан с GroupCreationDialog(view)
+ */
 @Getter
 @Setter
 public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> {
@@ -33,7 +36,7 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
     }
 
     /**
-     * Метод срабатывает при нажатии на пользователя для добавляния его в беседу и добавляет его в список к уже ыбранным пользователям
+     * Метод срабатывает при нажатии на пользователя для добавления его в беседу и добавляет его в список к уже выбранным пользователям
      * @param user выбранный пользователь
      */
     public void onNewMemberSelected(User user) {
