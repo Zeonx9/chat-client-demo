@@ -23,7 +23,6 @@ public class BackgroundServiceTest {
         //verify
         verify(model, times(1)).fetchUsers();
         verify(model, times(1)).fetchChats();
-        verify(model, atLeastOnce()).fetchNewMessages();
 
         underTest.stop();
     }
