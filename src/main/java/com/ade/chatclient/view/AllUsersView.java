@@ -1,28 +1,29 @@
 package com.ade.chatclient.view;
 
+
+import com.ade.chatclient.application.structure.AbstractView;
+import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.viewmodel.AllUsersViewModel;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import lombok.Getter;
 
-public class AllUsersView {
-    @FXML private Button showChatsButton;
-    @FXML private Button showUsersButton;
+/**
+ * Класс выступает в роли контроллера для панели с пользователями, управляет поведением и отображением элементов на экране
+ */
+@Getter
+public class AllUsersView extends AbstractView<AllUsersViewModel> {
+    @FXML private TextField searchText;
     @FXML private ListView<User> userListView;
-    private AllUsersViewModel viewModel;
 
-    public void init(AllUsersViewModel allUsersViewModel) {
-        this.viewModel = allUsersViewModel;
+    @Override
+    protected void initialize() {
+        searchText.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onTextChanged));
         userListView.itemsProperty().bind(viewModel.getUsersListProperty());
-        userListView.setCellFactory(param -> viewModel.getUserListCellFactory());
-        userListView.getSelectionModel().selectedItemProperty().addListener(viewModel::onSelectedItemChange);
-        userListView.getSelectionModel().clearSelection();
+        userListView.setCellFactory(param -> AllUsersViewModel.getUserListCellFactory());
+        userListView.getSelectionModel().selectedItemProperty()
+                .addListener(ViewModelUtils.changeListener(viewModel::onSelectedItemChange));
     }
-
-    public void onShowChatsClicked(ActionEvent actionEvent) {
-        viewModel.switchToChatPage();
-    }
-
 }

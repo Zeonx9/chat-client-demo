@@ -1,48 +1,48 @@
 package com.ade.chatclient.view;
 
+import com.ade.chatclient.application.structure.AbstractView;
+import com.ade.chatclient.application.util.ListenerFactoryAllChecked;
 import com.ade.chatclient.viewmodel.LogInViewModel;
-import javafx.beans.property.StringProperty;
+import com.ade.chatclient.application.util.ViewModelUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
 import lombok.Getter;
+import lombok.Setter;
 
-import java.util.Objects;
-
+/**
+ * Класс выступает в роли контроллера для окна авторизации, управляет поведением и отображением элементов на экране
+ */
 @Getter
-public class LogInView {
+@Setter
+public class LogInView extends AbstractView<LogInViewModel> {
     @FXML private PasswordField passwordField;
     @FXML private TextField loginTextField;
     @FXML private Label errorMessageLabel;
     @FXML private Button loginButton;
 
-    private LogInViewModel viewModel;
-
-    /**
-     * метод, который выполняет инициализацию вместо конструкора,
-     * так как объекты вью получаются при подключении не через констуктор, а из FXMLLoader
-     * выполняет байндинг модели и вью модели
-     * @param logInViewModel ссылка на вью-модель, которая управляет этим вью
-     */
-    public void init(LogInViewModel logInViewModel) {
-        this.viewModel = logInViewModel;
+    @Override
+    protected void initialize() {
+        var listenerFactory = new ListenerFactoryAllChecked(viewModel::onCheckPassed, viewModel::onCheckFailed);
+        loginTextField.textProperty().addListener(listenerFactory.newListener(viewModel::checkChangedText));
+        passwordField.textProperty().addListener(listenerFactory.newListener(viewModel::checkChangedText));
 
         loginTextField.textProperty().bindBidirectional(viewModel.getLoginTextProperty());
-        loginTextField.textProperty().addListener(viewModel::onTextChanged);
-        loginTextField.setFocusTraversable(false);
-
         passwordField.textProperty().bindBidirectional(viewModel.getPasswordProperty());
-        passwordField.textProperty().addListener(viewModel::onTextChanged);
-        passwordField.setFocusTraversable(false);
-
         errorMessageLabel.textProperty().bind(viewModel.getErrorMessageProperty());
-
         loginButton.disableProperty().bind(viewModel.getDisableButtonProperty());
+
+        viewModel.fillSavedLoginAndPassword();
+
+        passwordField.setOnKeyPressed(ViewModelUtils.enterKeyHandler(viewModel::authorize));
     }
 
+    /**
+     * Метод, который вызывает функцию авторизации пользователя в системе и переключения на ChatPage или на AdminView в зависимости от аккаунта, под которым заходит пользователь.
+     * Срабатывает по нажатию на кнопку Log In
+     */
     @FXML
     protected void onLoginClick() {
         viewModel.authorize();

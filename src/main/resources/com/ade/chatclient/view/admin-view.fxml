@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" styleClass="chatsPane" stylesheets="@../styles/ChatPageViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.AdminView">
+   <Label layoutX="50.0" layoutY="50.0" styleClass="header2" text="Admin panel" />
+   <Label layoutX="50.0" layoutY="90.0" styleClass="header3" text="Here you can register your employees" />
+   <Button focusTraversable="false" layoutX="875.0" layoutY="545.0" mnemonicParsing="false" onAction="#onLogOutClicked" prefHeight="30.0" prefWidth="100.0" styleClass="createGroupButton" text="Log out" />
+   <TextField fx:id="nameAndSurnameEmp" layoutX="50.0" layoutY="205.0" prefHeight="40.0" prefWidth="300.0" styleClass="text-input" />
+   <Label layoutX="50.0" layoutY="175.0" prefHeight="20.0" styleClass="header4" text="Input name and surname of employeer" />
+   <Label fx:id="adminName" alignment="CENTER_RIGHT" layoutX="675.0" layoutY="50.0" prefHeight="24.0" prefWidth="300.0" styleClass="header3" text="AdminName" />
+   <Label fx:id="adminCompany" alignment="CENTER_RIGHT" layoutX="666.0" layoutY="75.0" prefHeight="24.0" prefWidth="309.0" styleClass="header3" text="AdminsCompany" />
+   <Label layoutX="50.0" layoutY="265.0" prefHeight="20.0" styleClass="header4" text="Input birthdate of employeer" />
+   <DatePicker fx:id="birthdateEmp" focusTraversable="false" layoutX="50.0" layoutY="295.0" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #F2F2F2; -fx-background-radius: 12px;" />
+   <Label layoutX="50.0" layoutY="355.0" prefHeight="20.0" styleClass="header4" text="Create login for employeer" />
+   <TextField fx:id="loginEmp" focusTraversable="false" layoutX="50.0" layoutY="385.0" prefHeight="40.0" prefWidth="300.0" styleClass="text-input" />
+   <Button fx:id="registerButton" focusTraversable="false" layoutX="50.0" layoutY="455.0" mnemonicParsing="false" onAction="#onRegisterEmpClicked" prefHeight="40.0" prefWidth="300.0" style="-fx-background-radius: 12px;" styleClass="createGroupButton" text="Register an employee" />
+   <Label fx:id="result" layoutX="500.0" layoutY="213.0" prefHeight="24.0" prefWidth="450.0" styleClass="header3" />
+   <Label fx:id="resultLogin" layoutX="500.0" layoutY="283.0" prefHeight="24.0" prefWidth="450.0" styleClass="header3" text="Employee's login:" />
+   <Label fx:id="resultPassword" layoutX="500.0" layoutY="315.0" prefHeight="24.0" prefWidth="450.0" styleClass="header3" text="Employee's password:" />
+</AnchorPane>

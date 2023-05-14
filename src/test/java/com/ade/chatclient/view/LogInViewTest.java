@@ -1,5 +1,6 @@
 package com.ade.chatclient.view;
 
+import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.viewmodel.LogInViewModel;
 import javafx.application.Platform;
@@ -12,30 +13,32 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
+
 /**
- * реализует интеграционный тест между вью и вью-модел
+ * Реализует интеграционный тест между view и viewModel
  * они зависят от модели и ViewHandler, чтобы тестировать в изоляции мы используем
- * моки для этих двух зависимостей.
- * Цель тестов - проверять, что взаимодействие между вью и вью-модел происходит правильно и
- * все изменения правильно отражаются во вью
+ * mocks для этих двух зависимостей.
+ * Цель тестов - проверять, что взаимодействие между view и viewModel происходит правильно и
+ * все изменения правильно отражаются во view
  * тесты не запускают реальное приложение, но подключают платформу javafx, из-за чего тесты довольно долго запускаются
  */
 @ExtendWith(MockitoExtension.class)
 class LogInViewTest {
     private static FXMLLoader loader;
-
     @Mock private ViewHandler handler;
     @Mock private ClientModel model;
-
     private LogInView underTest;
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        Platform.startup(() -> {});
+        try {
+            Platform.startup(() -> {});
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         loader = new FXMLLoader(LogInView.class.getResource("log-in-view.fxml"));
         loader.load();
     }
@@ -48,33 +51,45 @@ class LogInViewTest {
     }
 
     @Test
-    void buttonIsDisabledAtStart() {
+    void buttonIsDisabledAtStart(){
+        //given
+        String login = " ";
+        String password = " ";
+
+        //when
+        underTest.getLoginTextField().setText(login);
+        underTest.getPasswordField().setText(password);
+
+        //then
         assertThat(underTest.getLoginButton().isDisabled()).isTrue();
     }
 
     @Test
     void buttonBecomeEnableIfEnteredText() {
         //given
-        String text = "text";
+        String login = "login";
+        String password = "password";
 
         //when
-        underTest.getLoginTextField().setText(text);
+        underTest.getLoginTextField().setText(login);
+        underTest.getPasswordField().setText(password);
 
         //then
         assertThat(underTest.getLoginButton().isDisabled()).isFalse();
     }
+
+    @Test
+    void buttonClickedAndAuthorizeCalled() {
+        //given
+        String login = "login";
+        String password = "password";
+
+        //when
+        underTest.getLoginTextField().setText(login);
+        underTest.getPasswordField().setText(password);
+        underTest.getLoginButton().fire();
+
+        //then
+        verify(model).authorize(login, password);
+    }
 }
-//    @Test
-//    void buttonClickedAndAuthorizeCalled() {
-//        //given
-//        String text = "text";
-//
-//        //when
-//        underTest.getLoginTextField().setText(text);
-//        underTest.getLoginButton().fire();
-//
-//        //then
-//        verify(model).Authorize(text);
-//
-//    }
-//}
