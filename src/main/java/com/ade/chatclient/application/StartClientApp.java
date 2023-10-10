@@ -28,12 +28,14 @@ public class StartClientApp {
 
         // создание фабрик для управления слоями приложения
         ModelFactory modelFactory = new ModelFactory();
-        requestTunnelUrlAsync()
-                .thenAccept(modelFactory::injectServerUrl)
-                .handle((unused, throwable) -> {
-                    System.err.println(throwable.getMessage());
-                    return unused;
-                });
+//        requestTunnelUrlAsync()
+//                .thenAccept(modelFactory::injectServerUrl)
+//                .handle((unused, throwable) -> {
+//                    System.err.println(throwable.getMessage());
+//                    return unused;
+//                });
+        modelFactory.injectServerUrl("http://195.133.196.67:8080");
+
 
         viewModelProvider = new ViewModelProvider(modelFactory);
         ViewHandler viewHandler = new ViewHandler(stage, viewModelProvider);
