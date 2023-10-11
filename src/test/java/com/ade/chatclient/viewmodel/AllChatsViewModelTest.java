@@ -50,8 +50,7 @@ public class AllChatsViewModelTest {
         allChatsView.init(underTest);
 
         String mediaPath = "src/main/resources/com/ade/chatclient/sounds/sound.mp3";
-        underTest.setMediaPlayer(new MediaPlayer(new Media(new File(mediaPath).toURI().toString())));
-
+//        underTest.setMediaPlayer(new MediaPlayer(new Media(new File(mediaPath).toURI().toString())));
     }
 
     @Test
