@@ -42,7 +42,7 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
     }
 
     /**
-     * сохраняет новый пароль после изменения пароля
+     * Сохраняет новый пароль после изменения пароля
      * @param propertyChangeEvent новый пароль
      */
     private void setSavedLoginAndPassword(PropertyChangeEvent propertyChangeEvent) {
@@ -66,7 +66,7 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
                 Files.createDirectories(directoryPath);
             }
             catch (Exception e){
-                System.out.println("не удалось сохранить пароль");
+//                System.out.println("не удалось сохранить пароль");
             }
         }
         try(Writer writer = Files.newBufferedWriter(Paths.
@@ -75,7 +75,7 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
             mapper.writeValue(writer, authRequest);
         }
         catch (Exception e){
-            System.out.println("нет файла для сохранения пароля");
+//            System.out.println("нет файла для сохранения пароля");
         }
     }
 
@@ -91,7 +91,7 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
             passwordProperty.set(parser.path("password").asText());
         }
         catch (Exception e){
-            System.out.println("нет файла c сохраненными паролями");
+//            System.out.println("нет файла c сохраненными паролями");
         }
     }
 
@@ -105,7 +105,7 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
             return;
         }
 
-        System.out.println("Авторизация успешна, переход к окну чатов");
+//        System.out.println("Авторизация успешна, переход к окну чатов");
         errorMessageProperty.set("Success!");
 
         setSavedLoginAndPassword();

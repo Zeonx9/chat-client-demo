@@ -37,6 +37,9 @@ import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListene
 @Setter
 public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     private final ListProperty<Chat> chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+
+    // TODO Исправить звук
+
 //    private final String mediaPath = "src/main/resources/com/ade/chatclient/sounds/sound.mp3";
 //    private MediaPlayer mediaPlayer = new MediaPlayer(new Media(new File(mediaPath).toURI().toString()));
     private Boolean isSearching = false;
@@ -136,10 +139,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         dialog.populateUserList(model.getAllUsers());
 
         Optional<GroupRequest> answer = dialog.showAndWait();
-        if (answer.isPresent()) {
-            System.out.println(answer.get());
-            model.createGroupChat(answer.get());
-        }
+        answer.ifPresent(model::createGroupChat);
     }
 
 
