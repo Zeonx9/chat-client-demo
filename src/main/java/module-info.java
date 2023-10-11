@@ -3,6 +3,7 @@
 
 module com.ade.chatclient {
     requires javafx.controls;
+    requires javafx.media;
     requires javafx.fxml;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
@@ -33,4 +34,13 @@ module com.ade.chatclient {
 
     exports com.ade.chatclient.application;
     opens com.ade.chatclient.application to javafx.fxml;
+
+    exports com.ade.chatclient.view.cellfactory;
+    opens com.ade.chatclient.view.cellfactory to javafx.fxml;
+
+    exports com.ade.chatclient.application.util;
+    opens com.ade.chatclient.application.util to javafx.fxml;
+
+    exports com.ade.chatclient.application.structure;
+    opens com.ade.chatclient.application.structure to javafx.fxml;
 }

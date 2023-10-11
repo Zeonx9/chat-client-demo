@@ -1,80 +1,77 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.ClientApplication;
+import com.ade.chatclient.application.structure.AbstractChildViewModel;
+import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.view.ViewHandler;
-import javafx.beans.Observable;
+import com.ade.chatclient.view.cellfactory.UserListCellFactory;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import lombok.Getter;
 
-import java.io.IOException;
+import static com.ade.chatclient.application.util.ViewModelUtils.listReplacer;
+import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
+import static com.ade.chatclient.application.Views.ALL_CHATS_VIEW;
 
-import static com.ade.chatclient.viewmodel.ViewModelUtils.listReplacer;
-import static com.ade.chatclient.viewmodel.ViewModelUtils.runLaterListener;
-
+/**
+ * Класс, который связывает model с AllUsersView.
+ * Регистрирует лисенер - "AllUsers"
+ */
 @Getter
-public class AllUsersViewModel {
-    private final ClientModel model;
-    private final ViewHandler viewHandler;
+public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
     private final ListProperty<User> usersListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
 
-    AllUsersViewModel(ViewHandler viewHandler, ClientModel model) {
-        this.model = model;
-        this.viewHandler = viewHandler;
-
+    public AllUsersViewModel(ViewHandler viewHandler, ClientModel model) {
+        super(viewHandler, model);
+        //заменяет значение usersListProperty новым значением (лист юзеров)
         model.addListener("AllUsers", runLaterListener(listReplacer(usersListProperty)));
     }
 
-    public void switchToChatPage() {
-        try {
-            viewHandler.openView(ViewHandler.Views.CHAT_PAGE_VIEW);
-        }
-        catch (IOException e) {
-            System.out.println("cannot switch to another view! " + e.getMessage());
-        }
-    }
-    private String prepareUserToBeShown(User user) {
-        return user.getUsername();
+    /**
+     * Метод вызывается при переключении на AllUsersView, обновляет состояние боковых кнопок и список пользователей
+     */
+    @Override
+    public void actionInParentOnOpen() {
+        viewHandler.getViewModelProvider().getChatPageViewModel().changeButtonsParam(1);
+        model.getAllUsersAfterSearching();
     }
 
-    public ListCell<User> getUserListCellFactory() {
-        return new ListCell<>() {
-            private final ImageView imageView = new ImageView();
-            @Override
-            protected void updateItem(User item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
-                    return;
-                }
-
-                setText(prepareUserToBeShown(item));
-                var imgStream = ClientApplication.class.getResourceAsStream("img/user_avatar_chat_icon.png");
-                if (imgStream == null) {
-                    throw new RuntimeException("image stream is null");
-                }
-                imageView.setImage(new Image(imgStream));
-                setGraphic(imageView);
-            }
-        };
-    }
-
-    public void onSelectedItemChange(Observable observable, User oldValue, User newValue) {
+    /**
+     * Метод срабатывает при выборе пользователя, переключает на окно с чатами и открывает диалог с данным человеком
+     * @param newValue объект класса User - выбранный пользователь
+     */
+    public void onSelectedItemChange(User newValue) {
         if (newValue == null) {
-            System.out.println("Selected User is null");
             return;
         }
         Chat created = model.createDialogFromAllUsers(newValue);
-        model.setSelectedChat(created);
-        model.getMessages();
-        switchToChatPage();
+        model.setSelectChat(created);
+        viewHandler.openPane(ALL_CHATS_VIEW, placeHolder);
+    }
+
+    /**
+     * @return фабрику ячеек для юзеров
+     */
+    public static ListCell<User> getUserListCellFactory() {
+        return new UserListCellFactory();
+    }
+
+    /**
+     * При изменении текста newText в поле для поиска вызывает
+     * метод model для поиска пользователей, если текст не пустой, иначе завершает поиск
+     * @param newText измененный текст
+     */
+    public void onTextChanged(String newText) {
+        usersListProperty.clear();
+
+        if (newText == null || newText.isBlank()) {
+            usersListProperty.clear();
+            usersListProperty.addAll(model.getAllUsers());
+            return;
+        }
+        usersListProperty.addAll(model.searchUser(newText));
     }
 }

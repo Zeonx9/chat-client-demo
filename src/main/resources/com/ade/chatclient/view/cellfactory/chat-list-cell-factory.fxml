@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="layout" prefHeight="70.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.cellfactory.ChatListCellFactory">
+   <ImageView layoutX="10.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0">
+      <Image url="@../../img/user_avatar_chat_icon.png" />
+   </ImageView>
+   <Label fx:id="chatNameLabel" layoutX="60.0" layoutY="15.0" style="-fx-text-fill: white" AnchorPane.leftAnchor="70.0" />
+   <Label fx:id="lastMsgLabel" layoutY="37.4" style="-fx-text-fill: lightgray" AnchorPane.leftAnchor="70.0" />
+   <Label fx:id="countUnreadMessages" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutY="25.0" prefHeight="20.0" styleClass="countUnreadMessages" AnchorPane.rightAnchor="10.0" />
+</AnchorPane>

@@ -2,7 +2,10 @@ package com.ade.chatclient;
 
 import com.ade.chatclient.application.StartClientApp;
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
+import java.util.Objects;
 
 /**
  * Точка входа в приложение, этот класс наследуется от класса JavaFX Application
@@ -16,8 +19,16 @@ public class ClientApplication extends Application {
      * обязательный для переопределенмя метод из Application, запускает приложение
      */
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         stage.setTitle("InTouch");
+        Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/icon.png")));
+        stage.getIcons().add(image);
         StartClientApp.start(stage);
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        StartClientApp.stop();
     }
 }

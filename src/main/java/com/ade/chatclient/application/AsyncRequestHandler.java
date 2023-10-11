@@ -15,6 +15,10 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+/**
+ * Главный класс обрабатывающий HTTP запрос исходящие из приложения
+ * два обязательх поля, которые должны быть вставленны через сеттеры.
+ */
 @NoArgsConstructor
 public class AsyncRequestHandler {
     private final static HttpClient client = HttpClient.newHttpClient();
@@ -30,12 +34,108 @@ public class AsyncRequestHandler {
     private String authToken;
 
     /**
-     * метод, который помогает упростить сборку запросов
-     * метод не для внешнего использования
-     * @param params Map содержащий параметры для запроса в виде пар ключ-значение
-     * @param path путь до точки входа на сервере
-     * @return билдер запроса
+     * строит GET запрос с параметрами и преобразует ответ к нужному типу
+     * @param path путь до точки входа на сервер
+     * @param params параметры запроса
+     * @param tReference указывает тип, к которому надо привести ответ от сервера
+     * @return преобразованный ответ от сервера
+     * @throws RuntimeException при невозможности сериализовать объект
      */
+    public <T> CompletableFuture<T> sendGet(String path, Map<String, String> params, TypeReference<T> tReference) {
+        return sendGETAsync(path, params).thenApply(mapperOf(tReference));
+    }
+
+    /**
+     * строит GET запрос без параметров и преобразует ответ к нужному типу
+     * @param path путь до точки входа на сервер
+     * @param tReference указывает тип, к которому надо привести ответ от сервера
+     * @return преобразованный ответ от сервера
+     * @throws RuntimeException при невозможности сериализовать объект
+     */
+    public <T> CompletableFuture<T> sendGet(String path, TypeReference<T> tReference) {
+        return sendGETAsync(path).thenApply(mapperOf(tReference));
+    }
+
+    /**
+     * строит GET запрос без параметров и преобразует ответ к нужному типу
+     * @param path путь до точки входа на сервер
+     * @param tClass указывает тип, к которому надо привести ответ от сервера
+     * @return преобразованный ответ от сервера
+     * @throws RuntimeException при невозможности сериализовать объект
+     */
+    public <T> CompletableFuture<T> sendGet(String path, Class<T> tClass) {
+        return sendGETAsync(path).thenApply(mapperOf(tClass));
+    }
+
+    /**
+     * строит POST запрос без параметров и преобразует ответ к нужному типу
+     *
+     * @param path    путь до точки входа на сервер
+     * @param bodyObj объект, который необходимо отправить
+     * @param vClass  указывает тип, к которому надо привести ответ от сервера
+     * @return преобразованный ответ от сервера
+     * @throws RuntimeException при невозможности сериализовать объект
+     */
+    public <V, T> CompletableFuture<V> sendPost(String path, T bodyObj, Class<V> vClass, boolean authorized) {
+        return sendPOSTAsync(path, bodyObj, authorized).thenApply(mapperOf(vClass));
+    }
+
+    /**
+     * строит PUT запрос без параметров и преобразует ответ к нужному типу
+     * @param path путь до точки входа на сервер
+     * @param bodyObj объект, который необходимо отправить
+     * @param vClass указывает тип, к которому надо привести ответ от сервера
+     * @return преобразованный ответ от сервера
+     * @throws RuntimeException при невозможности сериализовать объект
+     */
+    public <V, T> CompletableFuture<V> sendPut(String path, T bodyObj, Class<V> vClass) {
+        return sendPUTAsync(path, bodyObj).thenApply(mapperOf(vClass));
+    }
+
+    private CompletableFuture<HttpResponse<String>> sendGETAsync(String path, Map<String, String> params) {
+        return client.sendAsync(
+                configureRequest(path, params, true)
+                        .GET()
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+    }
+
+    private CompletableFuture<HttpResponse<String>> sendGETAsync(String path) {
+        return sendGETAsync(path, Map.of());
+    }
+
+    private CompletableFuture<HttpResponse<String>> sendPOSTAsync(String path, String body, boolean authorized) {
+        return client.sendAsync(
+                configureRequest(path, Map.of(), authorized)
+                        .POST(HttpRequest.BodyPublishers.ofString(body))
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+    }
+
+    private <T> CompletableFuture<HttpResponse<String>> sendPOSTAsync(String path, T bodyObj, boolean authorized) {
+        try {
+            return sendPOSTAsync(path, mapper.writeValueAsString(bodyObj), authorized);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Cannot send. Unable to serialize the object", e);
+        }
+    }
+
+    private  <T> CompletableFuture<HttpResponse<String>> sendPUTAsync(String path, T body) {
+        try {
+            return client.sendAsync(
+                    configureRequest(path, Map.of(), true)
+                            .PUT(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(body)))
+                            .build(),
+                    HttpResponse.BodyHandlers.ofString()
+            );
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     private HttpRequest.Builder configureRequest(String path, Map<String, String> params, boolean authorized) {
         if (url == null) {
             throw new IllegalStateException("URL of server is not set yet!");
@@ -62,105 +162,6 @@ public class AsyncRequestHandler {
         return builder.header("Authorization", "Bearer " + authToken);
     }
 
-    /**
-     * @return пустой запрос, должен использоваться только для тестов
-     */
-    public static HttpRequest getEmptyReq() {
-        return HttpRequest.newBuilder().uri(URI.create("https://foo.com/bar")).GET().build();
-    }
-
-    /**
-     * строит GET запрос с параметрами
-     * @param path путь до точки входа на сервер
-     * @param params набор пар ключ-значение определяющих нужные параметры в запросе
-     * @return собранный запрос
-     */
-    public CompletableFuture<HttpResponse<String>> sendGETAsync(String path, Map<String, String> params) {
-        return client.sendAsync(
-                configureRequest(path, params, true)
-                        .GET()
-                        .build(),
-                HttpResponse.BodyHandlers.ofString()
-        );
-    }
-
-    /**
-     * строит GET запрос без параметров
-     * @param path путь до точки входа на сервер
-     * @return собранный запрос
-     */
-    public CompletableFuture<HttpResponse<String>> sendGETAsync(String path) {
-        return sendGETAsync(path, Map.of());
-    }
-
-    /**
-     * строит POST запрос с параметрами
-     * @param path путь до точки входа на сервер
-     * @param params набор пар ключ-значение определяющих нужные параметры в запросе
-     * @param body строка, которая представляет тело запроса, должна быть валидной строкой JSON
-     * @return собранный запрос
-     */
-    public CompletableFuture<HttpResponse<String>> sendPOSTAsync(
-            String path,
-            Map<String, String> params,
-            String body,
-            boolean authorized
-    ) {
-        return client.sendAsync(
-                configureRequest(path, params, authorized)
-                        .POST(HttpRequest.BodyPublishers.ofString(body))
-                        .build(),
-                HttpResponse.BodyHandlers.ofString()
-        );
-    }
-
-    /**
-     * строит POST запрос без параметров
-     *
-     * @param path путь до точки входа на сервер
-     * @param body строка, которая представляет тело запроса, должна быть валидной строкой JSON
-     * @return собранный запрос
-     */
-    public CompletableFuture<HttpResponse<String>> sendPOSTAsync(String path, String body, boolean authorized) {
-        return sendPOSTAsync(path, Map.of(), body, authorized);
-    }
-
-    /**
-     * строит POST запрос с параметрами
-     * @param path путь до точки входа на сервер
-     * @param params набор пар ключ-значение определяющих нужные параметры в запросе
-     * @param bodyObj объект, который будет сериализован и послан на сервер, как JSON-строка
-     * @return собранный запрос
-     * @throws RuntimeException при невозможности сериализовать объект
-     */
-    public <T> CompletableFuture<HttpResponse<String>> sendPOSTAsync(
-            String path,
-            Map<String, String> params,
-            T bodyObj,
-            boolean authorized
-    ) {
-        try {
-            return sendPOSTAsync(path, params, mapper.writeValueAsString(bodyObj), authorized);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Cannot send. Unable to serialize the object", e);
-        }
-    }
-
-    /**
-     * строит POST запрос без параметров
-     * @param path путь до точки входа на сервер
-     * @param bodyObj объект, который будет сериализован и послан на сервер, как JSON-строка
-     * @return собранный запрос
-     */
-    public <T> CompletableFuture<HttpResponse<String>> sendPOSTAsync(String path, T bodyObj, boolean authorized) {
-        return sendPOSTAsync(path, Map.of(), bodyObj, authorized);
-    }
-
-    /**
-     * Проверяет, что пришедший ответ имеет статус OK
-     * @param response пришедший ответ
-     * @throws RuntimeException если статус ответа не ОК
-     */
     private static void checkResponse(HttpResponse<String> response) {
         if (response.statusCode() != 200) {
             throw new RuntimeException(
@@ -170,14 +171,7 @@ public class AsyncRequestHandler {
         }
     }
 
-    /**
-     * @param response полученный ответ
-     * @param objectClass ссылка на тип объекта, используется для коллекций других объектов
-     * @return объект заданного класса полученного из ответа от сервера
-     * @throws RuntimeException если невозможно десериалиазовать объект
-     * или если ответ от сервера имеет ошибочный статус
-     */
-    public static <T> T mapResponse(HttpResponse<String> response, Class<T> objectClass) {
+    private static <T> T mapResponse(HttpResponse<String> response, Class<T> objectClass) {
         checkResponse(response);
 
         try {
@@ -187,14 +181,7 @@ public class AsyncRequestHandler {
         }
     }
 
-    /**
-     * @param response реквест, который нужно отправить
-     * @param typeRef ссылка на тип объекта, используется для коллекций других объектов
-     * @return объект заданного класса полученного из ответа от сервера
-     * @throws RuntimeException если невозможно десериалиазовать объект
-     * или если ответ от сервера имеет ошибочный статус
-     */
-    public static <T> T mapResponse(HttpResponse<String> response, TypeReference<T> typeRef) {
+    private static <T> T mapResponse(HttpResponse<String> response, TypeReference<T> typeRef) {
         checkResponse(response);
 
         try {
@@ -204,22 +191,11 @@ public class AsyncRequestHandler {
         }
     }
 
-    /**
-     * предоставляет функцию, которая маппит ответ от сервера в указанный тип
-     * @param objectClass класс объекта, в который будет происходить отображение
-     * @return функцию маппинга
-     */
-    public static <T> Function<HttpResponse<String>, T> mapperOf(Class<T> objectClass) {
+    private static <T> Function<HttpResponse<String>, T> mapperOf(Class<T> objectClass) {
         return response -> mapResponse(response, objectClass);
     }
 
-    /**
-     * предоставляет функцию, которая маппит ответ от сервера в указанный тип
-     * @param typRef ссылка на тип (из констант класса *.domain.TypeReferences)
-     *               объекта, в который будет происходить отображение
-     * @return функцию маппинга
-     */
-    public static <T> Function<HttpResponse<String>, T> mapperOf(TypeReference<T> typRef) {
+    private static <T> Function<HttpResponse<String>, T> mapperOf(TypeReference<T> typRef) {
         return response -> mapResponse(response, typRef);
     }
 }

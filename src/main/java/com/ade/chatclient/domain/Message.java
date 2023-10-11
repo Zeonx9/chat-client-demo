@@ -3,6 +3,7 @@ package com.ade.chatclient.domain;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Класс, который представляет сообщение
@@ -17,5 +18,22 @@ public class Message {
     private LocalDateTime dateTime;
     private User author;
     private Long chatId;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Message message)) return false;
+        return id.equals(message.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return text + " (" + chatId + ") " + author;
+    }
 }
 

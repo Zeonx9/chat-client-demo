@@ -1,14 +1,10 @@
 package com.ade.chatclient.application;
 
-import com.ade.chatclient.model.ModelFactory;
-import com.ade.chatclient.view.ViewHandler;
-import com.ade.chatclient.viewmodel.ViewModelProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -19,6 +15,41 @@ import java.util.concurrent.CompletableFuture;
  * Вспомогательный класс, который помогает настроить приложение во время запуска
  */
 public class StartClientApp {
+    private static ViewModelProvider viewModelProvider;
+
+    /**
+     * метод, который запрашивает адрес сервера приложения
+     * создает фабрики для компонентов приложения (модель, вью, вью-модель)
+     * передает управление на ViewHandler
+     * @param stage объект Stage, который получен от метода start в главном классе приложения
+     */
+    public static void start(Stage stage) {
+        System.out.println("Starting the application ...");
+
+        // создание фабрик для управления слоями приложения
+        ModelFactory modelFactory = new ModelFactory();
+//        requestTunnelUrlAsync()
+//                .thenAccept(modelFactory::injectServerUrl)
+//                .handle((unused, throwable) -> {
+//                    System.err.println(throwable.getMessage());
+//                    return unused;
+//                });
+        modelFactory.injectServerUrl("http://195.133.196.67:8080");
+
+
+        viewModelProvider = new ViewModelProvider(modelFactory);
+        ViewHandler viewHandler = new ViewHandler(stage, viewModelProvider);
+
+        // включает начальное вью
+        viewHandler.start();
+    }
+
+    /**
+     * останавливает запущенный фоновый поток.
+     */
+    public static void stop() {
+        viewModelProvider.getBackgroundService().stop();
+    }
 
     /**
      * Асинхронно отправляет запрос к серверу ngrok и ставит в очередь метод по обработке
@@ -73,30 +104,5 @@ public class StartClientApp {
         System.out.println("Server is located at: " + url);
 
         return url;
-    }
-
-    /**
-     * метод, который запрашивает адрес сервера приложения
-     * создает фабрики для компонентов приложения (модель, вью, вью-модель)
-     * передает управление на ViewHandler
-     * @param stage объект Stage, который получен от метода start в главном классе приложения
-     */
-    public static void start(Stage stage) throws IOException {
-        System.out.println("Starting the application ...");
-
-        // создание фабрик для управления слоями приложения
-        ModelFactory modelFactory = new ModelFactory();
-        requestTunnelUrlAsync()
-                .thenAccept(modelFactory::injectServerUrl)
-                .handle((unused, throwable) -> {
-                    System.err.println(throwable.getMessage());
-                    return unused;
-                });
-
-        ViewModelProvider viewModelProvider = new ViewModelProvider(modelFactory);
-        ViewHandler viewHandler = new ViewHandler(stage, viewModelProvider);
-
-        // включает начальное вью
-        viewHandler.start();
     }
 }

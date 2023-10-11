@@ -1,49 +1,159 @@
 package com.ade.chatclient.viewmodel;
 
+import com.ade.chatclient.application.structure.AbstractViewModel;
+import com.ade.chatclient.application.ViewHandler;
+import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.view.ViewHandler;
-import javafx.beans.Observable;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-import java.io.IOException;
+import java.beans.PropertyChangeEvent;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
+import static com.ade.chatclient.application.Views.ADMIN_VIEW;
+import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
+
+/**
+ * Класс, который связывает model с LogInView.
+ * Регистрирует лисенер - "savePassword"
+ */
 @Getter
-@RequiredArgsConstructor
-public class LogInViewModel {
-    private final StringProperty loginTextProperty = new SimpleStringProperty();
-    private final StringProperty passwordProperty = new SimpleStringProperty();
-    private final StringProperty errorMessageProperty = new SimpleStringProperty();
-    private final BooleanProperty disableButtonProperty = new SimpleBooleanProperty(true);
+@Setter
+public class LogInViewModel extends AbstractViewModel<ClientModel> {
+    private StringProperty loginTextProperty = new SimpleStringProperty();
+    private StringProperty passwordProperty = new SimpleStringProperty();
+    private StringProperty errorMessageProperty = new SimpleStringProperty();
+    private BooleanProperty disableButtonProperty = new SimpleBooleanProperty(true);
 
-    private final ViewHandler viewHandler;
-    private final ClientModel model;
+    public LogInViewModel(ViewHandler viewHandler, ClientModel model) {
+        super(viewHandler, model);
+        model.addListener("savePassword", runLaterListener(this::setSavedLoginAndPassword));
+    }
 
+    /**
+     * сохраняет новый пароль после изменения пароля
+     * @param propertyChangeEvent новый пароль
+     */
+    private void setSavedLoginAndPassword(PropertyChangeEvent propertyChangeEvent) {
+        writeInJson(AuthRequest.builder().login(loginTextProperty.get()).password((String) propertyChangeEvent.getNewValue()).build());
+    }
+
+    /**
+     * Если авторизация прошла успешно, то сохраняет пароль и логин в файл
+     */
+    public void setSavedLoginAndPassword() {
+        writeInJson(AuthRequest.builder().login(loginTextProperty.get()).password(passwordProperty.get()).build());
+    }
+
+    /**
+     * сохраняет пароль и логин в login-password/package.json
+     */
+    private void writeInJson(AuthRequest authRequest) {
+        Path directoryPath = Paths.get("src/main/resources/com/ade/chatclient/login-password");
+        if (!Files.exists(directoryPath)) {
+            try {
+                Files.createDirectories(directoryPath);
+            }
+            catch (Exception e){
+                System.out.println("не удалось сохранить пароль");
+            }
+        }
+        try(Writer writer = Files.newBufferedWriter(Paths.
+                get("src/main/resources/com/ade/chatclient/login-password/package.json"))){
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(writer, authRequest);
+        }
+        catch (Exception e){
+            System.out.println("нет файла для сохранения пароля");
+        }
+    }
+
+    /**
+     * Заполняет поле логина и пароля данными из файла package.json, в котором сохранены данные последней авторизации
+     */
+    public void fillSavedLoginAndPassword() {
+        try(Reader reader = Files.newBufferedReader(Paths.
+                get("src/main/resources/com/ade/chatclient/login-password/package.json"))){
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode parser = mapper.readTree(reader);
+            loginTextProperty.set(parser.path("login").asText());
+            passwordProperty.set(parser.path("password").asText());
+        }
+        catch (Exception e){
+            System.out.println("нет файла c сохраненными паролями");
+        }
+    }
+
+    /**
+     * Метод собирает введенные пользователем данные и отправляет их в модель для входа в аккаунт, после чего: либо открывает соответствующее View (пользователя или админа), либо выводит сообщение об ошибке авторизации
+     */
     public void authorize() {
-        boolean success = model.Authorize(loginTextProperty.get(), passwordProperty.get());
+        boolean success = model.authorize(loginTextProperty.get(), passwordProperty.get());
         if (!success) {
             errorMessageProperty.set("Unsuccessful");
             return;
         }
+
+        System.out.println("Авторизация успешна, переход к окну чатов");
         errorMessageProperty.set("Success!");
-        try {
-            System.out.println("Авторизация успешна, переход к окну чатов");
+
+        setSavedLoginAndPassword();
+        if (model.isAdmin()) {
+            viewHandler.openView(ADMIN_VIEW);
+        }
+        else {
             viewHandler.startBackGroundServices();
-            viewHandler.openView(ViewHandler.Views.CHAT_PAGE_VIEW);
+            viewHandler.openView(CHAT_PAGE_VIEW);
         }
-        catch (IOException e) {
-            System.out.println(e.getMessage());
-            errorMessageProperty.set("cannot switch to another view!");
-        }
+
+        errorMessageProperty.set("");
+        passwordProperty.set("");
     }
 
-    public void onTextChanged(Observable obj, String oldValue, String newValue) {
+    /**
+     * блокирует кнопку, если данные в поле логина/пароля пустые или содержат пробелы
+     * @param newValue измененные данные в TextField
+     */
+    public void onTextChanged(String newValue) {
         if (newValue == null)
             newValue = "";
         disableButtonProperty.set(newValue.isBlank() || newValue.contains(" "));
+    }
+
+    /**
+     * Метод проверяет, пустая ли строка для ввода
+     * @param newValue данные, введенные пользователем в TextField
+     * @return значение типа Boolean
+     */
+    public Boolean checkChangedText(String newValue) {
+        if (newValue == null) {
+            return false;
+        }
+        return !newValue.isBlank() && !newValue.contains(" ");
+    }
+
+    /**
+     * Если хотя бы одно поле для ввода пустое, то кнопка авторизации неактивна
+     */
+    public void onCheckFailed() {
+        disableButtonProperty.set(true);
+    }
+
+    /**
+     * Если поля логин и пароль заполнены, то кнопка авторизации активна
+     */
+    public void onCheckPassed() {
+        disableButtonProperty.set(false);
     }
 }

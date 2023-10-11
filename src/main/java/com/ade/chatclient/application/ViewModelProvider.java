@@ -1,7 +1,6 @@
-package com.ade.chatclient.viewmodel;
+package com.ade.chatclient.application;
 
-import com.ade.chatclient.model.ModelFactory;
-import com.ade.chatclient.view.ViewHandler;
+import com.ade.chatclient.viewmodel.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +15,9 @@ public class ViewModelProvider {
     private ChatPageViewModel chatPageViewModel;
     private final ModelFactory modelFactory;
     private AllUsersViewModel allUsersViewModel;
+    private AllChatsViewModel allChatsViewModel;
+    private UserProfileViewModel userProfileViewModel;
+    private AdminViewModel adminViewModel;
     private BackgroundService backgroundService;
 
     /**
@@ -27,6 +29,10 @@ public class ViewModelProvider {
         logInViewModel = new LogInViewModel(viewHandler, modelFactory.getModel());
         chatPageViewModel = new ChatPageViewModel(viewHandler, modelFactory.getModel());
         allUsersViewModel = new AllUsersViewModel(viewHandler, modelFactory.getModel());
+        allChatsViewModel = new AllChatsViewModel(viewHandler, modelFactory.getModel());
+        userProfileViewModel = new UserProfileViewModel(viewHandler, modelFactory.getModel());
+        adminViewModel = new AdminViewModel(viewHandler, modelFactory.getModel());
+
     }
 
     /**

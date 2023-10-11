@@ -16,18 +16,41 @@
 .header {
     -fx-font-family: "Poppins SemiBold";
     -fx-font-size: 30;
+    -fx-text-fill: #FFFFFF;
+}
+
+.header2 {
+    -fx-font-family: "Poppins SemiBold";
+    -fx-font-size: 20;
+    -fx-text-fill: #FFFFFF;
+}
+
+.header3 {
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 17;
+    -fx-text-fill: #FFFFFF;
+}
+
+.header4 {
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 13;
+    -fx-text-fill: #A3A3A3;
 }
 
 .text-input {
     -fx-font-family: "Poppins Regular";
-    -fx-font-size: 17;
+    -fx-font-size: 13;
     -fx-text-fill: #1D1E20;
-    -fx-background-radius: 15px;
+    -fx-background-radius: 12px;
     -fx-background-color: #F2F2F2;
 }
 
-.mainPane {
-    -fx-background-color: #CCC1BE;
+.createButton {
+    -fx-font-family: "Poppins Regular";
+    -fx-font-size: 17;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 50px;
+    -fx-background-color: #1A1A22;
 }
 
 .buttonSend {
@@ -48,69 +71,17 @@
     -fx-background-image: url("../img/send_mes_focused.png");
 }
 
-.buttonCreateNewChat {
-    -fx-background-radius: 15px;
-    -fx-background-color: #F2F2F2;
-    -fx-opacity: 20%;
-    -fx-font-family: "Poppins Medium";
-    -fx-font-size: 24;
-}
-
-.buttonCreateNewChat:hover {
-    /*-fx-background-color: #F2F2F2;*/
-    -fx-opacity: 50%;
-}
-
-.buttonCreateNewChat:focused {
-    /*-fx-background-color: #F2F2F2;*/
-    -fx-opacity: 100%;
-}
-
 .messageInput {
     -fx-font-family: "Poppins Regular";
     -fx-font-size: 17;
-    -fx-text-fill: #1D1E20;
-    -fx-prompt-text-fill: #303134;
+    -fx-text-fill: #FFFFFF;
+    -fx-prompt-text-fill: #FFFFFF;
     -fx-background-radius: 50px;
-    -fx-background-color: #CCC1BE;
-}
-
-.listChats {
-    -fx-background-color: transparent;
-}
-
-.list-cell {
-    -fx-background-radius: 15px;
-    -fx-background-color: transparent;
-    -fx-padding: 25px;
-    -fx-font-family: "Poppins Medium";
-    -fx-font-size: 20;
-    -fx-text-fill: #1D1E20;
-    -fx-background-insets: 10;
-}
-
-#chatListView .list-cell:hover{
-    -fx-background-color: #F2F2F2;
-    -fx-opacity: 50%;
-    -fx-font-family: "Poppins Medium";
-    -fx-font-size: 20;
-    -fx-text-fill: #1D1E20;
-}
-
-#chatListView .list-cell:focused {
-    -fx-background-color: #F2F2F2;
-    -fx-opacity: 100%;
-    -fx-font-family: "Poppins Medium";
-    -fx-font-size: 20;
-    -fx-text-fill: #1D1E20;
-}
-
-#chatListView .list-cell:empty {
-    -fx-background-color: transparent;
+    -fx-background-color: #1A1A22;
 }
 
 .leftPane {
-    -fx-background-color: #1D1E20;
+    -fx-background-color: #14141A;
 }
 
 .showChatsBtn {
@@ -137,4 +108,247 @@
 
 .ShowUsersBtn:focused {
     -fx-opacity: 30%;
+}
+
+.ShowUserDataBtn {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../img/user_profile_btn.png");
+}
+
+.ShowUserDataBtn:hover {
+    -fx-opacity: 50%;
+}
+
+.ShowUserDataBtn:focused {
+    -fx-opacity: 30%;
+}
+
+.messageListView .list-cell .messageLayout {
+    display: inline-block;
+    -fx-background-color: #1A1A22;
+    -fx-background-radius: 30px;
+    -fx-padding: 12px ;
+}
+
+.messageListView .list-cell .messageText {
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 15;
+    -fx-text-fill: #FFFFFF;
+}
+
+.messageListView .list-cell .dataText {
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 12;
+    -fx-text-fill: #3A3C4D;
+}
+
+.messageListView .list-cell{
+    -fx-background-color: transparent;
+}
+
+.messageListView .scroll-bar .track, .selectedListView .scroll-bar .track{
+    -fx-background-color: #3A3C4D;
+}
+
+.messageListView .scroll-bar .thumb, .selectedListView .scroll-bar .thumb {
+    -fx-background-color: #4F5168;
+}
+
+.messageListView .scroll-bar .increment-button, .messageListView .scroll-bar .decrement-button{
+    -fx-background-color: #3A3C4D;
+    -fx-border-color: #3A3C4D;
+    -fx-text-fill: #3A3C4D;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.selectedListView .scroll-bar .increment-button, .selectedListView .scroll-bar .decrement-button{
+    -fx-background-color: #3A3C4D;
+    -fx-border-color: #3A3C4D;
+    -fx-text-fill: #3A3C4D;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.chatListView .scroll-bar .track{
+    -fx-background-color: #272833;
+}
+
+.chatListView .scroll-bar .thumb {
+    -fx-background-color: #4F5168;
+}
+
+.chatListView .scroll-bar .increment-button, .chatListView .scroll-bar .decrement-button{
+    -fx-background-color: #272833;
+    -fx-border-color: #272833;
+    -fx-text-fill: #272833;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.userListView .scroll-bar .track{
+    -fx-background-color: #272833;
+    -fx-border-color: #272833;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.userListView .scroll-bar .thumb {
+    -fx-background-color: #4F5168;
+}
+
+.userListView .scroll-bar .increment-button, .userListView .scroll-bar .decrement-button{
+    -fx-background-color: #272833;
+    -fx-border-color: #272833;
+    -fx-text-fill: #272833;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.userListOfGroup .list-cell {
+    -fx-background-color: #272833;
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 17;
+    -fx-text-fill: #FFFFFF;
+    -fx-pref-height: 60px;
+}
+
+.userListOfGroup .list-cell:hover {
+    -fx-background-color: #14141A;
+}
+
+.userListOfGroup .list-cell:focused {
+    -fx-background-color: #14141A;
+}
+
+.userListOfGroup .list-cell:empty {
+    -fx-background-color: #272833;
+}
+
+.userListOfGroup .scroll-bar .track{
+    -fx-background-color: #272833;
+    -fx-border-color: #272833;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.userListOfGroup .scroll-bar .thumb {
+    -fx-background-color: #4F5168;
+}
+
+.userListOfGroup .scroll-bar .increment-button, .userListOfGroup .scroll-bar .decrement-button{
+    -fx-background-color: #272833;
+    -fx-border-color: #272833;
+    -fx-text-fill: #272833;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.messageListView .list-cell:empty .label {
+    -fx-background-color: transparent;
+}
+
+.chatListView .list-cell {
+    -fx-background-color: #272833;
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 20;
+    -fx-text-fill: #FFFFFF;
+    -fx-pref-height: 100px;
+}
+
+.chatListView .list-cell:hover {
+    -fx-background-color: #14141A;
+}
+
+.chatListView .list-cell:focused {
+    -fx-background-color: #14141A;
+}
+
+.chatListView .list-cell:empty {
+    -fx-background-color: #272833;
+}
+
+.userListView .list-cell {
+    -fx-background-color: #272833;
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 17;
+    -fx-text-fill: #FFFFFF;
+    -fx-pref-height: 60px;
+}
+
+.userListView .list-cell:hover {
+    -fx-background-color: #14141A;
+}
+
+.userListView .list-cell:focused {
+    -fx-background-color: #14141A;
+}
+
+.userListView .list-cell:empty {
+    -fx-background-color: #3A3C4D;
+}
+
+.selectedListView .list-cell{
+    -fx-background-color: transparent;
+}
+
+.selectedListView .list-cell .label{
+    display: inline-block;
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 13;
+    -fx-text-fill: #FFFFFF;
+    -fx-background: #1A1A22;
+    -fx-background-color: -fx-background ;
+    -fx-background-radius: 25px;
+    -fx-padding: 5px;
+}
+
+.selectedListView .list-cell:empty .label {
+    -fx-background-color: transparent;
+}
+
+.chatsPane {
+    -fx-background-color: #272833;
+}
+
+.mainPane {
+    -fx-background-color: #3A3C4D;
+}
+
+.createGroupButton {
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 13;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-color: #3A3C4D;
+}
+
+.createGroupButton:hover {
+    -fx-background-color: #14141A;
+}
+
+.createGroupButton:focused {
+    -fx-background-color: #272833;
+}
+
+.infoButton {
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 13;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-color: #14141A;
+}
+
+.infoButton:hover {
+    -fx-background-color: #272833;
+}
+
+.infoButton:focused {
+    -fx-background-color: #3A3C4D;
+}
+
+.countUnreadMessages {
+    display: inline-block;
+        -fx-font-family: "Poppins Medium";
+        -fx-font-size: 12;
+        -fx-text-fill: #FFFFFF;
+        -fx-background: #3D77A3;
+        -fx-background-color: -fx-background ;
+        -fx-background-radius: 30px;
+        -fx-padding: 6px ;
+}
+
+.date-picker .arrow-button > {
+    -fx-background-radius: 12px;
 }
