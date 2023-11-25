@@ -140,28 +140,40 @@
                 <version>3.0.0</version>
                 <executions>
                     <execution>
+                        <id>transform_bat_file</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.ade.chatclient.application.util.TransformToJavaw</mainClass>
+                            <commandlineArgs>${project.build.directory}\image\bin\${project.artifactId}</commandlineArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>final_package</id>
                         <phase>package</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
+                        <configuration>
+                            <executable>${project.basedir}\tools\warp-packer.exe</executable>
+                            <arguments>
+                                <argument>--arch</argument>
+                                <argument>windows-x64</argument>
+
+                                <argument>--input_dir</argument>
+                                <argument>${project.build.directory}\image</argument>
+
+                                <argument>--exec</argument>
+                                <argument>bin\${project.artifactId}w.bat</argument>
+
+                                <argument>--output</argument>
+                                <argument>${project.build.directory}\${project.artifactId}.exe</argument>
+                            </arguments>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <executable>${project.basedir}\tools\warp-packer.exe</executable>
-                    <arguments>
-                        <argument>--arch</argument>
-                        <argument>windows-x64</argument>
-
-                        <argument>--input_dir</argument>
-                        <argument>${project.build.directory}\image</argument>
-
-                        <argument>--exec</argument>
-                        <argument>bin\${project.artifactId}.bat</argument>
-
-                        <argument>--output</argument>
-                        <argument>${project.build.directory}\${project.artifactId}.exe</argument>
-                    </arguments>
-                </configuration>
             </plugin>
         </plugins>
     </build>
