@@ -3,7 +3,7 @@
 
 module com.ade.chatclient {
     requires javafx.controls;
-    requires javafx.media;
+//    requires javafx.media;
     requires javafx.fxml;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
