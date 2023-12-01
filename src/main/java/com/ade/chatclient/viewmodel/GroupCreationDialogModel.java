@@ -53,7 +53,7 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
     public void onAlreadySelectedClickListener(User user) {
         if (user != null) {
             selected = user;
-            System.out.println(selected);
+//            System.out.println(selected);
         }
     }
 
@@ -74,7 +74,7 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
     public void onMouseClickedListener(MouseEvent evt) {
         if (selected != null) {
             selectedUsersListProperty.remove(selected);
-            System.out.println(selectedUsersListProperty);
+//            System.out.println(selectedUsersListProperty);
         }
     }
 

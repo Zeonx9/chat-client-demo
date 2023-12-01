@@ -23,7 +23,7 @@ public class BackgroundService {
         if (isActive) {
             return;
         }
-        System.out.println("Background service started");
+//        System.out.println("Background service started");
         isActive = true;
 
         // call updates that should be called once

@@ -37,8 +37,11 @@ import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListene
 @Setter
 public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     private final ListProperty<Chat> chatListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
-    private final String mediaPath = "src/main/resources/com/ade/chatclient/sounds/sound.mp3";
-    private MediaPlayer mediaPlayer = new MediaPlayer(new Media(new File(mediaPath).toURI().toString()));
+
+    // TODO Исправить звук
+
+//    private final String mediaPath = "src/main/resources/com/ade/chatclient/sounds/sound.mp3";
+//    private MediaPlayer mediaPlayer = new MediaPlayer(new Media(new File(mediaPath).toURI().toString()));
     private Boolean isSearching = false;
     private Chat selected;
     public ListViewSelector<Chat> selector;
@@ -69,7 +72,9 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             if ((boolean) event.getOldValue()) {
                 selected = chat;
             }
-            else playSound();
+            else {
+//                playSound();
+            }
         }
     }
 
@@ -134,10 +139,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         dialog.populateUserList(model.getAllUsers());
 
         Optional<GroupRequest> answer = dialog.showAndWait();
-        if (answer.isPresent()) {
-            System.out.println(answer.get());
-            model.createGroupChat(answer.get());
-        }
+        answer.ifPresent(model::createGroupChat);
     }
 
 
@@ -182,11 +184,11 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         selector = new ListViewSelector<>(listView);
     }
 
-    /**
-     * Метод для проигрывания звука уведомления о новом сообщении
-     */
-    private void playSound(){
-        mediaPlayer.seek(Duration.ZERO);
-        mediaPlayer.play();
-    }
+//    /**
+//     * Метод для проигрывания звука уведомления о новом сообщении
+//     */
+//    private void playSound(){
+//        mediaPlayer.seek(Duration.ZERO);
+//        mediaPlayer.play();
+//    }
 }
