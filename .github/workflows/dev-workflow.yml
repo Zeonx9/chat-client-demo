@@ -47,7 +47,7 @@ jobs:
       - name: Show staged files
         run: cd staging ; ls
 
-      - uses: actions/Upload-artifacts@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: Package
           path: staging
