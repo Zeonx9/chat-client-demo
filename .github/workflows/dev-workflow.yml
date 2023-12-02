@@ -10,8 +10,7 @@ on:
 
 jobs:
   test:
-    # may be it should be windows
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -27,7 +26,7 @@ jobs:
 
   build-artifact:
     # may be it should be windows, but then run commands should be changed accordingly
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: test
 
     steps:
@@ -43,10 +42,10 @@ jobs:
         run: mvn package -DskipTests
 
       - name: Create artifact directory
-        run: mkdir staging && cp target/*.exe staging
+        run: mkdir staging ; copy target/*.exe staging
 
       - name: Show staged files
-        run: cd staging && ls -la
+        run: cd staging ; ls
 
       - uses: actions/Upload-artifacts@v3
         with:
