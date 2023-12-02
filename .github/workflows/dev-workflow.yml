@@ -63,6 +63,6 @@ jobs:
           path: staging
 
       - name: Show staged files
-        run: staging && ls -la
+        run: cd staging && ls -la
 
       # TODO upload to google drive
