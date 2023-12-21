@@ -1,11 +1,10 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.application.structure.AbstractViewModel;
+import com.ade.chatclient.application.Settings;
+import com.ade.chatclient.application.SettingsManager;
 import com.ade.chatclient.application.ViewHandler;
-import com.ade.chatclient.dtos.AuthRequest;
+import com.ade.chatclient.application.structure.AbstractViewModel;
 import com.ade.chatclient.model.ClientModel;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -13,14 +12,6 @@ import javafx.beans.property.StringProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.beans.PropertyChangeEvent;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
 import static com.ade.chatclient.application.Views.ADMIN_VIEW;
 import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
 
@@ -38,68 +29,33 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
 
     public LogInViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
-        model.addListener("savePassword", runLaterListener(this::setSavedLoginAndPassword));
-    }
-
-    /**
-     * Сохраняет новый пароль после изменения пароля
-     * @param propertyChangeEvent новый пароль
-     */
-    private void setSavedLoginAndPassword(PropertyChangeEvent propertyChangeEvent) {
-        writeInJson(AuthRequest.builder().login(loginTextProperty.get()).password((String) propertyChangeEvent.getNewValue()).build());
-    }
-
-    /**
-     * Если авторизация прошла успешно, то сохраняет пароль и логин в файл
-     */
-    public void setSavedLoginAndPassword() {
-        writeInJson(AuthRequest.builder().login(loginTextProperty.get()).password(passwordProperty.get()).build());
     }
 
     /**
      * сохраняет пароль и логин в login-password/package.json
      */
-    private void writeInJson(AuthRequest authRequest) {
-        Path directoryPath = Paths.get("src/main/resources/com/ade/chatclient/login-password");
-        if (!Files.exists(directoryPath)) {
-            try {
-                Files.createDirectories(directoryPath);
-            }
-            catch (Exception e){
-//                System.out.println("не удалось сохранить пароль");
-            }
-        }
-        try(Writer writer = Files.newBufferedWriter(Paths.
-                get("src/main/resources/com/ade/chatclient/login-password/package.json"))){
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.writeValue(writer, authRequest);
-        }
-        catch (Exception e){
-//            System.out.println("нет файла для сохранения пароля");
-        }
+    private void saveLoginAndPasswordToSettings(String login, String password) {
+        Settings settings = SettingsManager.getSettings();
+        settings.setLogin(login);
+        settings.setPassword(password);
+        SettingsManager.saveSettings(settings);
     }
 
     /**
      * Заполняет поле логина и пароля данными из файла package.json, в котором сохранены данные последней авторизации
      */
     public void fillSavedLoginAndPassword() {
-        try(Reader reader = Files.newBufferedReader(Paths.
-                get("src/main/resources/com/ade/chatclient/login-password/package.json"))){
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode parser = mapper.readTree(reader);
-            loginTextProperty.set(parser.path("login").asText());
-            passwordProperty.set(parser.path("password").asText());
-        }
-        catch (Exception e){
-//            System.out.println("нет файла c сохраненными паролями");
-        }
+        Settings settings = SettingsManager.getSettings();
+        loginTextProperty.set(settings.getLogin());
+        passwordProperty.set(settings.getPassword());
     }
 
     /**
      * Метод собирает введенные пользователем данные и отправляет их в модель для входа в аккаунт, после чего: либо открывает соответствующее View (пользователя или админа), либо выводит сообщение об ошибке авторизации
      */
     public void authorize() {
-        boolean success = model.authorize(loginTextProperty.get(), passwordProperty.get());
+        String login = loginTextProperty.get(), password = passwordProperty.get();
+        boolean success = model.authorize(login, password);
         if (!success) {
             errorMessageProperty.set("Unsuccessful");
             return;
@@ -107,8 +63,7 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
 
 //        System.out.println("Авторизация успешна, переход к окну чатов");
         errorMessageProperty.set("Success!");
-
-        setSavedLoginAndPassword();
+        saveLoginAndPasswordToSettings(login, password);
         if (model.isAdmin()) {
             viewHandler.openView(ADMIN_VIEW);
         }

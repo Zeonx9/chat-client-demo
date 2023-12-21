@@ -1,6 +1,8 @@
 package com.ade.chatclient.model;
 
 import com.ade.chatclient.application.AsyncRequestHandler;
+import com.ade.chatclient.application.Settings;
+import com.ade.chatclient.application.SettingsManager;
 import com.ade.chatclient.domain.*;
 import com.ade.chatclient.dtos.*;
 import lombok.Getter;
@@ -249,9 +251,9 @@ public class ClientModelImpl implements ClientModel{
         Set<Long> newChatIds = (msgInExistingChat.get(false).stream()
                 .map(Message::getChatId)
                 .collect(Collectors.toSet()));
-        if (newChatIds.size() > 0) {
-//            System.out.println("New chats recieved! (" + newChatIds.size() + ")");
-        }
+//        if (!newChatIds.isEmpty()) {
+////            System.out.println("New chats recieved! (" + newChatIds.size() + ")");
+//        }
         newChatIds.forEach(this::fetchNewChatFromServer);
     }
 
@@ -367,11 +369,10 @@ public class ClientModelImpl implements ClientModel{
         handler.sendPut("/auth/user/password", request, AuthResponse.class)
                 .thenAccept(response -> {
                         changeSupport.firePropertyChange("passwordChangeResponded", null, "successfully!");
-                        changeSupport.firePropertyChange("savePassword", null, request.getNewPassword());
+                        SettingsManager.changeSettings(Settings::setPassword, request.getNewPassword());
                 }
                 ).exceptionally(e -> {
                     changeSupport.firePropertyChange("passwordChangeResponded", null, "unsuccessful attempt!");
-//                    System.out.println(e.getMessage());
                     return null;
                 });
     }
