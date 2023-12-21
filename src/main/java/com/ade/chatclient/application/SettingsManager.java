@@ -9,6 +9,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.BiConsumer;
 
+/**
+ * Дает доступ к настройкам пользователя, содержит статические методы получения и изменения настроек
+ */
 public class SettingsManager {
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final String appDirectoryName = System.getenv("USERPROFILE") + "\\AppData\\Local\\InTouch";
@@ -34,6 +37,9 @@ public class SettingsManager {
         return file;
     }
 
+    /**
+     * Возвращает объект Настроек
+     */
     public static Settings getSettings() {
         File file = checkSettingsFile();
         try {
@@ -43,6 +49,9 @@ public class SettingsManager {
         }
     }
 
+    /**
+     * Записывает переданные настройки в json файл
+     */
     public static void saveSettings(Settings newSettings) {
         File file = checkSettingsFile();
         try {
@@ -52,6 +61,9 @@ public class SettingsManager {
         }
     }
 
+    /**
+     * С помощью переданного сеттера изменяет одно поле в настройках и сохраняет его в json
+     */
     public static <T> void changeSettings(BiConsumer<Settings, T> settingSetter, T newValue) {
         var settings = getSettings();
         settingSetter.accept(settings, newValue);
