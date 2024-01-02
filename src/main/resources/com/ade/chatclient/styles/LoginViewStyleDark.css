@@ -1,0 +1,77 @@
+@font-face {
+    font-family: 'Montserrat Bold';
+    src: url('../fonts/Montserrat-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat Medium';
+    src: url('../fonts/Montserrat-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat Regular';
+    src: url('../fonts/Montserrat-Regular.ttf');
+}
+
+.background-login {
+    -fx-background-color: #212229;
+}
+
+.logo {
+    -fx-font-family: "Montserrat Bold";
+    -fx-font-size: 14;
+    -fx-text-fill: #FFFFFF;
+}
+
+.header {
+    -fx-font-family: "Montserrat Medium";
+    -fx-font-size: 20;
+    -fx-text-fill: #FFFFFF;
+}
+
+.subtitle {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+    -fx-text-fill: #FFFFFF;
+}
+
+.text-input {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 5px;
+
+    -fx-background-color: #2F303B;
+    -fx-border-radius: 0px;
+    -fx-border-width: 0 0 0 0;
+}
+
+.text-input:hover {
+    -fx-border-color: #3E46FF;
+    -fx-border-radius: 3px;
+    -fx-border-width: 0 0 0 3;
+}
+
+.text-input:focused {
+    -fx-border-color: #3E46FF;
+    -fx-border-radius: 3px;
+    -fx-border-width: 0 0 0 3;
+}
+
+.button {
+    -fx-font-family: "Montserrat Medium";
+    -fx-font-size: 14;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-color: #3E46FF;
+    -fx-background-radius: 5px;
+}
+
+.button:hover {
+    -fx-background-color: #777CFF;
+    -fx-text-fill: #FFFFFF;
+}
+
+.button:focused {
+    -fx-background-color: #DCDEFF;
+    -fx-text-fill: #212229;
+}

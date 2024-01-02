@@ -23,6 +23,8 @@ public class ClientApplication extends Application {
         stage.setTitle("InTouch");
         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/icon.png")));
         stage.getIcons().add(image);
+        stage.setMinWidth(800);
+        stage.setMinHeight(500);
         StartClientApp.start(stage);
     }
 
