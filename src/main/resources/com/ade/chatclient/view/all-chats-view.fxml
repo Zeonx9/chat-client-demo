@@ -22,7 +22,6 @@
                </font>
             </TextField>
             <Label layoutY="40.0" maxWidth="94.0" prefHeight="28.0" prefWidth="94.0" styleClass="header2" text="All chats" wrapText="true" />
-            <Button fx:id="createGroupButton" layoutX="184.0" layoutY="40.0" onAction="#onNewChatClicked" styleClass="createGroupButton" text="create new group chat" />
         </Group>
     </top>
     <center>
