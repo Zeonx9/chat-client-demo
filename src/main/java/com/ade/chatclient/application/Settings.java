@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Settings {
+    @Builder.Default
     private String login = "";
+    @Builder.Default
     private String password = "";
 }

@@ -3,11 +3,12 @@ package com.ade.chatclient.model;
 import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.application.Settings;
 import com.ade.chatclient.application.SettingsManager;
+import com.ade.chatclient.application.api.AuthorizationApi;
 import com.ade.chatclient.application.api.StompSessionApi;
-import com.ade.chatclient.application.api.StompSessionApiIml;
 import com.ade.chatclient.domain.*;
 import com.ade.chatclient.dtos.*;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,8 +26,11 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Slf4j
+@RequiredArgsConstructor
 public class ClientModelImpl implements ClientModel{
     private final AsyncRequestHandler handler;
+    private final AuthorizationApi authApi;
+    private final StompSessionApi stompSessionApi;
     private User myself;
     private Chat selectedChat;
     private Company company;
@@ -34,12 +38,7 @@ public class ClientModelImpl implements ClientModel{
     private List<Chat> myChats = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
-    private StompSessionApi stompSessionApi;
 
-    public ClientModelImpl(AsyncRequestHandler handler) {
-        log.info("model created");
-        this.handler = handler;
-    }
 
     @Override
     public boolean authorize(String login, String password) {
@@ -60,11 +59,7 @@ public class ClientModelImpl implements ClientModel{
 
     private boolean authorizeRequest(String login, String password) {
         try {
-            AuthResponse auth = handler.sendPost(
-                    "/auth/login",
-                    AuthRequest.builder().login(login).password(password).build(),
-                    AuthResponse.class, false
-            ).get();
+            AuthResponse auth = authApi.authorize(login, password);
 
             setMyself(auth.getUser());
             setCompany(auth.getCompany());
@@ -82,7 +77,7 @@ public class ClientModelImpl implements ClientModel{
     @Override
     public AuthRequest registerUser(RegisterData data) {
         try {
-            return handler.sendPost("/auth/register", data, AuthRequest.class, true).get();
+            return authApi.registerUser(data);
         } catch (Exception e) {
             log.error("user registration failed", e);
             return null;
@@ -373,12 +368,10 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void startWebSocketConnection() {
-        stompSessionApi = new StompSessionApiIml();
-        stompSessionApi.connectAsync("ws://localhost:8080/ws-endpoint").thenAccept(api -> {
-            api.subscribeTopicConnection();
-            api.subscribeTopicMessages();
-            api.sendConnectSignal(myself);
-        });
+        stompSessionApi.connect();
+        stompSessionApi.subscribeTopicConnection();
+        stompSessionApi.subscribeQueueMessages(myself.getId());
+        stompSessionApi.sendConnectSignal(myself);
     }
 
     @Override

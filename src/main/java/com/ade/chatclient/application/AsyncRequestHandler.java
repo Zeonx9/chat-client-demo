@@ -3,7 +3,7 @@ package com.ade.chatclient.application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.net.URI;
@@ -15,11 +15,13 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import static com.ade.chatclient.application.StartClientApp.URLS;
+
 /**
  * Главный класс обрабатывающий HTTP запрос исходящие из приложения
  * два обязательх поля, которые должны быть вставленны через сеттеры.
  */
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class AsyncRequestHandler {
     private final static HttpClient client = HttpClient.newHttpClient();
     private final static ObjectMapper mapper = new ObjectMapper();
@@ -28,8 +30,6 @@ public class AsyncRequestHandler {
         mapper.findAndRegisterModules();
     }
 
-    @Setter
-    private String url;
     @Setter
     private String authToken;
 
@@ -137,14 +137,11 @@ public class AsyncRequestHandler {
     }
 
     private HttpRequest.Builder configureRequest(String path, Map<String, String> params, boolean authorized) {
-        if (url == null) {
-            throw new IllegalStateException("URL of server is not set yet!");
-        }
         if (authorized && authToken == null) {
             throw new IllegalStateException("Authorized request cannot be built, token is not set yet!");
         }
 
-        String uriStr = url + path;
+        String uriStr = URLS.getServerUrl() + path;
         if (!params.isEmpty())
             uriStr += "?";
 

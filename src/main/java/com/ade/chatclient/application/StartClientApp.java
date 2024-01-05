@@ -7,6 +7,8 @@ import javafx.stage.Stage;
  */
 public class StartClientApp {
     private static ViewModelProvider viewModelProvider;
+    // Содержит набор url для обращения к серверу, используется статически в других местах приложения
+    public final static ChatUrls URLS = ChatUrls.LOCAL;
 
     /**
      * Метод, который запрашивает адрес сервера приложения
@@ -15,12 +17,9 @@ public class StartClientApp {
      * @param stage объект Stage, который получен от метода start в главном классе приложения
      */
     public static void start(Stage stage) {
-
+        ApiFactory apiFactory = new ApiFactory();
         // создание фабрик для управления слоями приложения
-        ModelFactory modelFactory = new ModelFactory();
-//        modelFactory.injectServerUrl("http://195.133.196.67:8080");
-        modelFactory.injectServerUrl("http://localhost:8080");
-
+        ModelFactory modelFactory = new ModelFactory(apiFactory);
 
         viewModelProvider = new ViewModelProvider(modelFactory);
         ViewHandler viewHandler = new ViewHandler(stage, viewModelProvider);

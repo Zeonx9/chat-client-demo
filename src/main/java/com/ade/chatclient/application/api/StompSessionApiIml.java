@@ -5,13 +5,11 @@ import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.ConnectEvent;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
-import org.springframework.messaging.simp.stomp.StompSessionHandler;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
@@ -22,30 +20,37 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
-@NoArgsConstructor
+import static com.ade.chatclient.application.StartClientApp.URLS;
+
 @Slf4j
 public class StompSessionApiIml implements StompSessionApi {
+    private final WebSocketStompClient stompClient;
     private StompSession session;
 
-    @Override
-    public CompletableFuture<StompSessionApi> connectAsync(String url) {
+    public StompSessionApiIml() {
         List<Transport> transports = List.of(
                 new WebSocketTransport(new StandardWebSocketClient()),
                 new RestTemplateXhrTransport()
         );
         WebSocketClient webSocketClient = new SockJsClient(transports);
-        WebSocketStompClient stompClient = new WebSocketStompClient(webSocketClient);
+        stompClient = new WebSocketStompClient(webSocketClient);
+
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
         converter.getObjectMapper().registerModule(new JavaTimeModule());
         stompClient.setMessageConverter(converter);
+    }
 
-        StompSessionHandler sessionHandler = new ApplicationStompSessionHandler();
-        return stompClient.connectAsync(url, sessionHandler).thenApply(newSession -> {
-            session = newSession;
-            return this;
-        });
+    @Override
+    public void connect() {
+        if (session != null) {
+            throw new IllegalStateException("Attempt to reconnect without closing previous connection");
+        }
+        try {
+            session = stompClient.connectAsync(URLS.getStompEndpointUrl(), new ApplicationStompSessionHandler()).get();
+        } catch (Exception e) {
+            log.error("failed to get stomp connection", e);
+        }
     }
 
     @Override
@@ -65,8 +70,8 @@ public class StompSessionApiIml implements StompSessionApi {
     }
 
     @Override
-    public void subscribeTopicMessages() {
-        session.subscribe("/topic/public-messages", new StompFrameHandler() {
+    public void subscribeQueueMessages(Long selfId) {
+        session.subscribe(String.format("/user/%d/queue/messages", selfId), new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
                 return Message.class;
@@ -75,7 +80,7 @@ public class StompSessionApiIml implements StompSessionApi {
             @Override
             public void handleFrame(StompHeaders headers, Object payload) {
                 Message message = (Message) payload;
-                log.info("public message received: {}", message);
+                log.info("message received: msg=[text='{}', authorId={}, time={}]", message.getText(), message.getAuthor().getId(), message.getDateTime());
             }
         });
     }
@@ -87,11 +92,8 @@ public class StompSessionApiIml implements StompSessionApi {
 
     @Override
     public void sendDisconnectSignal(User user) {
+        if (session == null) return;
         session.send("/app/disconnect", user);
-    }
-
-    @Override
-    public void sendChatMessage(Message message) {
-        session.send("/app/chat", message);
+        session.disconnect();
     }
 }

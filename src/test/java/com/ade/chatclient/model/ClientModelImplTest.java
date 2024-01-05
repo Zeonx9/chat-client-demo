@@ -29,7 +29,7 @@ class ClientModelImplTest {
 
     @BeforeEach
     void setUp() {
-        underTest = new ClientModelImpl(handler);
+        underTest = new ClientModelImpl(handler, null, null);
         User myself = User.builder().username("Dasha").realName("Dasha").surname("Vav").id(1L).build();
         underTest.setMyself(myself);
         User user = User.builder().username("Egor").id(1L).build();

@@ -2,35 +2,30 @@ package com.ade.chatclient.application;
 
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.model.ClientModelImpl;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
- * фабрика для моделей в приложении, на данный момент в приложении всего одна модель, но со временем она может
- * усложинться и придется разбить на 2 модели или болле,
+ * Фабрика для моделей в приложении, на данный момент в приложении всего одна модель, но со временем она может
+ * усложниться и придется разбить на 2 модели или более,
  * этот класс будет предоставлять доступ к моделям для вью-моделей
- * так же зависит от строки адреса сервера (туннеля ngrok)
  */
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class ModelFactory {
+    private final ApiFactory apiFactory;
     private ClientModel clientModel;
-    private final AsyncRequestHandler handler = new AsyncRequestHandler();
 
     /**
-     * вставляет URL сервера в RequestHandler
-     * @param serverUrl - полученный url
-     */
-    public void injectServerUrl(String serverUrl) {
-        handler.setUrl(serverUrl + "/chat_api/v1");
-    }
-
-    /**
-     * пока что позволяет получить только одну модель, и реализует "линивую загрузку",
+     * Пока что позволяет получить только одну модель, и реализует "ленивую загрузку",
      * что значит создается только один объект
      * @return модель для приложения
      */
     public ClientModel getModel() {
         if (clientModel == null) {
-            clientModel = new ClientModelImpl(handler);
+            clientModel = new ClientModelImpl(
+                    apiFactory.getRequestHandler(),
+                    apiFactory.provideAuthorizationApi(),
+                    apiFactory.provideStompSessionApi()
+            );
         }
         return clientModel;
     }

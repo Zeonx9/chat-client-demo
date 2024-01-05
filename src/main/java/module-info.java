@@ -44,4 +44,7 @@ module com.ade.chatclient {
 
     exports com.ade.chatclient.application.structure;
     opens com.ade.chatclient.application.structure to javafx.fxml;
+
+    exports com.ade.chatclient.application.api;
+    opens com.ade.chatclient.application.api to javafx.fxml;
 }
