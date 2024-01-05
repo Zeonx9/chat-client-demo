@@ -7,6 +7,7 @@ import com.ade.chatclient.application.util.BottomScroller;
 import com.ade.chatclient.application.util.PaneSwitcher;
 import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.Message;
+import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.view.GroupCreationDialog;
@@ -14,9 +15,14 @@ import com.ade.chatclient.view.GroupInfoDialog;
 import com.ade.chatclient.view.cellfactory.MessageListCellFactory;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import lombok.Getter;
 
 import java.beans.PropertyChangeEvent;
@@ -34,12 +40,14 @@ import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListene
 @Getter
 public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final ListProperty<Message> messageListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final ObservableList<Node> chatIconNodes = FXCollections.observableArrayList();
     private final StringProperty messageTextProperty = new SimpleStringProperty();
     private final BooleanProperty showChatsButtonDisabled = new SimpleBooleanProperty(true);
     private final BooleanProperty showUsersButtonDisabled = new SimpleBooleanProperty(false);
     private final BooleanProperty showUserProfileDisabled = new SimpleBooleanProperty(false);
     private final BooleanProperty infoButtonFocusProperty = new SimpleBooleanProperty(false);
     private final StringProperty selectedChatNameProperty = new SimpleStringProperty();
+    private final StringProperty selectedChatInfoProperty = new SimpleStringProperty();
     private final StringProperty openViewNameProperty = new SimpleStringProperty();
     private final DoubleProperty opacityProperty = new SimpleDoubleProperty(0);
     private BottomScroller<Message> scroller;
@@ -62,12 +70,37 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
             List<Message> messages = (List<Message>) event.getNewValue();
             messageListProperty.clear();
             messageListProperty.addAll(messages);
-            selectedChatNameProperty.setValue(model.getSelectedChat().getChatName(model.getMyself().getId()));
+            fillChatInfo();
             scroller.scrollDown();
         }
 
         if (model.getSelectedChat().getIsPrivate()) opacityProperty.set(0);
         else opacityProperty.set(100);
+    }
+
+    private void fillChatInfo() {
+        synchronized (messageListProperty) {
+            selectedChatNameProperty.setValue(model.getSelectedChat().getChatName(model.getMyself().getId()));
+            Boolean isPrivateChat = model.getSelectedChat().getIsPrivate();
+            List<User> members = model.getSelectedChat().getMembers();
+            Circle circle = new Circle(20, Color.rgb(145, 145, 145));
+            Label label = new Label();
+            label.setStyle("-fx-text-fill: #FFFFFF");
+
+            if (isPrivateChat) {
+                for (User user : members) {
+                    if (!user.getId().equals(model.getMyself().getId())) {
+                        selectedChatInfoProperty.set(user.getUsername());
+                        label.setText(user.getRealName().charAt(0) + "" + user.getSurname().charAt(0));
+                    }
+                }
+            } else {
+                selectedChatInfoProperty.setValue(members.size() + " members");
+                label.setText(String.valueOf(Character.toUpperCase(model.getSelectedChat().getGroup().getName().charAt(0))));
+            }
+
+            chatIconNodes.addAll(circle, label);
+        }
     }
 
     /**

@@ -90,3 +90,109 @@
     -fx-font-size: 14;
     -fx-text-fill: #FFFFFF;
 }
+
+.grayText {
+    -fx-text-fill: lightgray;
+    -fx-font-size: 14;
+    -fx-font-family: "Montserrat Regular";
+}
+
+.chatInfoBtn {
+    -fx-background-color: #212229;
+    -fx-background-image: url("../img/info_button.png");
+
+    -fx-background-radius: 40px;
+}
+
+.chatInfoBtn:hover {
+    -fx-background-color: #3E46FF;
+}
+
+.chatInfoBtn:focused {
+    -fx-background-color: #777CFF;
+}
+
+.photoPane {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Montserrat Bold";
+    -fx-font-size: 14px;
+}
+
+.messageInput {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 10px;
+    -fx-background-color: #212229;
+}
+
+.sendMessageBtn {
+    -fx-background-image: url("../img/send_mes_btn.png");
+    -fx-background-color: transparent;
+}
+
+.sendMessageBtn:hover {
+    -fx-background-image: url("../img/send_mes_btn_hover.png");
+    -fx-background-color: transparent;
+}
+
+.sendMessageBtn:focused {
+    -fx-background-image: url("../img/send_mes_btn_hover.png");
+    -fx-background-color: transparent;
+}
+
+.messageListView {
+    -fx-background-color: #2F303B;
+}
+
+.messageListView .list-cell .messageText {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+    -fx-text-fill: #FFFFFF;
+}
+
+.messageListView .list-cell .dataText {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 12;
+    -fx-text-fill: #FFFFFF;
+}
+
+.messageListView .list-cell{
+    -fx-background-color: #2F303B;
+}
+
+.messageListView .scroll-bar .track{
+    -fx-background-color: #2F303B;
+}
+
+.messageListView .scroll-bar .thumb {
+    -fx-background-color: #212229;
+}
+
+.messageListView .scroll-bar .corner {
+    -fx-background-color: #2F303B ;
+}
+
+.messageListView .scroll-bar .increment-button, .messageListView .scroll-bar .decrement-button{
+    -fx-background-color: #2F303B;
+    -fx-border-color: #2F303B;
+    -fx-text-fill: #2F303B;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.messageListView .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-pref-height: 0;
+}
+
+.messageListView .list-cell:empty .label {
+    -fx-background-color: #2F303B;
+}
+
+.messagePane {
+    -fx-background-radius: 10px;
+}
+
+.messageListView .list-cell .messageLayout {
+    -fx-background-color: #2F303B;
+}

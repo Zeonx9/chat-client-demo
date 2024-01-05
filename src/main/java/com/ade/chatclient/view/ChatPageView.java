@@ -5,12 +5,14 @@ import com.ade.chatclient.application.structure.AbstractView;
 import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.viewmodel.ChatPageViewModel;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import lombok.Getter;
 
 /**
@@ -21,11 +23,13 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
     @FXML private Button createGroupButton;
     @FXML private Button showChatsButton;
     @FXML private Button showUsersButton;
-    @FXML private Label userNameLabel;
+    @FXML private Label chatNameLabel;
+    @FXML private Label chatInfoLabel;
     @FXML private Label viewNameLabel;
     @FXML private ListView<Message> messageListView;
     @FXML private TextField messageTextField;
     @FXML private Button infoButton;
+    @FXML private StackPane photoPane;
     @Getter
     @FXML private Pane placeHolder;
 
@@ -35,7 +39,8 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         viewModel.addPaneSwitcher(placeHolder);
 
         messageTextField.textProperty().bindBidirectional(viewModel.getMessageTextProperty());
-        userNameLabel.textProperty().bind(viewModel.getSelectedChatNameProperty());
+        chatNameLabel.textProperty().bind(viewModel.getSelectedChatNameProperty());
+        chatInfoLabel.textProperty().bind(viewModel.getSelectedChatInfoProperty());
         viewNameLabel.textProperty().bind(viewModel.getOpenViewNameProperty());
         messageListView.itemsProperty().bind(viewModel.getMessageListProperty());
         showChatsButton.disableProperty().bind(viewModel.getShowChatsButtonDisabled());
@@ -48,6 +53,8 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         infoButton.opacityProperty().bind(viewModel.getOpacityProperty());
         infoButton.focusTraversableProperty().bind(viewModel.getInfoButtonFocusProperty());
         createGroupButton.setFocusTraversable(false);
+
+        Bindings.bindContent(photoPane.getChildren(), viewModel.getChatIconNodes());
 
         viewModel.openChatPane();
     }

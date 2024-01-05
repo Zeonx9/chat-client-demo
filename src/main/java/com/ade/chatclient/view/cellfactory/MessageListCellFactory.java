@@ -19,6 +19,7 @@ public class MessageListCellFactory extends ListCell<Message> {
     private Long selfId;
     @FXML private VBox wrapper;
     @FXML private AnchorPane layout;
+    @FXML private AnchorPane messagePane;
     @FXML private Label messageText;
     @FXML private Label dataText;
     public void init(Long selfId) {
@@ -46,10 +47,12 @@ public class MessageListCellFactory extends ListCell<Message> {
         if (item.getAuthor().getId().equals(selfId)) {
             AnchorPane.setRightAnchor(wrapper, 0.0);
             wrapper.setAlignment(Pos.CENTER_RIGHT);
+            messagePane.setStyle("-fx-background-color: #3E46FF");
         }
         else {
             AnchorPane.setLeftAnchor(wrapper, 0.0);
             wrapper.setAlignment(Pos.CENTER_LEFT);
+            messagePane.setStyle("-fx-background-color: #212229");
         }
         setGraphic(layout);
     }
@@ -69,6 +72,8 @@ public class MessageListCellFactory extends ListCell<Message> {
      */
     private String prepareMessageDataToBeShown(Message msg) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm, dd.MM");
+        if (msg.getAuthor().getId().equals(selfId))
+            return msg.getDateTime().format(dtf);
         return msg.getAuthor().getUsername() + ", " + msg.getDateTime().format(dtf);
     }
 }

@@ -53,24 +53,6 @@
     -fx-background-color: #1A1A22;
 }
 
-.buttonSend {
-    -fx-background-radius: 15px;
-    -fx-background-color: transparent;
-    -fx-background-image: url("../img/send_mes.png");
-}
-
-.buttonSend:hover {
-    -fx-background-radius: 15px;
-    -fx-background-color: transparent;
-    -fx-background-image: url("../img/send_mes_hover.png");
-}
-
-.buttonSend:focused {
-    -fx-background-radius: 15px;
-    -fx-background-color: transparent;
-    -fx-background-image: url("../img/send_mes_focused.png");
-}
-
 .messageInput {
     -fx-font-family: "Poppins Regular";
     -fx-font-size: 17;
