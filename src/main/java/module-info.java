@@ -3,7 +3,6 @@
 
 module com.ade.chatclient {
     requires javafx.controls;
-//    requires javafx.media;
     requires javafx.fxml;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
@@ -11,7 +10,9 @@ module com.ade.chatclient {
     requires java.net.http;
     requires lombok;
     requires java.desktop;
-
+    requires spring.messaging;
+    requires spring.websocket;
+    requires org.slf4j;
 
 
     exports com.ade.chatclient;

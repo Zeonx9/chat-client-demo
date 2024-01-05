@@ -3,10 +3,13 @@ package com.ade.chatclient.model;
 import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.application.Settings;
 import com.ade.chatclient.application.SettingsManager;
+import com.ade.chatclient.application.api.StompSessionApi;
+import com.ade.chatclient.application.api.StompSessionApiIml;
 import com.ade.chatclient.domain.*;
 import com.ade.chatclient.dtos.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@Slf4j
 public class ClientModelImpl implements ClientModel{
     private final AsyncRequestHandler handler;
     private User myself;
@@ -30,21 +34,18 @@ public class ClientModelImpl implements ClientModel{
     private List<Chat> myChats = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+    private StompSessionApi stompSessionApi;
 
     public ClientModelImpl(AsyncRequestHandler handler) {
-//        System.out.println("model created!");
+        log.info("model created");
         this.handler = handler;
     }
 
     @Override
     public boolean authorize(String login, String password) {
-//        System.out.println("Authorize request: " + login);
-
         if (myself != null) {
-//            System.out.println("Попытка ре-авторизации");
             return true;
         }
-
         return authorizeRequest(login, password);
     }
 
@@ -71,10 +72,10 @@ public class ClientModelImpl implements ClientModel{
             handler.setAuthToken(auth.getToken());
         }
         catch (Exception e) {
-//            System.out.println("login failed\n" + e.getMessage());
+            log.error("login failed", e);
             return false;
         }
-//        System.out.println("login OK");
+        log.info("authorized successfully");
         return true;
     }
 
@@ -83,7 +84,7 @@ public class ClientModelImpl implements ClientModel{
         try {
             return handler.sendPost("/auth/register", data, AuthRequest.class, true).get();
         } catch (Exception e) {
-//            System.out.println(e.getMessage());
+            log.error("user registration failed", e);
             return null;
         }
     }
@@ -108,7 +109,6 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public synchronized void fetchChats() {
-//        System.out.println("chats fetched");
         if (myself == null) {
             return;
         }
@@ -119,7 +119,7 @@ public class ClientModelImpl implements ClientModel{
             setMyChats(chats);
         }
         catch (Exception e){
-//            System.out.println("error");
+            log.error("chat fetching failed", e);
         }
 
     }
@@ -148,7 +148,6 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void setSelectChat(Chat chat) {
-//        System.out.println("chat selected!");
         synchronized (this) {
             selectedChat = chat;
         }
@@ -172,7 +171,6 @@ public class ClientModelImpl implements ClientModel{
         if (selectedChat == null) {
             return;
         }
-//        System.out.println("sending message...");
 
         Chat copySelectedChat;
         synchronized (this) {
@@ -193,7 +191,6 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void fetchUsers() {
-//        System.out.println("fetching users");
         handler.sendGet("/company/" + company.getId() + "/users", TypeReferences.ListOfUser)
                 .thenApply(userList -> {
                     userList.remove(myself);
@@ -251,17 +248,12 @@ public class ClientModelImpl implements ClientModel{
         Set<Long> newChatIds = (msgInExistingChat.get(false).stream()
                 .map(Message::getChatId)
                 .collect(Collectors.toSet()));
-//        if (!newChatIds.isEmpty()) {
-////            System.out.println("New chats recieved! (" + newChatIds.size() + ")");
-//        }
         newChatIds.forEach(this::fetchNewChatFromServer);
     }
 
     private void fetchNewChatFromServer(Long chatId) {
-//        System.out.println("fetching one chat");
         handler.sendGet("/chats/" + chatId, Chat.class)
                 .thenAccept(chat -> {
-//                    System.out.println("creation of new chat:" + chat.getId());
                     changeSupport.firePropertyChange("NewChatCreated", null, chat);
                     synchronized (this) {
                         myChats.add(0, chat);
@@ -281,7 +273,6 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void createGroupChat(GroupRequest groupRequest) {
-//        System.out.println("creating group");
         try {
             groupRequest.getIds().add(myself.getId());
             groupRequest.getGroupInfo().setCreator(myself);
@@ -294,7 +285,7 @@ public class ClientModelImpl implements ClientModel{
                 }
             }
         } catch (Exception e) {
-//            System.out.println("Fail to Create group");
+            log.error("group chat creation failed", e);
         }
     }
 
@@ -311,10 +302,8 @@ public class ClientModelImpl implements ClientModel{
     @Override
     public Chat createDialogFromAllUsers(User user) {
         try {
-//            System.out.println("opening chat wiht " + user.getId());
             Chat chat = futureChatWith(user).get();
             if (!getMyChats().contains(chat)) {
-//                System.out.println("it was a new chat");
                 changeSupport.firePropertyChange("NewChatCreated", null, chat);
                 synchronized (this) {
                     myChats.add(0, chat);
@@ -322,8 +311,7 @@ public class ClientModelImpl implements ClientModel{
             }
             return chat;
         } catch (Exception e) {
-//            System.out.println("Fail to Create dialog");
-//            System.out.println(e.getMessage());
+            log.error("failed to create dialog from all users ", e);
             throw new RuntimeException(e);
         }
     }
@@ -373,6 +361,7 @@ public class ClientModelImpl implements ClientModel{
                 }
                 ).exceptionally(e -> {
                     changeSupport.firePropertyChange("passwordChangeResponded", null, "unsuccessful attempt!");
+                    log.error("failed to change password", e);
                     return null;
                 });
     }
@@ -380,6 +369,23 @@ public class ClientModelImpl implements ClientModel{
     @Override
     public void addListener(String eventName, PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(eventName, listener);
+    }
+
+    @Override
+    public void startWebSocketConnection() {
+        stompSessionApi = new StompSessionApiIml();
+        stompSessionApi.connectAsync("ws://localhost:8080/ws-endpoint").thenAccept(api -> {
+            api.subscribeTopicConnection();
+            api.subscribeTopicMessages();
+            api.sendConnectSignal(myself);
+        });
+    }
+
+    @Override
+    public void stopWebSocketConnection() {
+        if (stompSessionApi != null) {
+            stompSessionApi.sendDisconnectSignal(myself);
+        }
     }
 
 }

@@ -18,7 +18,8 @@ public class StartClientApp {
 
         // создание фабрик для управления слоями приложения
         ModelFactory modelFactory = new ModelFactory();
-        modelFactory.injectServerUrl("http://195.133.196.67:8080");
+//        modelFactory.injectServerUrl("http://195.133.196.67:8080");
+        modelFactory.injectServerUrl("http://localhost:8080");
 
 
         viewModelProvider = new ViewModelProvider(modelFactory);
@@ -33,6 +34,7 @@ public class StartClientApp {
      */
     public static void stop() {
         viewModelProvider.getBackgroundService().stop();
+        viewModelProvider.getModelFactory().getModel().stopWebSocketConnection();
     }
 
 }

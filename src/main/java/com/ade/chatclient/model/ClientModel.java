@@ -151,4 +151,8 @@ public interface ClientModel {
      * После завершения поиска чатов, возвращает исходное значение всех чатов через лисенер "gotChats"
      */
     void getMyChatsAfterSearching();
+
+    void startWebSocketConnection();
+
+    void stopWebSocketConnection();
 }

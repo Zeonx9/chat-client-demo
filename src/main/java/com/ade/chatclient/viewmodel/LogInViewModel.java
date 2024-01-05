@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import static com.ade.chatclient.application.Views.ADMIN_VIEW;
 import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
@@ -21,6 +22,7 @@ import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
  */
 @Getter
 @Setter
+@Slf4j
 public class LogInViewModel extends AbstractViewModel<ClientModel> {
     private StringProperty loginTextProperty = new SimpleStringProperty();
     private StringProperty passwordProperty = new SimpleStringProperty();
@@ -61,8 +63,9 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
             return;
         }
 
-//        System.out.println("Авторизация успешна, переход к окну чатов");
         errorMessageProperty.set("Success!");
+        model.startWebSocketConnection();
+
         saveLoginAndPasswordToSettings(login, password);
         if (model.isAdmin()) {
             viewHandler.openView(ADMIN_VIEW);
