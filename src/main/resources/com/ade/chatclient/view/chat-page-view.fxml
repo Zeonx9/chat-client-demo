@@ -1,35 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1000.0" styleClass="mainPane" stylesheets="@../styles/ChatPageViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.ChatPageView">
-    <BorderPane prefHeight="600.0" prefWidth="80.0" styleClass="leftPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <center>
-            <Group BorderPane.alignment="CENTER">
-                <cursor>
-                    <Cursor fx:constant="DEFAULT" />
-                </cursor>
-                <Button fx:id="showChatsButton" focusTraversable="false" layoutY="100.0" mnemonicParsing="false" onAction="#onShowChatsClicked" prefHeight="50.0" prefWidth="50.0" styleClass="showChatsBtn" />
-                <Button fx:id="showUsersButton" focusTraversable="false" mnemonicParsing="false" onAction="#onShowUsersClicked" prefHeight="50.0" prefWidth="50.0" styleClass="ShowUsersBtn" />
-            <Button fx:id="showUserProfileButton" focusTraversable="false" layoutY="-100.0" mnemonicParsing="false" onAction="#onShowUserProfileClicked" prefHeight="50.0" prefWidth="50.0" styleClass="ShowUserDataBtn" />
-            </Group>
-        </center>
-    </BorderPane>
-
+<AnchorPane minHeight="500.0" minWidth="800.0" prefHeight="500.0" prefWidth="800.0" styleClass="background-chat-page" stylesheets="@../styles/ChatPageViewStyleDark.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.ChatPageView">
+    <AnchorPane prefHeight="50.0" prefWidth="350.0" styleClass="buttons-pane" AnchorPane.topAnchor="0.0">
+        <Button fx:id="showChatsButton" focusTraversable="false" layoutX="121.0" layoutY="5.0" mnemonicParsing="false"
+                onAction="#onShowChatsClicked" prefHeight="40.0" prefWidth="40.0" styleClass="showChatsBtn"
+                AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="170.0" AnchorPane.topAnchor="5.0"/>
+        <Button fx:id="showUsersButton" focusTraversable="false" layoutX="182.0" layoutY="5.0" mnemonicParsing="false"
+                onAction="#onShowUsersClicked" prefHeight="40.0" prefWidth="40.0" styleClass="showUsersBtn"
+                AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="5.0"/>
+        <Button fx:id="showUserProfileButton" focusTraversable="false" layoutX="235.0" layoutY="5.0"
+                mnemonicParsing="false" onAction="#onShowUserProfileClicked" prefHeight="40.0" prefWidth="40.0"
+                styleClass="showUserProfileBtn" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="20.0"
+                AnchorPane.topAnchor="5.0"/>
+        <Button fx:id="createGroupButton" focusTraversable="false" layoutX="180.0" layoutY="15.0"
+                mnemonicParsing="false" onAction="#onNewChatClicked" prefHeight="40.0" prefWidth="40.0"
+                styleClass="createGroupBtn" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="70.0"
+                AnchorPane.topAnchor="5.0"/>
+        <Label fx:id="viewNameLabel" layoutX="14.0" layoutY="17.0" styleClass="header" text="Recent"
+               AnchorPane.bottomAnchor="15.799999999999997" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="17.0"/>
+    </AnchorPane>
         <VBox prefHeight="600.0" prefWidth="1000.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <HBox prefHeight="100.0" prefWidth="200.0">
                 <Label fx:id="userNameLabel" prefHeight="50.0" prefWidth="321.0" styleClass="header2">
                     <HBox.margin>
-                        <Insets left="25.0" top="15.0"/>
+                        <Insets left="25.0" top="15.0" />
                     </HBox.margin>
                 </Label>
-                <Button fx:id="infoButton" mnemonicParsing="false" onAction="#onInfoButtonClicked" prefHeight="20.0"
-                        prefWidth="100.0" styleClass="infoButton" text="info">
+                <Button fx:id="infoButton" mnemonicParsing="false" onAction="#onInfoButtonClicked" prefHeight="20.0" prefWidth="100.0" styleClass="infoButton" text="info">
                     <HBox.margin>
-                        <Insets left="25.0" right="10.0" top="27.0"/>
+                        <Insets left="25.0" right="10.0" top="27.0" />
                     </HBox.margin>
                 </Button>
             </HBox>
@@ -61,5 +64,5 @@
             </HBox>
     </VBox>
 
-   <AnchorPane fx:id="placeHolder" layoutX="80.0" prefHeight="600.0" prefWidth="400.0" styleClass="chatsPane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
+   <AnchorPane fx:id="placeHolder" maxWidth="350.0" minWidth="350.0" prefHeight="600.0" prefWidth="350.0" styleClass="switch-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="50.0" />
 </AnchorPane>

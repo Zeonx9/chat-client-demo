@@ -97,11 +97,6 @@
     -fx-opacity: 30%;
 }
 
-.ShowUsersBtn {
-    -fx-background-color: transparent;
-    -fx-background-image: url("../img/all_users_btn.png");
-}
-
 .ShowUsersBtn:hover {
     -fx-opacity: 50%;
 }
@@ -336,17 +331,6 @@
 
 .infoButton:focused {
     -fx-background-color: #3A3C4D;
-}
-
-.countUnreadMessages {
-    display: inline-block;
-        -fx-font-family: "Poppins Medium";
-        -fx-font-size: 12;
-        -fx-text-fill: #FFFFFF;
-        -fx-background: #3D77A3;
-        -fx-background-color: -fx-background ;
-        -fx-background-radius: 30px;
-        -fx-padding: 6px ;
 }
 
 .date-picker .arrow-button > {

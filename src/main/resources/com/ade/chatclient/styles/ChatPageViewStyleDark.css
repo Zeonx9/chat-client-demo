@@ -1,0 +1,92 @@
+@font-face {
+    font-family: 'Montserrat Bold';
+    src: url('../fonts/Montserrat-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat Medium';
+    src: url('../fonts/Montserrat-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat Regular';
+    src: url('../fonts/Montserrat-Regular.ttf');
+}
+
+.background-chat-page {
+    -fx-background-color: #2F303B;
+}
+
+.switch-pane {
+    -fx-background-color: #212229;
+}
+
+.buttons-pane {
+    -fx-background-color: #212229;
+}
+
+.showChatsBtn {
+    -fx-background-color: #2F303B;
+    -fx-background-image: url("../img/chat_btn.png");
+
+    -fx-background-radius: 40px;
+}
+
+.showChatsBtn:hover {
+    -fx-background-color: #3E46FF;
+}
+
+.showChatsBtn:focused {
+    -fx-background-color: #777CFF;
+}
+
+.showUsersBtn {
+    -fx-background-color: #2F303B;
+    -fx-background-image: url("../img/users_btn.png");
+
+    -fx-background-radius: 40px;
+}
+
+.showUsersBtn:hover {
+    -fx-background-color: #3E46FF;
+}
+
+.showUsersBtn:focused {
+    -fx-background-color: #777CFF;
+}
+
+.showUserProfileBtn {
+    -fx-background-color: #2F303B;
+    -fx-background-image: url("../img/user_profile_btn.png");
+
+    -fx-background-radius: 40px;
+}
+
+.showUserProfileBtn:hover {
+    -fx-background-color: #3E46FF;
+}
+
+.showUserProfileBtn:focused {
+    -fx-background-color: #777CFF;
+}
+
+.createGroupBtn {
+    -fx-background-color: #2F303B;
+    -fx-background-image: url("../img/create_group_btn.png");
+
+    -fx-background-radius: 40px;
+}
+
+.createGroupBtn:hover {
+    -fx-background-color: #3E46FF;
+}
+
+.createGroupBtn:focused {
+    -fx-background-color: #777CFF;
+}
+
+.header {
+    -fx-font-family: "Montserrat Bold";
+    -fx-font-size: 14;
+    -fx-text-fill: #FFFFFF;
+}
