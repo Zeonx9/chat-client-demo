@@ -77,10 +77,9 @@ public class ChatListCellFactory extends ListCell<Chat> {
         LocalDateTime messageDateTime = msg.getDateTime();
         LocalDateTime now = LocalDateTime.now();
 
-        long minutesAgo = ChronoUnit.MINUTES.between(messageDateTime, now);
         long daysAgo = ChronoUnit.DAYS.between(messageDateTime, now);
 
-        if (minutesAgo < 1440) {
+        if (messageDateTime.toLocalDate().isEqual(now.toLocalDate())) {
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
             return messageDateTime.format(timeFormatter);
         } else if (daysAgo < 7) {

@@ -5,7 +5,6 @@ import com.ade.chatclient.application.structure.EmptyDialogModel;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.GroupChatInfo;
 import com.ade.chatclient.domain.User;
-import com.ade.chatclient.viewmodel.AllUsersViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -30,7 +29,7 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogMo
         groupInfo.setText("Group info     '" + chat.getChatName(null) + "'");
         membersCount.setText(chat.getMembers().size() + " members");
         listMembers.getItems().setAll(chat.getMembers());
-        listMembers.setCellFactory(param -> AllUsersViewModel.getUserListCellFactory());
+        listMembers.setCellFactory(param -> viewModel.getUserListCellFactory());
     }
 
     public static GroupInfoDialog getInstance(){

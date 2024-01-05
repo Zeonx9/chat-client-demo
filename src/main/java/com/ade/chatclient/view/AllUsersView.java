@@ -22,7 +22,7 @@ public class AllUsersView extends AbstractView<AllUsersViewModel> {
     protected void initialize() {
         searchText.textProperty().addListener(ViewModelUtils.changeListener(viewModel::onTextChanged));
         userListView.itemsProperty().bind(viewModel.getUsersListProperty());
-        userListView.setCellFactory(param -> AllUsersViewModel.getUserListCellFactory());
+        userListView.setCellFactory(userListView -> viewModel.getUserListCellFactory());
         userListView.getSelectionModel().selectedItemProperty()
                 .addListener(ViewModelUtils.changeListener(viewModel::onSelectedItemChange));
     }

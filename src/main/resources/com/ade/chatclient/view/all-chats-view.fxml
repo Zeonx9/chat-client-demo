@@ -17,5 +17,5 @@
          <Insets />
       </opaqueInsets>
    </TextField>
-  <ListView fx:id="chatListView" maxWidth="350.0" minWidth="350.0" prefHeight="486.0" prefWidth="350.0" style="-fx-background-color: transparent;" styleClass="chatListView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+  <ListView fx:id="chatListView" maxWidth="350.0" minWidth="350.0" prefHeight="486.0" prefWidth="350.0" style="-fx-background-color: transparent;" styleClass="cellFactoryListView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
 </AnchorPane>

@@ -25,39 +25,39 @@
     -fx-background-color: #2F303B;
 }
 
-.chatListView .list-view {
+.cellFactoryListView .list-view {
     -fx-padding: 0;
 }
 
-.chatListView .scroll-bar {
+.cellFactoryListView .scroll-bar {
     -fx-background-color: #212229;
 }
 
-.chatListView .scroll-bar .track{
+.cellFactoryListView .scroll-bar .track{
     -fx-background-color: #212229;
 }
 
-.chatListView .scroll-bar .thumb {
+.cellFactoryListView .scroll-bar .thumb {
     -fx-background-color: #2F303B;
 }
 
-.chatListView .scroll-bar .corner {
+.cellFactoryListView .scroll-bar .corner {
     -fx-background-color: #212229 ;
 }
 
-.chatListView .scroll-bar .increment-button, .chatListView .scroll-bar .decrement-button{
+.cellFactoryListView .scroll-bar .increment-button, .cellFactoryListView .scroll-bar .decrement-button{
     -fx-background-color: #212229;
     -fx-border-color: #212229;
     -fx-text-fill: #212229;
     -fx-background-insets: 0 0 0 0;
 }
 
-.chatListView .scroll-bar:horizontal {
+.cellFactoryListView .scroll-bar:horizontal {
     -fx-opacity: 0;
     -fx-pref-height: 0;
 }
 
-.chatListView .list-cell {
+.cellFactoryListView .list-cell {
     -fx-background-color: #212229;
     -fx-font-family: "Montserrat Medium";
     -fx-font-size: 14;
@@ -65,15 +65,15 @@
     -fx-padding: 0;
 }
 
-.chatListView .list-cell:hover {
+.cellFactoryListView .list-cell:hover {
     -fx-background-color: #3E46FF;
 }
 
-.chatListView .list-cell:focused {
+.cellFactoryListView .list-cell:focused {
     -fx-background-color: #3E46FF;
 }
 
-.chatListView .list-cell:empty {
+.cellFactoryListView .list-cell:empty {
     -fx-background-color: #212229;
     -fx-padding: 0;
 }
