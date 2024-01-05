@@ -6,9 +6,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -17,8 +24,10 @@ import java.util.Objects;
 public class ChatListCellFactory extends ListCell<Chat> {
     private Long selfId;
     @FXML private AnchorPane layout;
+    @FXML private StackPane photoPane;
     @FXML private Label chatNameLabel;
     @FXML private Label lastMsgLabel;
+    @FXML private Label lastMessageDateLabel;
     @FXML private Label countUnreadMessages;
 
     public void init(Long selfId) {
@@ -42,10 +51,16 @@ public class ChatListCellFactory extends ListCell<Chat> {
 
         chatNameLabel.setText(prepareChatToBeShown(item));
         lastMsgLabel.setText(prepareLastMessage(item));
+        lastMessageDateLabel.setText(prepareLastMessageDate(item));
+
+        Circle circle = new Circle(20, Color.rgb(145, 145, 145));
+        Label label = new Label(prepareInitialsToBeShown(item));
+        label.setStyle("-fx-text-fill: #FFFFFF");
+        photoPane.getChildren().addAll(circle, label);
 
         if (item.getUnreadCount() != 0) {
             countUnreadMessages.setText(String.valueOf(item.getUnreadCount()));
-            countUnreadMessages.setStyle("-fx-background-color: #3D77A3");
+            countUnreadMessages.setStyle("-fx-background-color: #3E46FF");
         }
         else {
             countUnreadMessages.setText("");
@@ -53,6 +68,28 @@ public class ChatListCellFactory extends ListCell<Chat> {
         }
 
         setGraphic(layout);
+    }
+
+    private String prepareLastMessageDate(Chat chat) {
+        Message msg = chat.getLastMessage();
+        if (msg == null)
+            return "";
+        LocalDateTime messageDateTime = msg.getDateTime();
+        LocalDateTime now = LocalDateTime.now();
+
+        long minutesAgo = ChronoUnit.MINUTES.between(messageDateTime, now);
+        long daysAgo = ChronoUnit.DAYS.between(messageDateTime, now);
+
+        if (minutesAgo < 1440) {
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            return messageDateTime.format(timeFormatter);
+        } else if (daysAgo < 7) {
+            DateTimeFormatter dayOfWeekFormatter = DateTimeFormatter.ofPattern("EEEE", Locale.ENGLISH);
+            return messageDateTime.format(dayOfWeekFormatter);
+        } else {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM");
+            return messageDateTime.format(dateFormatter);
+        }
     }
 
     /**
@@ -71,6 +108,15 @@ public class ChatListCellFactory extends ListCell<Chat> {
                 memberNames.add(member.getRealName() + " " + member.getSurname());
         });
         return String.join(", ", memberNames);
+    }
+
+    private String prepareInitialsToBeShown(Chat chat) {
+        String[] chatName = prepareChatToBeShown(chat).split(" ");
+        StringBuilder result = new StringBuilder();
+        for (String s : chatName) {
+            result.append(Character.toUpperCase(s.charAt(0)));
+        }
+        return result.toString();
     }
 
     /**
