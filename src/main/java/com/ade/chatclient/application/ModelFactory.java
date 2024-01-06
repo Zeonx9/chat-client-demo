@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ModelFactory {
     private final ApiFactory apiFactory;
+    private final RepositoryFactory repositoryFactory;
     private ClientModel clientModel;
 
     /**
@@ -24,7 +25,9 @@ public class ModelFactory {
             clientModel = new ClientModelImpl(
                     apiFactory.getRequestHandler(),
                     apiFactory.provideAuthorizationApi(),
-                    apiFactory.provideStompSessionApi()
+                    apiFactory.provideStompSessionApi(),
+                    repositoryFactory.provideMessageRepository(),
+                    repositoryFactory.provideChatRepository()
             );
         }
         return clientModel;

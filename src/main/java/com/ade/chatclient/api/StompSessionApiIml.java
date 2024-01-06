@@ -1,6 +1,7 @@
-package com.ade.chatclient.application.api;
+package com.ade.chatclient.api;
 
 import com.ade.chatclient.application.ApplicationStompSessionHandler;
+import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.ConnectEvent;
@@ -20,6 +21,7 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.ade.chatclient.application.StartClientApp.URLS;
 
@@ -41,6 +43,21 @@ public class StompSessionApiIml implements StompSessionApi {
         stompClient.setMessageConverter(converter);
     }
 
+    private <T> StompFrameHandler makeSubscriptionHandler(Class<T> klass, Consumer<T> handler) {
+        return new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return klass;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                T obj = klass.cast(payload);
+                handler.accept(obj);
+            }
+        };
+    }
+
     @Override
     public void connect() {
         if (session != null) {
@@ -55,38 +72,46 @@ public class StompSessionApiIml implements StompSessionApi {
 
     @Override
     public void subscribeTopicConnection() {
-        session.subscribe("/topic/connection", new StompFrameHandler() {
-            @Override
-            public Type getPayloadType(StompHeaders headers) {
-                return ConnectEvent.class;
-            }
-
-            @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
-                ConnectEvent event = (ConnectEvent) payload;
-                log.info("connection event received: {}", event);
-            }
-        });
+        Consumer<ConnectEvent> handler = (event) -> log.info("connection event received: {}", event);
+        session.subscribe(
+                "/topic/connection",
+                makeSubscriptionHandler(ConnectEvent.class, handler)
+        );
     }
 
     @Override
-    public void subscribeQueueMessages(Long selfId) {
-        session.subscribe(String.format("/user/%d/queue/messages", selfId), new StompFrameHandler() {
-            @Override
-            public Type getPayloadType(StompHeaders headers) {
-                return Message.class;
-            }
+    public void subscribeQueueMessages(Long selfId, Consumer<Message> messageConsumer) {
+        Consumer<Message> handler = (message) -> {
+            log.info(
+                    "message received: msg=[text='{}', authorId={}, time={}]",
+                    message.getText(), message.getAuthor().getId(), message.getDateTime()
+            );
+            messageConsumer.accept(message);
+        };
+        session.subscribe(
+                String.format("/user/%d/queue/messages", selfId),
+                makeSubscriptionHandler(Message.class, handler)
+        );
+    }
 
-            @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
-                Message message = (Message) payload;
-                log.info("message received: msg=[text='{}', authorId={}, time={}]", message.getText(), message.getAuthor().getId(), message.getDateTime());
-            }
-        });
+    @Override
+    public void subscribeQueueChats(Long selfId, Consumer<Chat> chatConsumer) {
+        Consumer<Chat> handler = (chat) -> {
+            log.info(
+                    "new chat was created: chat=[id={}, member_count={}]",
+                    chat.getId(), chat.getMembers().size()
+            );
+            chatConsumer.accept(chat);
+        };
+        session.subscribe(
+                String.format("/user/%d/queue/chats", selfId),
+                makeSubscriptionHandler(Chat.class, handler)
+        );
     }
 
     @Override
     public void sendConnectSignal(User user) {
+        if (session == null) return;
         session.send("/app/connect", user);
     }
 
@@ -95,5 +120,6 @@ public class StompSessionApiIml implements StompSessionApi {
         if (session == null) return;
         session.send("/app/disconnect", user);
         session.disconnect();
+        session = null;
     }
 }

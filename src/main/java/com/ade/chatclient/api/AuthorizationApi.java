@@ -1,4 +1,4 @@
-package com.ade.chatclient.application.api;
+package com.ade.chatclient.api;
 
 import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.AuthResponse;

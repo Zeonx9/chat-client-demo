@@ -18,8 +18,9 @@ public class StartClientApp {
      */
     public static void start(Stage stage) {
         ApiFactory apiFactory = new ApiFactory();
+        RepositoryFactory repositoryFactory = new RepositoryFactory(apiFactory);
         // создание фабрик для управления слоями приложения
-        ModelFactory modelFactory = new ModelFactory(apiFactory);
+        ModelFactory modelFactory = new ModelFactory(apiFactory, repositoryFactory);
 
         viewModelProvider = new ViewModelProvider(modelFactory);
         ViewHandler viewHandler = new ViewHandler(stage, viewModelProvider);

@@ -1,9 +1,6 @@
 package com.ade.chatclient.application;
 
-import com.ade.chatclient.application.api.AuthorizationApi;
-import com.ade.chatclient.application.api.AuthorizationApiImpl;
-import com.ade.chatclient.application.api.StompSessionApi;
-import com.ade.chatclient.application.api.StompSessionApiIml;
+import com.ade.chatclient.api.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +12,8 @@ public class ApiFactory {
     private final AsyncRequestHandler requestHandler = new AsyncRequestHandler();
     private AuthorizationApi authApi;
     private StompSessionApi stompApi;
+    private MessageApi messageApi;
+    private ChatApi chatApi;
 
     public AuthorizationApi provideAuthorizationApi() {
         if (authApi == null) {
@@ -28,5 +27,19 @@ public class ApiFactory {
             stompApi = new StompSessionApiIml();
         }
         return stompApi;
+    }
+
+    public MessageApi provideMessageApi() {
+        if (messageApi == null) {
+            messageApi = new MessageApiImpl(requestHandler);
+        }
+        return messageApi;
+    }
+
+    public ChatApi provideChatApi() {
+        if (chatApi == null) {
+            chatApi = new ChatApiImpl(requestHandler);
+        }
+        return chatApi;
     }
 }

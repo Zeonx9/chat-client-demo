@@ -3,8 +3,10 @@ package com.ade.chatclient.model;
 import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.application.Settings;
 import com.ade.chatclient.application.SettingsManager;
-import com.ade.chatclient.application.api.AuthorizationApi;
-import com.ade.chatclient.application.api.StompSessionApi;
+import com.ade.chatclient.api.AuthorizationApi;
+import com.ade.chatclient.api.StompSessionApi;
+import com.ade.chatclient.repository.ChatRepository;
+import com.ade.chatclient.repository.MessageRepository;
 import com.ade.chatclient.domain.*;
 import com.ade.chatclient.dtos.*;
 import lombok.Getter;
@@ -14,14 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -31,11 +28,13 @@ public class ClientModelImpl implements ClientModel{
     private final AsyncRequestHandler handler;
     private final AuthorizationApi authApi;
     private final StompSessionApi stompSessionApi;
+    private final MessageRepository messageRepository;
+    private final ChatRepository chatRepository;
+
     private User myself;
     private Chat selectedChat;
     private Company company;
     private boolean isAdmin;
-    private List<Chat> myChats = new ArrayList<>();
     private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
@@ -53,7 +52,7 @@ public class ClientModelImpl implements ClientModel{
         setMyself(null);
         setSelectedChat(null);
         setCompany(null);
-        getMyChats().clear();
+        chatRepository.clearChats();
         getAllUsers().clear();
     }
 
@@ -71,6 +70,8 @@ public class ClientModelImpl implements ClientModel{
             return false;
         }
         log.info("authorized successfully");
+        messageRepository.setSelfId(myself.getId());
+        chatRepository.setSelfId(myself.getId());
         return true;
     }
 
@@ -84,39 +85,15 @@ public class ClientModelImpl implements ClientModel{
         }
     }
 
-    /**
-     * @param chats список чатов который присваивается списку чатов пользователя
-     */
-    public void setMyChats(List<Chat> chats){
-        synchronized (this) {
-            myChats = chats;
-        }
-    }
-
-    /**
-     * @return возвращает значение списка чатов пользователя
-     */
-    public List<Chat> getMyChats(){
-        synchronized (this) {
-            return myChats;
-        }
-    }
 
     @Override
     public synchronized void fetchChats() {
         if (myself == null) {
             return;
         }
-
-        try {
-            List<Chat> chats = handler.sendGet(String.format("/users/%d/chats", myself.getId()), TypeReferences.ListOfChat).get();
-            changeSupport.firePropertyChange("gotChats", null, chats);
-            setMyChats(chats);
-        }
-        catch (Exception e){
-            log.error("chat fetching failed", e);
-        }
-
+        chatRepository.fetchChats().thenAccept(chats ->
+                changeSupport.firePropertyChange("gotChats", null, chats)
+        );
     }
 
     private void fetchChatMessages() {
@@ -125,20 +102,16 @@ public class ClientModelImpl implements ClientModel{
         }
 
         Chat copySelectedChat = getSelectedChat();
-
-        handler.sendGet(
-                    String.format("/chats/%d/messages", copySelectedChat.getId()),
-                    Map.of("userId", myself.getId().toString()),
-                    TypeReferences.ListOfMessage
-                )
-                .thenAccept(messages -> {
-                    synchronized (this) {
-                        if (!getSelectedChat().equals(copySelectedChat)) return;
-                        getSelectedChat().setUnreadCount(0);
-                        changeSupport.firePropertyChange("gotMessages", null, messages);
-                        changeSupport.firePropertyChange("selectedChatModified", null, getSelectedChat());
-                    }
-                });
+        messageRepository.getMessagesOfChat(copySelectedChat.getId()).thenAccept(messages -> {
+            synchronized (this) {
+                if (!getSelectedChat().equals(copySelectedChat)) {
+                    return;
+                }
+                getSelectedChat().setUnreadCount(0);
+                changeSupport.firePropertyChange("gotMessages", null, messages);
+                changeSupport.firePropertyChange("selectedChatModified", null, getSelectedChat());
+            }
+        });
     }
 
     @Override
@@ -156,32 +129,12 @@ public class ClientModelImpl implements ClientModel{
         }
     }
 
-    private void sortMyChats(Chat chat) {
-        getMyChats().remove(chat);
-        getMyChats().add(0, chat);
-    }
-
     @Override
     public void sendMessageToChat(String text) {
         if (selectedChat == null) {
             return;
         }
-
-        Chat copySelectedChat;
-        synchronized (this) {
-            copySelectedChat = getSelectedChat();
-            Message mes = Message.builder().text(text).author(myself).dateTime(LocalDateTime.now()).chatId(getSelectedChat().getId()).build();
-            changeSupport.firePropertyChange("newMessagesInSelected", null, List.of(mes));
-            selectedChat.setLastMessage(mes);
-            changeSupport.firePropertyChange("chatReceivedMessages", true, copySelectedChat);
-            sortMyChats(copySelectedChat);
-        }
-        handler.sendPost(
-                        String.format("/users/%d/chats/%d/message", myself.getId(), copySelectedChat.getId()),
-                        Message.builder().text(text).dateTime(LocalDateTime.now()).build(),
-                        Message.class, true
-                );
-
+        messageRepository.sendMessageToChat(text, getSelectedChat().getId());
     }
 
     @Override
@@ -199,94 +152,19 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void fetchNewMessages() {
-        handler.sendGet(String.format("/users/%d/undelivered_messages", myself.getId()), TypeReferences.ListOfMessage)
-                .thenAccept(this::acceptNewMessages);
-    }
 
-    private void acceptNewMessages(List<Message> newMessages) {
-        if (newMessages.isEmpty()) {
-            return;
-        }
-//        System.out.println("new messages!");
-
-        synchronized (this) {
-            Map<Boolean, List<Message>> msgInSelectedChat = newMessages.stream().collect(Collectors.partitioningBy(
-                    message -> getSelectedChat() != null && message.getChatId().equals(getSelectedChat().getId())
-            ));
-            if (!msgInSelectedChat.get(true).isEmpty()) {
-                getSelectedChat().setLastMessage(msgInSelectedChat.get(true).get(0));
-                changeSupport.firePropertyChange("newMessagesInSelected", null, msgInSelectedChat.get(true));
-                changeSupport.firePropertyChange("chatReceivedMessages", true, getSelectedChat());
-                sortMyChats(getSelectedChat());
-            }
-            if (!msgInSelectedChat.get(false).isEmpty()) {
-                processMessagesInOtherChats(msgInSelectedChat.get(false));
-            }
-        }
-    }
-
-    private void processMessagesInOtherChats(List<Message> messages) {
-        Map<Long, Chat> chatById = getMyChats().stream()
-                .collect(Collectors.toMap(Chat::getId, Function.identity()));
-        Map <Boolean, List<Message>> msgInExistingChat = messages.stream()
-                .collect(Collectors.partitioningBy(mes -> chatById.containsKey(mes.getChatId())));
-
-        for (Message msg : msgInExistingChat.get(true)) {
-            Chat chatOfMessage = chatById.get(msg.getChatId());
-            chatOfMessage.incrementUnreadCount();
-            chatOfMessage.setLastMessage(msg);
-
-            changeSupport.firePropertyChange("chatReceivedMessages", false, chatOfMessage);
-            sortMyChats(chatOfMessage);
-        }
-
-        Set<Long> newChatIds = (msgInExistingChat.get(false).stream()
-                .map(Message::getChatId)
-                .collect(Collectors.toSet()));
-        newChatIds.forEach(this::fetchNewChatFromServer);
-    }
-
-    private void fetchNewChatFromServer(Long chatId) {
-        handler.sendGet("/chats/" + chatId, Chat.class)
-                .thenAccept(chat -> {
-                    changeSupport.firePropertyChange("NewChatCreated", null, chat);
-                    synchronized (this) {
-                        myChats.add(0, chat);
-                    }
-                });
-    }
-
-
-    private CompletableFuture<Chat> futureChatWith(User user) {
-        return handler.sendGet(String.format("/private_chat/%d/%d", myself.getId(), user.getId()), Chat.class);
-    }
-
-
-    private CompletableFuture<Chat> futureGroupWith(GroupRequest groupRequest) {
-        return handler.sendPost("/group_chat", groupRequest, Chat.class, true);
     }
 
     @Override
     public void createGroupChat(GroupRequest groupRequest) {
-        try {
-            groupRequest.getIds().add(myself.getId());
-            groupRequest.getGroupInfo().setCreator(myself);
-
-            Chat chat = futureGroupWith(groupRequest).get();
-            if (!getMyChats().contains(chat)) {
-                changeSupport.firePropertyChange("NewChatCreated", null, chat);
-                synchronized (this) {
-                    myChats.add(0, chat);
-                }
-            }
-        } catch (Exception e) {
-            log.error("group chat creation failed", e);
-        }
+        groupRequest.getIds().add(myself.getId());
+        groupRequest.getGroupInfo().setCreator(myself);
+        chatRepository.createNewGroupChat(groupRequest);
     }
 
     @Override
     public void getMyChatsAfterSearching() {
-        changeSupport.firePropertyChange("gotChats", null, getMyChats());
+        changeSupport.firePropertyChange("gotChats", null, chatRepository.getChats());
     }
 
     @Override
@@ -297,12 +175,9 @@ public class ClientModelImpl implements ClientModel{
     @Override
     public Chat createDialogFromAllUsers(User user) {
         try {
-            Chat chat = futureChatWith(user).get();
-            if (!getMyChats().contains(chat)) {
+            Chat chat = chatRepository.createNewPrivateChat(user.getId()).get();
+            if (!chatRepository.getChats().contains(chat)) {
                 changeSupport.firePropertyChange("NewChatCreated", null, chat);
-                synchronized (this) {
-                    myChats.add(0, chat);
-                }
             }
             return chat;
         } catch (Exception e) {
@@ -327,7 +202,7 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public List<Chat> searchChat(String request) {
-        return getMyChats().stream()
+        return chatRepository.getChats().stream()
                 .filter(chat -> getChatNameForSearch(chat).toLowerCase().startsWith(request.toLowerCase())
                         || isRequested(chat, request.toLowerCase()))
                 .toList();
@@ -370,7 +245,8 @@ public class ClientModelImpl implements ClientModel{
     public void startWebSocketConnection() {
         stompSessionApi.connect();
         stompSessionApi.subscribeTopicConnection();
-        stompSessionApi.subscribeQueueMessages(myself.getId());
+        stompSessionApi.subscribeQueueMessages(myself.getId(), this::acceptNewMessage);
+        stompSessionApi.subscribeQueueChats(myself.getId(), this::acceptNewChat);
         stompSessionApi.sendConnectSignal(myself);
     }
 
@@ -379,6 +255,27 @@ public class ClientModelImpl implements ClientModel{
         if (stompSessionApi != null) {
             stompSessionApi.sendDisconnectSignal(myself);
         }
+    }
+
+    private void acceptNewChat(Chat chat) {
+        changeSupport.firePropertyChange("NewChatCreated", null, chat);
+        chatRepository.acceptNewChat(chat);
+    }
+
+    private void acceptNewMessage(Message message) {
+        if (Objects.equals(message.getChatId(), getSelectedChat().getId())) {
+            getSelectedChat().setLastMessage(message);
+            changeSupport.firePropertyChange("newMessagesInSelected", null, List.of(message));
+            changeSupport.firePropertyChange("chatReceivedMessages", true, getSelectedChat());
+            chatRepository.moveChatUp(getSelectedChat());
+        } else {
+            Chat chatOfMessage = chatRepository.getChatById(message.getChatId());
+            chatOfMessage.incrementUnreadCount();
+            chatOfMessage.setLastMessage(message);
+            changeSupport.firePropertyChange("chatReceivedMessages", false, chatOfMessage);
+            chatRepository.moveChatUp(chatOfMessage);
+        }
+        messageRepository.acceptNewMessage(message);
     }
 
 }
