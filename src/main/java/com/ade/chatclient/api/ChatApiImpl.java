@@ -4,6 +4,7 @@ import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.TypeReferences;
 import com.ade.chatclient.dtos.GroupRequest;
+import com.ade.chatclient.dtos.UnreadCounterDto;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -44,6 +45,14 @@ public class ChatApiImpl extends BaseRestApi implements ChatApi{
         return handler.sendGet(
                 String.format("/private_chat/%d/%d", selfId, userId),
                 Chat.class
+        );
+    }
+
+    @Override
+    public CompletableFuture<List<UnreadCounterDto>> getListOfUnreadCounters(Long selfId) {
+        return handler.sendGet(
+                String.format("/users/%d/chats/unread", selfId),
+                TypeReferences.ListOfUnreadCounters
         );
     }
 }

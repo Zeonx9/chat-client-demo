@@ -9,6 +9,7 @@ import com.ade.chatclient.repository.ChatRepository;
 import com.ade.chatclient.repository.MessageRepository;
 import com.ade.chatclient.domain.*;
 import com.ade.chatclient.dtos.*;
+import com.ade.chatclient.viewmodel.AllChatsViewModel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -31,8 +32,9 @@ public class ClientModelImpl implements ClientModel{
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
 
-    private User myself;
     private Chat selectedChat;
+
+    private User myself;
     private Company company;
     private boolean isAdmin;
     private List<User> allUsers = new ArrayList<>();
@@ -91,9 +93,9 @@ public class ClientModelImpl implements ClientModel{
         if (myself == null) {
             return;
         }
-        chatRepository.fetchChats().thenAccept(chats ->
-                changeSupport.firePropertyChange("gotChats", null, chats)
-        );
+        chatRepository.fetchChats().thenAccept(chats -> {
+            changeSupport.firePropertyChange(AllChatsViewModel.GOT_CHATS_EVENT, null, chats);
+        });
     }
 
     private void fetchChatMessages() {
@@ -120,6 +122,7 @@ public class ClientModelImpl implements ClientModel{
             selectedChat = chat;
         }
         fetchChatMessages();
+        stompSessionApi.sendReadChatSignal(new ReadNotification(myself.getId(), chat.getId()));
     }
 
     @Override
@@ -244,9 +247,10 @@ public class ClientModelImpl implements ClientModel{
     @Override
     public void startWebSocketConnection() {
         stompSessionApi.connect();
-        stompSessionApi.subscribeTopicConnection();
+        stompSessionApi.subscribeTopicConnection(company.getId(), this::acceptNewConnectEvent);
         stompSessionApi.subscribeQueueMessages(myself.getId(), this::acceptNewMessage);
         stompSessionApi.subscribeQueueChats(myself.getId(), this::acceptNewChat);
+        stompSessionApi.subscribeQueueReadNotifications(myself.getId(), this::acceptNewReadNotification);
         stompSessionApi.sendConnectSignal(myself);
     }
 
@@ -276,6 +280,14 @@ public class ClientModelImpl implements ClientModel{
             chatRepository.moveChatUp(chatOfMessage);
         }
         messageRepository.acceptNewMessage(message);
+    }
+
+    private void acceptNewReadNotification(ReadNotification notification) {
+
+    }
+
+    private void acceptNewConnectEvent(ConnectEvent event) {
+
     }
 
 }

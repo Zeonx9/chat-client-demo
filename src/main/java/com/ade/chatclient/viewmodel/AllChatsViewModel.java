@@ -1,8 +1,8 @@
 package com.ade.chatclient.viewmodel;
 
+import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.application.util.ListViewSelector;
-import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.dtos.GroupRequest;
@@ -15,15 +15,10 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-//import javafx.scene.media.Media;
-//import javafx.scene.media.MediaPlayer;
-
-import javafx.util.Duration;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.beans.PropertyChangeEvent;
-import java.io.File;
 import java.util.Optional;
 
 import static com.ade.chatclient.application.util.ViewModelUtils.listReplacer;
@@ -31,7 +26,7 @@ import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListene
 
 /**
  * Класс, который связывает model с AllChatsView.
- * Регистрирует 4 лисенера - "gotChats", "NewChatCreated","selectedChatModified" и "chatReceivedMessages"
+ * Регистрирует 4 listeners - "gotChats", "NewChatCreated","selectedChatModified" и "chatReceivedMessages"
  */
 @Getter
 @Setter
@@ -46,11 +41,13 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     private Chat selected;
     public ListViewSelector<Chat> selector;
 
+    public static final String GOT_CHATS_EVENT = "gotChats";
+
     public AllChatsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
 
         //заменяет значение chatListProperty новым значением (лист чатов)
-        model.addListener("gotChats", runLaterListener(listReplacer(chatListProperty)));
+        model.addListener(GOT_CHATS_EVENT, runLaterListener(listReplacer(chatListProperty)));
         model.addListener("NewChatCreated", runLaterListener(this::newChatCreated));
         model.addListener("selectedChatModified", runLaterListener(this::selectedChatModified));
         model.addListener("chatReceivedMessages", runLaterListener(this::raiseChat));
@@ -72,9 +69,9 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             if ((boolean) event.getOldValue()) {
                 selected = chat;
             }
-            else {
-//                playSound();
-            }
+//            else {
+////                playSound();
+//            }
         }
     }
 

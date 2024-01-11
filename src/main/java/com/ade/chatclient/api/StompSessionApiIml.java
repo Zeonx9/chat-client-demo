@@ -5,6 +5,7 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.ConnectEvent;
+import com.ade.chatclient.dtos.ReadNotification;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -71,8 +72,11 @@ public class StompSessionApiIml implements StompSessionApi {
     }
 
     @Override
-    public void subscribeTopicConnection() {
-        Consumer<ConnectEvent> handler = (event) -> log.info("connection event received: {}", event);
+    public void subscribeTopicConnection(Long companyId, Consumer<ConnectEvent> eventConsumer) {
+        Consumer<ConnectEvent> handler = (event) -> {
+            log.info("connection event received: {}", event);
+            eventConsumer.accept(event);
+        };
         session.subscribe(
                 "/topic/connection",
                 makeSubscriptionHandler(ConnectEvent.class, handler)
@@ -110,6 +114,18 @@ public class StompSessionApiIml implements StompSessionApi {
     }
 
     @Override
+    public void subscribeQueueReadNotifications(Long selfId, Consumer<ReadNotification> NotificationConsumer) {
+        Consumer<ReadNotification> handler = (notification) -> {
+            log.info("new read notification received: {}", notification);
+            NotificationConsumer.accept(notification);
+        };
+        session.subscribe(
+                String.format("/user/%d/queue/read_notifications", selfId),
+                makeSubscriptionHandler(ReadNotification.class, handler)
+        );
+    }
+
+    @Override
     public void sendConnectSignal(User user) {
         if (session == null) return;
         session.send("/app/connect", user);
@@ -121,5 +137,11 @@ public class StompSessionApiIml implements StompSessionApi {
         session.send("/app/disconnect", user);
         session.disconnect();
         session = null;
+    }
+
+    @Override
+    public void sendReadChatSignal(ReadNotification notification) {
+        if (session == null) return;
+        session.send("/app/read_chat", notification);
     }
 }

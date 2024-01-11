@@ -6,7 +6,10 @@ import com.ade.chatclient.dtos.GroupRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -21,9 +24,13 @@ public class ChatRepository {
 
     public CompletableFuture<List<Chat>> fetchChats() {
         if (chatById.isEmpty()) {
-            return chatApi.fetchChatsOfUser(selfId).thenApply(chats -> {
+            var futureCounters = chatApi.getListOfUnreadCounters(selfId);
+            return chatApi.fetchChatsOfUser(selfId).thenCombine(futureCounters, (chats, counters) -> {
                 orderedChats = chats;
                 chatById = chats.stream().collect(Collectors.toMap(Chat::getId, Function.identity()));
+                for (var counter : counters) {
+                    chatById.get(counter.getChatId()).setUnreadCount(counter.getCount());
+                }
                 return chats;
             });
         } else {
