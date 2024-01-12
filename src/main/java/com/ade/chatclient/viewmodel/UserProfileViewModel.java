@@ -30,10 +30,11 @@ public class UserProfileViewModel extends AbstractChildViewModel<ClientModel> {
     private final StringProperty companyNameProperty = new SimpleStringProperty();
     private final StringProperty resultMessageProperty = new SimpleStringProperty();
 
+    public static final String PASSWORD_CHANGED_RESPONDED_EVENT = "passwordChangeResponded";
     public UserProfileViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
 
-        model.addListener("passwordChangeResponded", runLaterListener(this::showRequestResult));
+        model.addListener(PASSWORD_CHANGED_RESPONDED_EVENT, runLaterListener(this::showRequestResult));
     }
 
     /**

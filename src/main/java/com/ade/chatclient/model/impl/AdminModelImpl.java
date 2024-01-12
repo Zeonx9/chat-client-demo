@@ -1,9 +1,10 @@
-package com.ade.chatclient.model;
+package com.ade.chatclient.model.impl;
 
 import com.ade.chatclient.domain.Company;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.RegisterData;
+import com.ade.chatclient.model.AdminModel;
 import com.ade.chatclient.repository.AdminRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

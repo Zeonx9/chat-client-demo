@@ -1,7 +1,8 @@
-package com.ade.chatclient.model;
+package com.ade.chatclient.model.impl;
 
 import com.ade.chatclient.api.AuthorizationApi;
 import com.ade.chatclient.dtos.AuthResponse;
+import com.ade.chatclient.model.AuthorizationModel;
 import com.ade.chatclient.repository.AdminRepository;
 import com.ade.chatclient.repository.SelfRepository;
 import lombok.RequiredArgsConstructor;

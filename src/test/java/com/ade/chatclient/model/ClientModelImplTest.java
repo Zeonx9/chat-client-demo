@@ -3,6 +3,7 @@ package com.ade.chatclient.model;
 import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.domain.*;
 import com.ade.chatclient.dtos.*;
+import com.ade.chatclient.model.impl.ClientModelImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

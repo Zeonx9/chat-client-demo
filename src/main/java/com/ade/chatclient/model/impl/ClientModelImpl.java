@@ -1,4 +1,4 @@
-package com.ade.chatclient.model;
+package com.ade.chatclient.model.impl;
 
 import com.ade.chatclient.api.StompSessionApi;
 import com.ade.chatclient.application.Settings;
@@ -7,11 +7,14 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Company;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
-import com.ade.chatclient.dtos.*;
-import com.ade.chatclient.repository.ChatRepository;
-import com.ade.chatclient.repository.MessageRepository;
-import com.ade.chatclient.repository.SelfRepository;
-import com.ade.chatclient.repository.UsersRepository;
+import com.ade.chatclient.dtos.ChangePasswordRequest;
+import com.ade.chatclient.dtos.GroupRequest;
+import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.repository.*;
+import com.ade.chatclient.viewmodel.AllChatsViewModel;
+import com.ade.chatclient.viewmodel.AllUsersViewModel;
+import com.ade.chatclient.viewmodel.ChatPageViewModel;
+import com.ade.chatclient.viewmodel.UserProfileViewModel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -67,7 +70,7 @@ public class ClientModelImpl implements ClientModel {
             return;
         }
         chatRepository.fetchChats().thenAccept(chats ->
-                changeSupport.firePropertyChange("gotChats", null, chats)
+                changeSupport.firePropertyChange(AllChatsViewModel.GOT_CHATS_EVENT, null, chats)
         );
     }
 
@@ -83,8 +86,8 @@ public class ClientModelImpl implements ClientModel {
                     return;
                 }
                 getSelectedChat().setUnreadCount(0);
-                changeSupport.firePropertyChange("gotMessages", null, messages);
-                changeSupport.firePropertyChange("selectedChatModified", null, getSelectedChat());
+                changeSupport.firePropertyChange(ChatPageViewModel.GOT_MESSAGES_EVENT, null, messages);
+                changeSupport.firePropertyChange(AllChatsViewModel.SELECTED_CHAT_MODIFIED_EVENT, null, getSelectedChat());
             }
         });
     }
@@ -116,7 +119,7 @@ public class ClientModelImpl implements ClientModel {
     public void fetchUsers() {
         usersRepository.fetchUsers(company.getId())
                 .thenAccept(userList ->
-                        changeSupport.firePropertyChange("AllUsers", null, userList));
+                        changeSupport.firePropertyChange(AllUsersViewModel.ALL_USERS_EVENT, null, userList));
     }
 
     @Override
@@ -138,12 +141,12 @@ public class ClientModelImpl implements ClientModel {
 
     @Override
     public void getMyChatsAfterSearching() {
-        changeSupport.firePropertyChange("gotChats", null, chatRepository.getChats());
+        changeSupport.firePropertyChange(AllChatsViewModel.GOT_CHATS_EVENT, null, chatRepository.getChats());
     }
 
     @Override
     public void getAllUsersAfterSearching() {
-        changeSupport.firePropertyChange("AllUsers", null, usersRepository.getUsers());
+        changeSupport.firePropertyChange(AllUsersViewModel.ALL_USERS_EVENT, null, usersRepository.getUsers());
     }
 
     @Override
@@ -151,7 +154,7 @@ public class ClientModelImpl implements ClientModel {
         try {
             Chat chat = chatRepository.createNewPrivateChat(user.getId()).get();
             if (!chatRepository.getChats().contains(chat)) {
-                changeSupport.firePropertyChange("NewChatCreated", null, chat);
+                changeSupport.firePropertyChange(AllChatsViewModel.NEW_CHAT_CREATED_EVENT, null, chat);
             }
             return chat;
         } catch (Exception e) {
@@ -204,11 +207,11 @@ public class ClientModelImpl implements ClientModel {
         request.getAuthRequest().setLogin(myself.getUsername());
         selfRepository.changePassword(request)
                 .thenAccept(response -> {
-                            changeSupport.firePropertyChange("passwordChangeResponded", null, "successfully!");
+                            changeSupport.firePropertyChange(UserProfileViewModel.PASSWORD_CHANGED_RESPONDED_EVENT, null, "successfully!");
                             SettingsManager.changeSettings(Settings::setPassword, request.getNewPassword());
                         }
                 ).exceptionally(e -> {
-                    changeSupport.firePropertyChange("passwordChangeResponded", null, "unsuccessful attempt!");
+                    changeSupport.firePropertyChange(UserProfileViewModel.PASSWORD_CHANGED_RESPONDED_EVENT, null, "unsuccessful attempt!");
                     log.error("failed to change password", e);
                     return null;
                 });
@@ -236,21 +239,21 @@ public class ClientModelImpl implements ClientModel {
     }
 
     private void acceptNewChat(Chat chat) {
-        changeSupport.firePropertyChange("NewChatCreated", null, chat);
+        changeSupport.firePropertyChange(AllChatsViewModel.NEW_CHAT_CREATED_EVENT, null, chat);
         chatRepository.acceptNewChat(chat);
     }
 
     private void acceptNewMessage(Message message) {
         if (Objects.equals(message.getChatId(), getSelectedChat().getId())) {
             getSelectedChat().setLastMessage(message);
-            changeSupport.firePropertyChange("newMessagesInSelected", null, List.of(message));
-            changeSupport.firePropertyChange("chatReceivedMessages", true, getSelectedChat());
+            changeSupport.firePropertyChange(ChatPageViewModel.NEW_MESSAGES_IN_SELECTED_EVENT, null, List.of(message));
+            changeSupport.firePropertyChange(AllChatsViewModel.CHAT_RECEIVED_MESSAGES_EVENT, true, getSelectedChat());
             chatRepository.moveChatUp(getSelectedChat());
         } else {
             Chat chatOfMessage = chatRepository.getChatById(message.getChatId());
             chatOfMessage.incrementUnreadCount();
             chatOfMessage.setLastMessage(message);
-            changeSupport.firePropertyChange("chatReceivedMessages", false, chatOfMessage);
+            changeSupport.firePropertyChange(AllChatsViewModel.CHAT_RECEIVED_MESSAGES_EVENT, false, chatOfMessage);
             chatRepository.moveChatUp(chatOfMessage);
         }
         messageRepository.acceptNewMessage(message);

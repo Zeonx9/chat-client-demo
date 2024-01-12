@@ -1,6 +1,9 @@
 package com.ade.chatclient.application;
 
 import com.ade.chatclient.model.*;
+import com.ade.chatclient.model.impl.AdminModelImpl;
+import com.ade.chatclient.model.impl.AuthorizationModelImpl;
+import com.ade.chatclient.model.impl.ClientModelImpl;
 import lombok.RequiredArgsConstructor;
 
 /**

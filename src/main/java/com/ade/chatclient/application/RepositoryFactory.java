@@ -1,6 +1,7 @@
 package com.ade.chatclient.application;
 
 import com.ade.chatclient.repository.*;
+import com.ade.chatclient.repository.impl.*;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -14,35 +15,35 @@ public class RepositoryFactory {
 
     public ChatRepository provideChatRepository() {
         if (chatRepository == null) {
-            chatRepository = new ChatRepository(apiFactory.provideChatApi());
+            chatRepository = new ChatRepositoryImpl(apiFactory.provideChatApi());
         }
         return chatRepository;
     }
 
     public MessageRepository provideMessageRepository() {
         if (messageRepository == null) {
-            messageRepository = new MessageRepository(apiFactory.provideMessageApi());
+            messageRepository = new MessageRepositoryImpl(apiFactory.provideMessageApi());
         }
         return messageRepository;
     }
 
     public UsersRepository provideUsersRepository() {
         if (usersRepository == null) {
-            usersRepository = new UsersRepository(apiFactory.provideUsersApi());
+            usersRepository = new UsersRepositoryImpl(apiFactory.provideUsersApi());
         }
         return usersRepository;
     }
 
     public SelfRepository provideSelfRepository() {
         if (selfRepository == null) {
-            selfRepository = new SelfRepository(apiFactory.provideSelfApi());
+            selfRepository = new SelfRepositoryImpl(apiFactory.provideSelfApi());
         }
         return selfRepository;
     }
 
     public AdminRepository provideAdminRepository() {
         if (adminRepository == null) {
-            adminRepository = new AdminRepository(apiFactory.provideAdminApi());
+            adminRepository = new AdminRepositoryImpl(apiFactory.provideAdminApi());
         }
         return adminRepository;
     }

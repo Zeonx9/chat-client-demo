@@ -44,16 +44,20 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     private Chat selected;
     public ListViewSelector<Chat> selector;
 
+    public static final String GOT_CHATS_EVENT = "gotChats";
+    public static final String NEW_CHAT_CREATED_EVENT = "NewChatCreated";
+    public static final String SELECTED_CHAT_MODIFIED_EVENT = "selectedChatModified";
+    public static final String CHAT_RECEIVED_MESSAGES_EVENT = "chatReceivedMessages";
+
     public AllChatsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
 
         //заменяет значение chatListProperty новым значением (лист чатов)
-        model.addListener("gotChats", runLaterListener(listReplacer(chatListProperty)));
-        model.addListener("NewChatCreated", runLaterListener(this::newChatCreated));
-        model.addListener("selectedChatModified", runLaterListener(this::selectedChatModified));
-        model.addListener("chatReceivedMessages", runLaterListener(this::raiseChat));
+        model.addListener(GOT_CHATS_EVENT, runLaterListener(listReplacer(chatListProperty)));
+        model.addListener(NEW_CHAT_CREATED_EVENT, runLaterListener(this::newChatCreated));
+        model.addListener(SELECTED_CHAT_MODIFIED_EVENT, runLaterListener(this::selectedChatModified));
+        model.addListener(CHAT_RECEIVED_MESSAGES_EVENT, runLaterListener(this::raiseChat));
     }
-
 
     /**
      * Перемещает чат в начало списка чатов. Если этот чат не открыт в данный момент, то воспроизводит звук уведомления.
