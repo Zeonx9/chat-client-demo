@@ -1,7 +1,6 @@
 package com.ade.chatclient.application;
 
-import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.model.ClientModelImpl;
+import com.ade.chatclient.model.*;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -14,6 +13,8 @@ public class ModelFactory {
     private final ApiFactory apiFactory;
     private final RepositoryFactory repositoryFactory;
     private ClientModel clientModel;
+    private AuthorizationModel authorizationModel;
+    private AdminModel adminModel;
 
     /**
      * Пока что позволяет получить только одну модель, и реализует "ленивую загрузку",
@@ -23,13 +24,33 @@ public class ModelFactory {
     public ClientModel getModel() {
         if (clientModel == null) {
             clientModel = new ClientModelImpl(
-                    apiFactory.getRequestHandler(),
-                    apiFactory.provideAuthorizationApi(),
                     apiFactory.provideStompSessionApi(),
                     repositoryFactory.provideMessageRepository(),
-                    repositoryFactory.provideChatRepository()
+                    repositoryFactory.provideChatRepository(),
+                    repositoryFactory.provideUsersRepository(),
+                    repositoryFactory.provideSelfRepository()
             );
         }
         return clientModel;
+    }
+
+    public AuthorizationModel getAuthorizationModel() {
+        if (authorizationModel == null) {
+            authorizationModel = new AuthorizationModelImpl(
+                    apiFactory.provideAuthorizationApi(),
+                    repositoryFactory.provideSelfRepository(),
+                    repositoryFactory.provideAdminRepository()
+            );
+        }
+        return authorizationModel;
+    }
+
+    public AdminModel getAdminModel() {
+        if (adminModel == null) {
+            adminModel = new AdminModelImpl(
+                    repositoryFactory.provideAdminRepository()
+            );
+        }
+        return adminModel;
     }
 }

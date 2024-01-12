@@ -33,7 +33,7 @@ public class StartClientApp {
      * Останавливает запущенный фоновый поток.
      */
     public static void stop() {
-        viewModelProvider.getBackgroundService().stop();
+//        viewModelProvider.getBackgroundService().stop();
         viewModelProvider.getModelFactory().getModel().stopWebSocketConnection();
     }
 

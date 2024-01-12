@@ -1,8 +1,8 @@
 package com.ade.chatclient.viewmodel;
 
+import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.application.util.ListViewSelector;
-import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.dtos.GroupRequest;
@@ -18,12 +18,10 @@ import javafx.scene.input.MouseEvent;
 //import javafx.scene.media.Media;
 //import javafx.scene.media.MediaPlayer;
 
-import javafx.util.Duration;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.beans.PropertyChangeEvent;
-import java.io.File;
 import java.util.Optional;
 
 import static com.ade.chatclient.application.util.ViewModelUtils.listReplacer;

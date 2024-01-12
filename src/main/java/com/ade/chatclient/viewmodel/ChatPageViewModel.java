@@ -21,7 +21,6 @@ import java.beans.PropertyChangeEvent;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
 

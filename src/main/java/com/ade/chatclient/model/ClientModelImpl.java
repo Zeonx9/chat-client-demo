@@ -1,14 +1,17 @@
 package com.ade.chatclient.model;
 
-import com.ade.chatclient.application.AsyncRequestHandler;
+import com.ade.chatclient.api.StompSessionApi;
 import com.ade.chatclient.application.Settings;
 import com.ade.chatclient.application.SettingsManager;
-import com.ade.chatclient.api.AuthorizationApi;
-import com.ade.chatclient.api.StompSessionApi;
+import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.domain.Company;
+import com.ade.chatclient.domain.Message;
+import com.ade.chatclient.domain.User;
+import com.ade.chatclient.dtos.*;
 import com.ade.chatclient.repository.ChatRepository;
 import com.ade.chatclient.repository.MessageRepository;
-import com.ade.chatclient.domain.*;
-import com.ade.chatclient.dtos.*;
+import com.ade.chatclient.repository.SelfRepository;
+import com.ade.chatclient.repository.UsersRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -16,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,67 +26,40 @@ import java.util.Objects;
 @Setter
 @Slf4j
 @RequiredArgsConstructor
-public class ClientModelImpl implements ClientModel{
-    private final AsyncRequestHandler handler;
-    private final AuthorizationApi authApi;
+public class ClientModelImpl implements ClientModel {
     private final StompSessionApi stompSessionApi;
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
+    private final UsersRepository usersRepository;
+    private final SelfRepository selfRepository;
 
     private User myself;
     private Chat selectedChat;
     private Company company;
     private boolean isAdmin;
-    private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
-
     @Override
-    public boolean authorize(String login, String password) {
-        if (myself != null) {
-            return true;
-        }
-        return authorizeRequest(login, password);
+    public void runModel() {
+        myself = selfRepository.getMyself();
+        company = selfRepository.getCompany();
+        chatRepository.setSelfId(myself.getId());
+        messageRepository.setSelfId(myself.getId());
+        usersRepository.setSelfId(myself.getId());
+        startWebSocketConnection();
+        fetchUsers();
+        fetchChats();
     }
 
     @Override
     public void clearModel() {
-        setMyself(null);
+        myself = null;
         setSelectedChat(null);
         setCompany(null);
         chatRepository.clearChats();
-        getAllUsers().clear();
+        usersRepository.clearUsers();
+        selfRepository.clear();
     }
-
-    private boolean authorizeRequest(String login, String password) {
-        try {
-            AuthResponse auth = authApi.authorize(login, password);
-
-            setMyself(auth.getUser());
-            setCompany(auth.getCompany());
-            setAdmin(auth.isAdmin());
-            handler.setAuthToken(auth.getToken());
-        }
-        catch (Exception e) {
-            log.error("login failed", e);
-            return false;
-        }
-        log.info("authorized successfully");
-        messageRepository.setSelfId(myself.getId());
-        chatRepository.setSelfId(myself.getId());
-        return true;
-    }
-
-    @Override
-    public AuthRequest registerUser(RegisterData data) {
-        try {
-            return authApi.registerUser(data);
-        } catch (Exception e) {
-            log.error("user registration failed", e);
-            return null;
-        }
-    }
-
 
     @Override
     public synchronized void fetchChats() {
@@ -139,15 +114,14 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void fetchUsers() {
-        handler.sendGet("/company/" + company.getId() + "/users", TypeReferences.ListOfUser)
-                .thenApply(userList -> {
-                    userList.remove(myself);
-                    return userList;
-                })
-                .thenAccept(userList -> {
-                    setAllUsers(userList);
-                    changeSupport.firePropertyChange("AllUsers", null, userList);
-                });
+        usersRepository.fetchUsers(company.getId())
+                .thenAccept(userList ->
+                        changeSupport.firePropertyChange("AllUsers", null, userList));
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return usersRepository.getUsers();
     }
 
     @Override
@@ -169,7 +143,7 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void getAllUsersAfterSearching() {
-        changeSupport.firePropertyChange("AllUsers", null, getAllUsers());
+        changeSupport.firePropertyChange("AllUsers", null, usersRepository.getUsers());
     }
 
     @Override
@@ -218,17 +192,21 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public List<User> searchUser(String request) {
-        return allUsers.stream().filter(user -> isRequested(user, request.toLowerCase())).toList();
+        try {
+            return usersRepository.fetchUsers(company.getId()).get().stream().filter(user -> isRequested(user, request.toLowerCase())).toList();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void changePassword(ChangePasswordRequest request) {
         request.getAuthRequest().setLogin(myself.getUsername());
-        handler.sendPut("/auth/user/password", request, AuthResponse.class)
+        selfRepository.changePassword(request)
                 .thenAccept(response -> {
-                        changeSupport.firePropertyChange("passwordChangeResponded", null, "successfully!");
-                        SettingsManager.changeSettings(Settings::setPassword, request.getNewPassword());
-                }
+                            changeSupport.firePropertyChange("passwordChangeResponded", null, "successfully!");
+                            SettingsManager.changeSettings(Settings::setPassword, request.getNewPassword());
+                        }
                 ).exceptionally(e -> {
                     changeSupport.firePropertyChange("passwordChangeResponded", null, "unsuccessful attempt!");
                     log.error("failed to change password", e);

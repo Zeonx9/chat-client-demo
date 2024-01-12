@@ -1,5 +1,7 @@
-package com.ade.chatclient.api;
+package com.ade.chatclient.api.impl;
 
+import com.ade.chatclient.api.BaseRestApi;
+import com.ade.chatclient.api.MessageApi;
 import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.TypeReferences;

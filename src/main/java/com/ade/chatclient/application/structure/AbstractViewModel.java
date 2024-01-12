@@ -18,7 +18,7 @@ public class AbstractViewModel<M> {
     protected final M model;
 
     /**
-     * Ввыполняет привязку модели и объекта управляющего переключениями View к ViewModel
+     * Выполняет привязку модели и объекта управляющего переключениями View к ViewModel
      */
     public AbstractViewModel(ViewHandler viewHandler, M model) {
         this.viewHandler = viewHandler;

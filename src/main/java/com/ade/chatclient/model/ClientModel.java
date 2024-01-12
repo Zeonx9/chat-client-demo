@@ -3,10 +3,8 @@ package com.ade.chatclient.model;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Company;
 import com.ade.chatclient.domain.User;
-import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.dtos.GroupRequest;
-import com.ade.chatclient.dtos.RegisterData;
 
 import java.beans.PropertyChangeListener;
 import java.util.List;
@@ -18,45 +16,30 @@ public interface ClientModel {
 
     /**
      * Добавляет слушателя за изменениями модели
+     *
      * @param eventName - названия события изменения
-     * @param listener - методе-обработчик данного события
+     * @param listener  - методе-обработчик данного события
      */
     void addListener(String eventName, PropertyChangeListener listener);
-
-    /**
-     * Отправляет POST запрос для входа
-     * @param login логин, введенный пользователем
-     * @param password пароль, введенный пользователем
-     * @return true - если авторизация прошла успешно, иначе false
-     */
-    boolean authorize(String login, String password);
-
-    /**
-     * Отправляет POST запрос на регистрацию пользователя
-     * @param data данные необходимые для регистрации пользователя
-     * @return данные зарегистрированного пользователя, если регистрация прошла успешно, иначе null
-     */
-    AuthRequest registerUser(RegisterData data);
 
     /**
      * @return Авторизованного пользователя
      */
     User getMyself();
 
+    void runModel();
+
     /**
      * Очищает данные модели при log out
      */
     void clearModel();
 
-    /**
-     * @return является ли авторизованный пользователь администратором
-     */
-    boolean isAdmin();
 
     /**
      * Присваивает selectedChat значение параметра. Вызывает функцию fetchChatMessages,
      * которая отправляет GET запрос на получении истории выбранного чата и обнуляет счетчик непрочитанных сообщений на selectedChat.
      * О полученных сообщениях сообщает через лисенер "gotMessages" и обновляет счетчик непрочитанных сообщений на чате через лисенер "selectedChatModified".
+     *
      * @param chat чат, историю которого хотят получить
      */
     void setSelectChat(Chat chat);
@@ -80,6 +63,7 @@ public interface ClientModel {
      * Отправляет POST запрос с сообщением отправленным в выбранный чат и сортирует список чатов пользователя.
      * Уведомляет об отправленном сообщении через лисенер "newMessagesInSelected"
      * и перемещает selectedChat в начало списка с помощью лисенера "chatReceivedMessages"
+     *
      * @param text текст сообщения
      */
     void sendMessageToChat(String text);
@@ -114,6 +98,7 @@ public interface ClientModel {
     /**
      * Отправляет POST запрос на создание личного чата между авторизованными пользователем и выбранным.
      * Если такой чат уже создан, то возвращает уже существующий. О результате уведомляет через лисенер "NewChatCreated"
+     *
      * @param user выбранный пользователь
      * @return созданный или открытый чат
      */
@@ -122,6 +107,7 @@ public interface ClientModel {
     /**
      * Отправляет POST запрос на создание группового чата между авторизованным и выбранными пользователями.
      * О результате уведомляет через лисенер "NewChatCreated"
+     *
      * @param groupRequest содержит информацию для создания чата
      */
     void createGroupChat(GroupRequest groupRequest);
@@ -129,6 +115,7 @@ public interface ClientModel {
     /**
      * Выполняет поиск чатов соответствующих request.
      * Поиск выполняется по логину, имени, фамилии юзера или по названию чата.
+     *
      * @param request текстовый запрос
      * @return список чатов удовлетворяющих запросу
      */
@@ -137,6 +124,7 @@ public interface ClientModel {
     /**
      * Выполняет поиск пользователей соответствующих request.
      * Поиск выполняется по логину, имени или фамилии.
+     *
      * @param request текстовый запрос
      * @return список пользователей удовлетворяющих запросу
      */

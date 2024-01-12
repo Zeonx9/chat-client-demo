@@ -50,4 +50,6 @@ module com.ade.chatclient {
 
     exports com.ade.chatclient.repository;
     opens com.ade.chatclient.repository to javafx.fxml;
+    exports com.ade.chatclient.api.impl;
+    opens com.ade.chatclient.api.impl to javafx.fxml;
 }

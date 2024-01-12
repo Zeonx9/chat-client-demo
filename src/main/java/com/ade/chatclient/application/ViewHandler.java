@@ -4,7 +4,6 @@ import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.application.structure.AbstractView;
 import com.ade.chatclient.application.structure.AbstractViewModel;
 import com.ade.chatclient.view.LogInView;
-import com.ade.chatclient.viewmodel.BackgroundService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -53,9 +52,8 @@ public class ViewHandler {
      * Запускает потоки, которые будут работать в фоне и проверять
      * наличие новых сообщений или чатов
      */
-    public void startBackGroundServices() {
-        BackgroundService backgroundService = viewModelProvider.getBackgroundService();
-        backgroundService.run();
+    public void runNextModel() {
+        viewModelProvider.runClientModel();
     }
 
     /**
