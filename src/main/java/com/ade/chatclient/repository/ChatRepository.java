@@ -6,7 +6,7 @@ import com.ade.chatclient.dtos.GroupRequest;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public interface ChatRepository {
+public interface ChatRepository extends Searchable<Chat>{
     CompletableFuture<List<Chat>> fetchChats();
 
     void moveChatUp(Chat chat);

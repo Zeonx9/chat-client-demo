@@ -39,7 +39,6 @@ public class ClientModelImpl implements ClientModel {
     private User myself;
     private Chat selectedChat;
     private Company company;
-    private boolean isAdmin;
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
     @Override
@@ -128,11 +127,6 @@ public class ClientModelImpl implements ClientModel {
     }
 
     @Override
-    public void fetchNewMessages() {
-
-    }
-
-    @Override
     public void createGroupChat(GroupRequest groupRequest) {
         groupRequest.getIds().add(myself.getId());
         groupRequest.getGroupInfo().setCreator(myself);
@@ -163,43 +157,14 @@ public class ClientModelImpl implements ClientModel {
         }
     }
 
-    private String getChatNameForSearch(Chat chat) {
-        if (chat.getGroup() != null) {
-            return chat.getGroup().getName();
-        }
-        var result = chat.getMembers().stream().map(User::getUsername)
-                .filter(username -> !username.equals(myself.getUsername())).toList();
-        return String.join("", result);
-    }
-
-    private boolean isRequested(Chat chat, String request) {
-        return chat.getIsPrivate() && !chat.getMembers().stream()
-                .filter(user -> isRequested(user, request) && !user.equals(myself)).toList().isEmpty();
-    }
-
     @Override
     public List<Chat> searchChat(String request) {
-        return chatRepository.getChats().stream()
-                .filter(chat -> getChatNameForSearch(chat).toLowerCase().startsWith(request.toLowerCase())
-                        || isRequested(chat, request.toLowerCase()))
-                .toList();
-    }
-
-    private boolean isRequested(User user, String request) {
-        return user.getUsername().toLowerCase().startsWith(request)
-                || (user.getSurname().toLowerCase().startsWith(request))
-                || (user.getRealName().toLowerCase().startsWith(request))
-                || ((user.getRealName().toLowerCase() + " " + user.getSurname().toLowerCase()).startsWith(request))
-                || ((user.getSurname().toLowerCase() + " " + user.getRealName().toLowerCase()).startsWith(request));
+        return chatRepository.search(request);
     }
 
     @Override
     public List<User> searchUser(String request) {
-        try {
-            return usersRepository.fetchUsers(company.getId()).get().stream().filter(user -> isRequested(user, request.toLowerCase())).toList();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return usersRepository.search(request);
     }
 
     @Override

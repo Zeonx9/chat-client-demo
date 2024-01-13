@@ -2,6 +2,7 @@ package com.ade.chatclient.repository.impl;
 
 import com.ade.chatclient.api.ChatApi;
 import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
@@ -72,5 +73,18 @@ public class ChatRepositoryImpl implements ChatRepository {
     @Override
     public CompletableFuture<Chat> createNewPrivateChat(Long userId) {
         return chatApi.createNewPrivateChat(selfId, userId);
+    }
+
+    @Override
+    public List<Chat> search(String request) {
+        String processedString = processingSearchString(request);
+        return orderedChats.stream().filter(chat -> {
+            if (chat.getIsPrivate()) {
+                User user = chat.getMembers().stream().filter(u -> !Objects.equals(u.getId(), selfId)).toList().get(0);
+                return byUserName(user, processedString);
+            } else {
+                return chat.getGroup().getName().toLowerCase().startsWith(processedString);
+            }
+        }).collect(Collectors.toList());
     }
 }

@@ -44,4 +44,8 @@ public class UsersRepositoryImpl implements UsersRepository {
         return allUsers;
     }
 
+    @Override
+    public List<User> search(String request) {
+        return allUsers.stream().filter(user -> byUserName(user, processingSearchString(request))).toList();
+    }
 }
