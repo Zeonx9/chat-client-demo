@@ -33,6 +33,7 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
     @FXML private Button infoButton;
     @FXML private Button sendButton;
     @FXML private StackPane photoPane;
+    @FXML private AnchorPane infoArea;
     @Getter
     @FXML private Pane placeHolder;
 
@@ -61,6 +62,9 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         messageTextField.disableProperty().bind(viewModel.getDisableProperty());
         sendButton.opacityProperty().bind(viewModel.getOpacityProperty());
         sendButton.disableProperty().bind(viewModel.getDisableProperty());
+
+        infoArea.opacityProperty().bind(viewModel.getInfoAreaOpacityProperty());
+        infoArea.disableProperty().bind(viewModel.getInfoAreaDisableProperty());
 
         Bindings.bindContent(photoPane.getChildren(), viewModel.getChatIconNodes());
 

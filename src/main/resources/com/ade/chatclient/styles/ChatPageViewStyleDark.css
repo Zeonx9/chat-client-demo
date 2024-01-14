@@ -248,3 +248,8 @@
     -fx-text-fill: #FFFFFF;
     -fx-font-size: 20;
 }
+
+.infoArea {
+    -fx-background-color: #212229;
+    -fx-background-radius: 10;
+}

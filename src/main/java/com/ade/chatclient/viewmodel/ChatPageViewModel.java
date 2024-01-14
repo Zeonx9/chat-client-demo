@@ -47,6 +47,8 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final BooleanProperty showUsersButtonDisabled = new SimpleBooleanProperty(false);
     private final BooleanProperty showUserProfileDisabled = new SimpleBooleanProperty(false);
     private final BooleanProperty disableProperty = new SimpleBooleanProperty(true);
+    private final BooleanProperty infoAreaDisableProperty = new SimpleBooleanProperty(false);
+    private final DoubleProperty infoAreaOpacityProperty = new SimpleDoubleProperty(100);
     private final DoubleProperty opacityProperty = new SimpleDoubleProperty(0);
     private final StringProperty selectedChatNameProperty = new SimpleStringProperty();
     private final StringProperty selectedChatInfoProperty = new SimpleStringProperty();
@@ -76,6 +78,9 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         }
         opacityProperty.set(100);
         disableProperty.set(false);
+
+        infoAreaDisableProperty.set(true);
+        infoAreaOpacityProperty.set(0);
     }
 
     private void fillChatInfo() {
