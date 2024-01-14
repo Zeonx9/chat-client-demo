@@ -12,6 +12,7 @@ import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.view.GroupCreationDialog;
 import com.ade.chatclient.view.GroupInfoDialog;
+import com.ade.chatclient.view.UserInfoDialog;
 import com.ade.chatclient.view.cellfactory.MessageListCellFactory;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -49,7 +50,6 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final StringProperty selectedChatNameProperty = new SimpleStringProperty();
     private final StringProperty selectedChatInfoProperty = new SimpleStringProperty();
     private final StringProperty openViewNameProperty = new SimpleStringProperty();
-    private final DoubleProperty opacityProperty = new SimpleDoubleProperty(0);
     private BottomScroller<Message> scroller;
     private PaneSwitcher paneSwitcher;
 
@@ -73,9 +73,6 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
             fillChatInfo();
             scroller.scrollDown();
         }
-
-        if (model.getSelectedChat().getIsPrivate()) opacityProperty.set(0);
-        else opacityProperty.set(100);
     }
 
     private void fillChatInfo() {
@@ -142,7 +139,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
      * Метод осуществляет переключение на вью с личным кабинетом пользователя
      */
     public void openProfilePane() {
-        paneSwitcher.switchTo(Views.USER_PROFILE_VIEW);
+        paneSwitcher.switchTo(Views.USER_SETTINGS_VIEW);
     }
 
     /**
@@ -186,7 +183,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         showUserProfileDisabled.set(index == 0);
         showUsersButtonDisabled.set(index == 1);
         showChatsButtonDisabled.set(index == 2);
-        openViewNameProperty.set(index == 1 ? "Users" : "Recent");
+        openViewNameProperty.set(index == 1 ? "Users" : index == 0 ? "Profile" : "Recent");
     }
 
     /**
@@ -207,12 +204,20 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
      */
     public void showDialog() {
         if (model.getSelectedChat().getIsPrivate()) {
-            return;
-        }
+            List<User> members = model.getSelectedChat().getMembers();
+            for (User user: members)
+                if (!user.equals(model.getMyself()))
+                    viewHandler.getViewModelProvider().getProfileViewModel().setUser(user);
 
-        GroupInfoDialog dialog = GroupInfoDialog.getInstance();
-        dialog.setChat(model.getSelectedChat());
-        dialog.showAndWait();
+            UserInfoDialog userInfoDialog = UserInfoDialog.getInstance();
+            userInfoDialog.setProfilePane(viewHandler);
+            userInfoDialog.showAndWait();
+        }
+        else {
+            GroupInfoDialog dialog = GroupInfoDialog.getInstance();
+            dialog.setChat(model.getSelectedChat());
+            dialog.showAndWait();
+        }
     }
 
     /**

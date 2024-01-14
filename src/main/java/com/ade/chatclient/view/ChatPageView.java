@@ -50,7 +50,6 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         messageListView.setCellFactory(messageListView -> viewModel.getMessageCellFactory());
         messageTextField.setOnKeyPressed(ViewModelUtils.enterKeyHandler(viewModel::sendMessage));
 
-        infoButton.opacityProperty().bind(viewModel.getOpacityProperty());
         infoButton.focusTraversableProperty().bind(viewModel.getInfoButtonFocusProperty());
         createGroupButton.setFocusTraversable(false);
 
