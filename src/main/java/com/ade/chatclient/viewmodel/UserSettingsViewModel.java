@@ -24,7 +24,7 @@ import static com.ade.chatclient.application.Views.LOG_IN_VIEW;
  */
 @Getter
 public class UserSettingsViewModel extends AbstractChildViewModel<ClientModel> {
-    private final StringProperty resultMessageProperty = new SimpleStringProperty();
+    private final StringProperty systemMessageProperty = new SimpleStringProperty();
     private PaneSwitcher paneSwitcher;
 
     public UserSettingsViewModel(ViewHandler viewHandler, ClientModel model) {
@@ -39,7 +39,7 @@ public class UserSettingsViewModel extends AbstractChildViewModel<ClientModel> {
      * @param event строка с результатом изменения пароля
      */
     private void showRequestResult(PropertyChangeEvent event) {
-        resultMessageProperty.set((String) event.getNewValue());
+        systemMessageProperty.set((String) event.getNewValue());
     }
 
     /**
@@ -54,7 +54,7 @@ public class UserSettingsViewModel extends AbstractChildViewModel<ClientModel> {
      * Метод создает и инициализирует диалоговое окно для смены пароля, отображает его на экране, после чего собирает данные от пользователя и отправляет их в модель для смены пароля
      */
     public void showDialogAndWait() {
-        resultMessageProperty.set("");
+        systemMessageProperty.set("");
         ChangingPasswordDialog dialog = ChangingPasswordDialog.getInstance();
         dialog.init(new ChangingPasswordDialogModel());
 
@@ -76,5 +76,9 @@ public class UserSettingsViewModel extends AbstractChildViewModel<ClientModel> {
 
         paneSwitcher = new PaneSwitcher(viewHandler, placeHolder);
         paneSwitcher.switchTo(PROFILE_VIEW);
+    }
+
+    public void showEditProfileDialogAndWait() {
+        systemMessageProperty.set("This function is not available now");
     }
 }

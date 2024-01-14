@@ -11,11 +11,11 @@ import javafx.scene.layout.Pane;
  */
 public class UserSettingsView extends AbstractView<UserSettingsViewModel> {
     @FXML private Pane profilePane;
-    @FXML private Label passwordResultMessage;
+    @FXML private Label systemMessage;
 
     @Override
     protected void initialize() {
-        passwordResultMessage.textProperty().bind(viewModel.getResultMessageProperty());
+        systemMessage.textProperty().bind(viewModel.getSystemMessageProperty());
 
         viewModel.openUserProfile(profilePane);
     }
@@ -40,5 +40,5 @@ public class UserSettingsView extends AbstractView<UserSettingsViewModel> {
     /**
      * Метод вызывает функцию открытия диалогового окна для редактирования личного профиля пользователя
      */
-    public void onEditProfileButtonClicked() {return;}
+    public void onEditProfileButtonClicked() {viewModel.showEditProfileDialogAndWait();}
 }

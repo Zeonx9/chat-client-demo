@@ -215,8 +215,8 @@
 
 .systemMessage {
     -fx-font-family: "Montserrat Medium";
-    -fx-text-fill: #FFFFFF;
-    -fx-font-size: 12;
+    -fx-text-fill: #3E46FF;
+    -fx-font-size: 14;
 }
 
 .fullName {
