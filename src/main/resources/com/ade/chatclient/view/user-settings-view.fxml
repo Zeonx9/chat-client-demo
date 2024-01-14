@@ -5,8 +5,8 @@
 
 <AnchorPane maxWidth="350.0" minWidth="350.0" prefHeight="600.0" prefWidth="350.0" styleClass="switch-pane" stylesheets="@../styles/ChatPageViewStyleDark.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.UserSettingsView">
    <Pane fx:id="profilePane" maxHeight="250.0" maxWidth="350.0" minHeight="250.0" minWidth="350.0" prefHeight="250.0" prefWidth="350.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-   <Button mnemonicParsing="false" onAction="#onEditProfileButtonClicked" prefHeight="30.0" prefWidth="200.0" styleClass="simpleButton" text="Edit profile" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="75.0" AnchorPane.topAnchor="260.0" />
+   <Button focusTraversable="false" mnemonicParsing="false" onAction="#onEditProfileButtonClicked" prefHeight="30.0" prefWidth="200.0" styleClass="simpleButton" text="Edit profile" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="75.0" AnchorPane.topAnchor="260.0" />
    <Button focusTraversable="false" mnemonicParsing="false" onAction="#onChangeButtonClicked" prefHeight="30.0" prefWidth="200.0" styleClass="simpleButton" text="Change password" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="75.0" AnchorPane.topAnchor="300.0" />
-   <Label fx:id="passwordResultMessage" alignment="CENTER" contentDisplay="CENTER" styleClass="systemMessage" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="350.0" />
+   <Label fx:id="systemMessage" alignment="CENTER" contentDisplay="CENTER" styleClass="systemMessage" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="350.0" />
    <Button focusTraversable="false" mnemonicParsing="false" onAction="#onLogOutButtonClicked" prefHeight="30.0" prefWidth="200.0" styleClass="simpleButton" text="Log out" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="75.0" />
 </AnchorPane>
