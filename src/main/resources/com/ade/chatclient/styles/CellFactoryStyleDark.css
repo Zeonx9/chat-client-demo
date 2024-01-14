@@ -93,3 +93,37 @@
     -fx-background-color: -fx-background ;
     -fx-background-radius: 30px;
 }
+
+.groupName {
+    -fx-font-family: "Montserrat Bold";
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 14;
+}
+
+.countMembers {
+    -fx-font-family: "Montserrat Regular";
+    -fx-text-fill: #A4A4A4;
+    -fx-font-size: 14;
+}
+
+.simpleButton {
+    -fx-background-color: #2F303B;
+    -fx-background-radius: 5px;
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+    -fx-text-fill: #A4A4A4;
+}
+
+.simpleButton:hover {
+    -fx-background-color: #3E46FF;
+}
+
+.simpleButton:focused {
+    -fx-background-color: #777CFF;
+}
+
+.systemMessage {
+    -fx-font-family: "Montserrat Medium";
+    -fx-text-fill: #3E46FF;
+    -fx-font-size: 14;
+}
