@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import lombok.Getter;
@@ -19,6 +20,7 @@ import lombok.Getter;
  * Класс выступает в роли контроллера для основного окна приложения, управляет поведением и отображением элементов на экране
  */
 public class ChatPageView extends AbstractView<ChatPageViewModel> {
+    @FXML private AnchorPane messageField;
     @FXML private Button showUserProfileButton;
     @FXML private Button createGroupButton;
     @FXML private Button showChatsButton;
@@ -29,6 +31,7 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
     @FXML private ListView<Message> messageListView;
     @FXML private TextField messageTextField;
     @FXML private Button infoButton;
+    @FXML private Button sendButton;
     @FXML private StackPane photoPane;
     @Getter
     @FXML private Pane placeHolder;
@@ -51,8 +54,13 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         messageTextField.setOnKeyPressed(ViewModelUtils.enterKeyHandler(viewModel::sendMessage));
 
         infoButton.opacityProperty().bind(viewModel.getOpacityProperty());
-        infoButton.disableProperty().bind(viewModel.getInfoButtonFocusProperty());
+        infoButton.disableProperty().bind(viewModel.getDisableProperty());
         createGroupButton.setFocusTraversable(false);
+
+        messageField.opacityProperty().bind(viewModel.getOpacityProperty());
+        messageTextField.disableProperty().bind(viewModel.getDisableProperty());
+        sendButton.opacityProperty().bind(viewModel.getOpacityProperty());
+        sendButton.disableProperty().bind(viewModel.getDisableProperty());
 
         Bindings.bindContent(photoPane.getChildren(), viewModel.getChatIconNodes());
 
