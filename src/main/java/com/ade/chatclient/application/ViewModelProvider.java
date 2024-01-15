@@ -18,7 +18,6 @@ public class ViewModelProvider {
     private AllChatsViewModel allChatsViewModel;
     private UserProfileViewModel userProfileViewModel;
     private AdminViewModel adminViewModel;
-    private BackgroundService backgroundService;
 
     /**
      * метод передающий ссылку на ViewHandler в объекты вью-моделей
@@ -26,23 +25,18 @@ public class ViewModelProvider {
      * @param viewHandler требуется для переключения между вью
      */
     public void instantiateViewModels(ViewHandler viewHandler) {
-        logInViewModel = new LogInViewModel(viewHandler, modelFactory.getModel());
+        logInViewModel = new LogInViewModel(viewHandler, modelFactory.getAuthorizationModel());
         chatPageViewModel = new ChatPageViewModel(viewHandler, modelFactory.getModel());
         allUsersViewModel = new AllUsersViewModel(viewHandler, modelFactory.getModel());
         allChatsViewModel = new AllChatsViewModel(viewHandler, modelFactory.getModel());
         userProfileViewModel = new UserProfileViewModel(viewHandler, modelFactory.getModel());
-        adminViewModel = new AdminViewModel(viewHandler, modelFactory.getModel());
-
+        adminViewModel = new AdminViewModel(viewHandler, modelFactory.getAdminModel());
     }
 
     /**
-     * Ленивая инициализация Фоновой службы
-     * @return фоновую службу
+     * Запускает загрузку данных в ClientModel
      */
-    public BackgroundService getBackgroundService() {
-        if (backgroundService == null) {
-            backgroundService = new BackgroundService(modelFactory.getModel());
-        }
-        return backgroundService;
+    public void runClientModel() {
+        modelFactory.getModel().runModel();
     }
 }

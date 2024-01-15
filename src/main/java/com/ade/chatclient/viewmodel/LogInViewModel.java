@@ -4,7 +4,7 @@ import com.ade.chatclient.application.Settings;
 import com.ade.chatclient.application.SettingsManager;
 import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.application.structure.AbstractViewModel;
-import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.model.AuthorizationModel;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -23,13 +23,13 @@ import static com.ade.chatclient.application.Views.CHAT_PAGE_VIEW;
 @Getter
 @Setter
 @Slf4j
-public class LogInViewModel extends AbstractViewModel<ClientModel> {
+public class LogInViewModel extends AbstractViewModel<AuthorizationModel> {
     private StringProperty loginTextProperty = new SimpleStringProperty();
     private StringProperty passwordProperty = new SimpleStringProperty();
     private StringProperty errorMessageProperty = new SimpleStringProperty();
     private BooleanProperty disableButtonProperty = new SimpleBooleanProperty(true);
 
-    public LogInViewModel(ViewHandler viewHandler, ClientModel model) {
+    public LogInViewModel(ViewHandler viewHandler, AuthorizationModel model) {
         super(viewHandler, model);
     }
 
@@ -64,14 +64,12 @@ public class LogInViewModel extends AbstractViewModel<ClientModel> {
         }
 
         errorMessageProperty.set("Success!");
-        model.startWebSocketConnection();
 
         saveLoginAndPasswordToSettings(login, password);
         if (model.isAdmin()) {
             viewHandler.openView(ADMIN_VIEW);
-        }
-        else {
-            viewHandler.startBackGroundServices();
+        } else {
+            viewHandler.runNextModel();
             viewHandler.openView(CHAT_PAGE_VIEW);
         }
 

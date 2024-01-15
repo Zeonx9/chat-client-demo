@@ -1,5 +1,6 @@
-package com.ade.chatclient.api;
+package com.ade.chatclient.api.impl;
 
+import com.ade.chatclient.api.StompSessionApi;
 import com.ade.chatclient.application.ApplicationStompSessionHandler;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;

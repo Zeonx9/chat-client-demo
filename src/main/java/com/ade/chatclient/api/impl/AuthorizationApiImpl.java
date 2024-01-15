@@ -1,9 +1,10 @@
-package com.ade.chatclient.api;
+package com.ade.chatclient.api.impl;
 
+import com.ade.chatclient.api.AuthorizationApi;
+import com.ade.chatclient.api.BaseRestApi;
 import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.AuthResponse;
-import com.ade.chatclient.dtos.RegisterData;
 
 import java.util.concurrent.ExecutionException;
 
@@ -14,6 +15,7 @@ public class AuthorizationApiImpl extends BaseRestApi implements AuthorizationAp
 
     @Override
     public AuthResponse authorize(String login, String password) throws ExecutionException, InterruptedException {
+        //todo добавить try catch
         return handler.sendPost(
                 "/auth/login",
                 AuthRequest.builder().login(login).password(password).build(),
@@ -22,12 +24,7 @@ public class AuthorizationApiImpl extends BaseRestApi implements AuthorizationAp
     }
 
     @Override
-    public AuthRequest registerUser(RegisterData data) throws ExecutionException, InterruptedException {
-        return handler.sendPost(
-                "/auth/register",
-                data,
-                AuthRequest.class,
-                true
-        ).get();
+    public void setHandlerAuthToken(String token) {
+        handler.setAuthToken(token);
     }
 }

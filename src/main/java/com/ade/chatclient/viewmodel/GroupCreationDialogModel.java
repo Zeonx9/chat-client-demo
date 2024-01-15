@@ -74,7 +74,6 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
     public void onMouseClickedListener(MouseEvent evt) {
         if (selected != null) {
             selectedUsersListProperty.remove(selected);
-//            System.out.println(selectedUsersListProperty);
         }
     }
 

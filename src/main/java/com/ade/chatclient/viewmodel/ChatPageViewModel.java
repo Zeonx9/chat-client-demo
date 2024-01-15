@@ -21,7 +21,6 @@ import java.beans.PropertyChangeEvent;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
 
@@ -41,6 +40,9 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final DoubleProperty opacityProperty = new SimpleDoubleProperty(0);
     private BottomScroller<Message> scroller;
     private PaneSwitcher paneSwitcher;
+
+    public static final String GOT_MESSAGES_EVENT = "gotMessages";
+    public static final String NEW_MESSAGES_IN_SELECTED_EVENT = "newMessagesInSelected";
 
     public ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);

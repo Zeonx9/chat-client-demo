@@ -1,5 +1,7 @@
-package com.ade.chatclient.api;
+package com.ade.chatclient.api.impl;
 
+import com.ade.chatclient.api.BaseRestApi;
+import com.ade.chatclient.api.ChatApi;
 import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.TypeReferences;
@@ -9,7 +11,7 @@ import com.ade.chatclient.dtos.UnreadCounterDto;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class ChatApiImpl extends BaseRestApi implements ChatApi{
+public class ChatApiImpl extends BaseRestApi implements ChatApi {
     public ChatApiImpl(AsyncRequestHandler handler) {
         super(handler);
     }

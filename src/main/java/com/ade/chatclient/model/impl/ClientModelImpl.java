@@ -1,15 +1,20 @@
-package com.ade.chatclient.model;
+package com.ade.chatclient.model.impl;
 
-import com.ade.chatclient.application.AsyncRequestHandler;
+import com.ade.chatclient.api.StompSessionApi;
 import com.ade.chatclient.application.Settings;
 import com.ade.chatclient.application.SettingsManager;
-import com.ade.chatclient.api.AuthorizationApi;
-import com.ade.chatclient.api.StompSessionApi;
-import com.ade.chatclient.repository.ChatRepository;
-import com.ade.chatclient.repository.MessageRepository;
-import com.ade.chatclient.domain.*;
-import com.ade.chatclient.dtos.*;
+import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.domain.Company;
+import com.ade.chatclient.domain.Message;
+import com.ade.chatclient.domain.User;
+import com.ade.chatclient.dtos.ChangePasswordRequest;
+import com.ade.chatclient.dtos.GroupRequest;
+import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.repository.*;
 import com.ade.chatclient.viewmodel.AllChatsViewModel;
+import com.ade.chatclient.viewmodel.AllUsersViewModel;
+import com.ade.chatclient.viewmodel.ChatPageViewModel;
+import com.ade.chatclient.viewmodel.UserProfileViewModel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -17,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,77 +29,48 @@ import java.util.Objects;
 @Setter
 @Slf4j
 @RequiredArgsConstructor
-public class ClientModelImpl implements ClientModel{
-    private final AsyncRequestHandler handler;
-    private final AuthorizationApi authApi;
+public class ClientModelImpl implements ClientModel {
     private final StompSessionApi stompSessionApi;
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
-
-    private Chat selectedChat;
+    private final UsersRepository usersRepository;
+    private final SelfRepository selfRepository;
 
     private User myself;
+    private Chat selectedChat;
     private Company company;
-    private boolean isAdmin;
-    private List<User> allUsers = new ArrayList<>();
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
-
     @Override
-    public boolean authorize(String login, String password) {
-        if (myself != null) {
-            return true;
-        }
-        return authorizeRequest(login, password);
+    public void runModel() {
+        myself = selfRepository.getMyself();
+        company = selfRepository.getCompany();
+        chatRepository.setSelfId(myself.getId());
+        messageRepository.setSelfId(myself.getId());
+        usersRepository.setSelfId(myself.getId());
+        startWebSocketConnection();
+        fetchUsers();
+        fetchChats();
     }
 
     @Override
     public void clearModel() {
-        setMyself(null);
+        myself = null;
         setSelectedChat(null);
         setCompany(null);
         chatRepository.clearChats();
-        getAllUsers().clear();
+        usersRepository.clearUsers();
+        selfRepository.clear();
     }
-
-    private boolean authorizeRequest(String login, String password) {
-        try {
-            AuthResponse auth = authApi.authorize(login, password);
-
-            setMyself(auth.getUser());
-            setCompany(auth.getCompany());
-            setAdmin(auth.isAdmin());
-            handler.setAuthToken(auth.getToken());
-        }
-        catch (Exception e) {
-            log.error("login failed", e);
-            return false;
-        }
-        log.info("authorized successfully");
-        messageRepository.setSelfId(myself.getId());
-        chatRepository.setSelfId(myself.getId());
-        return true;
-    }
-
-    @Override
-    public AuthRequest registerUser(RegisterData data) {
-        try {
-            return authApi.registerUser(data);
-        } catch (Exception e) {
-            log.error("user registration failed", e);
-            return null;
-        }
-    }
-
 
     @Override
     public synchronized void fetchChats() {
         if (myself == null) {
             return;
         }
-        chatRepository.fetchChats().thenAccept(chats -> {
-            changeSupport.firePropertyChange(AllChatsViewModel.GOT_CHATS_EVENT, null, chats);
-        });
+        chatRepository.fetchChats().thenAccept(chats ->
+                changeSupport.firePropertyChange(AllChatsViewModel.GOT_CHATS_EVENT, null, chats)
+        );
     }
 
     private void fetchChatMessages() {
@@ -110,8 +85,8 @@ public class ClientModelImpl implements ClientModel{
                     return;
                 }
                 getSelectedChat().setUnreadCount(0);
-                changeSupport.firePropertyChange("gotMessages", null, messages);
-                changeSupport.firePropertyChange("selectedChatModified", null, getSelectedChat());
+                changeSupport.firePropertyChange(ChatPageViewModel.GOT_MESSAGES_EVENT, null, messages);
+                changeSupport.firePropertyChange(AllChatsViewModel.SELECTED_CHAT_MODIFIED_EVENT, null, getSelectedChat());
             }
         });
     }
@@ -142,20 +117,14 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void fetchUsers() {
-        handler.sendGet("/company/" + company.getId() + "/users", TypeReferences.ListOfUser)
-                .thenApply(userList -> {
-                    userList.remove(myself);
-                    return userList;
-                })
-                .thenAccept(userList -> {
-                    setAllUsers(userList);
-                    changeSupport.firePropertyChange("AllUsers", null, userList);
-                });
+        usersRepository.fetchUsers(company.getId())
+                .thenAccept(userList ->
+                        changeSupport.firePropertyChange(AllUsersViewModel.ALL_USERS_EVENT, null, userList));
     }
 
     @Override
-    public void fetchNewMessages() {
-
+    public List<User> getAllUsers() {
+        return usersRepository.getUsers();
     }
 
     @Override
@@ -167,12 +136,12 @@ public class ClientModelImpl implements ClientModel{
 
     @Override
     public void getMyChatsAfterSearching() {
-        changeSupport.firePropertyChange("gotChats", null, chatRepository.getChats());
+        changeSupport.firePropertyChange(AllChatsViewModel.GOT_CHATS_EVENT, null, chatRepository.getChats());
     }
 
     @Override
     public void getAllUsersAfterSearching() {
-        changeSupport.firePropertyChange("AllUsers", null, getAllUsers());
+        changeSupport.firePropertyChange(AllUsersViewModel.ALL_USERS_EVENT, null, usersRepository.getUsers());
     }
 
     @Override
@@ -180,7 +149,7 @@ public class ClientModelImpl implements ClientModel{
         try {
             Chat chat = chatRepository.createNewPrivateChat(user.getId()).get();
             if (!chatRepository.getChats().contains(chat)) {
-                changeSupport.firePropertyChange("NewChatCreated", null, chat);
+                changeSupport.firePropertyChange(AllChatsViewModel.NEW_CHAT_CREATED_EVENT, null, chat);
             }
             return chat;
         } catch (Exception e) {
@@ -189,51 +158,26 @@ public class ClientModelImpl implements ClientModel{
         }
     }
 
-    private String getChatNameForSearch(Chat chat) {
-        if (chat.getGroup() != null) {
-            return chat.getGroup().getName();
-        }
-        var result = chat.getMembers().stream().map(User::getUsername)
-                .filter(username -> !username.equals(myself.getUsername())).toList();
-        return String.join("", result);
-    }
-
-    private boolean isRequested(Chat chat, String request) {
-        return chat.getIsPrivate() && !chat.getMembers().stream()
-                .filter(user -> isRequested(user, request) && !user.equals(myself)).toList().isEmpty();
-    }
-
     @Override
     public List<Chat> searchChat(String request) {
-        return chatRepository.getChats().stream()
-                .filter(chat -> getChatNameForSearch(chat).toLowerCase().startsWith(request.toLowerCase())
-                        || isRequested(chat, request.toLowerCase()))
-                .toList();
-    }
-
-    private boolean isRequested(User user, String request) {
-        return user.getUsername().toLowerCase().startsWith(request)
-                || (user.getSurname().toLowerCase().startsWith(request))
-                || (user.getRealName().toLowerCase().startsWith(request))
-                || ((user.getRealName().toLowerCase() + " " + user.getSurname().toLowerCase()).startsWith(request))
-                || ((user.getSurname().toLowerCase() + " " + user.getRealName().toLowerCase()).startsWith(request));
+        return chatRepository.search(request);
     }
 
     @Override
     public List<User> searchUser(String request) {
-        return allUsers.stream().filter(user -> isRequested(user, request.toLowerCase())).toList();
+        return usersRepository.search(request);
     }
 
     @Override
     public void changePassword(ChangePasswordRequest request) {
         request.getAuthRequest().setLogin(myself.getUsername());
-        handler.sendPut("/auth/user/password", request, AuthResponse.class)
+        selfRepository.changePassword(request)
                 .thenAccept(response -> {
-                        changeSupport.firePropertyChange("passwordChangeResponded", null, "successfully!");
-                        SettingsManager.changeSettings(Settings::setPassword, request.getNewPassword());
-                }
+                            changeSupport.firePropertyChange(UserProfileViewModel.PASSWORD_CHANGED_RESPONDED_EVENT, null, "successfully!");
+                            SettingsManager.changeSettings(Settings::setPassword, request.getNewPassword());
+                        }
                 ).exceptionally(e -> {
-                    changeSupport.firePropertyChange("passwordChangeResponded", null, "unsuccessful attempt!");
+                    changeSupport.firePropertyChange(UserProfileViewModel.PASSWORD_CHANGED_RESPONDED_EVENT, null, "unsuccessful attempt!");
                     log.error("failed to change password", e);
                     return null;
                 });
@@ -262,21 +206,21 @@ public class ClientModelImpl implements ClientModel{
     }
 
     private void acceptNewChat(Chat chat) {
-        changeSupport.firePropertyChange("NewChatCreated", null, chat);
+        changeSupport.firePropertyChange(AllChatsViewModel.NEW_CHAT_CREATED_EVENT, null, chat);
         chatRepository.acceptNewChat(chat);
     }
 
     private void acceptNewMessage(Message message) {
         if (Objects.equals(message.getChatId(), getSelectedChat().getId())) {
             getSelectedChat().setLastMessage(message);
-            changeSupport.firePropertyChange("newMessagesInSelected", null, List.of(message));
-            changeSupport.firePropertyChange("chatReceivedMessages", true, getSelectedChat());
+            changeSupport.firePropertyChange(ChatPageViewModel.NEW_MESSAGES_IN_SELECTED_EVENT, null, List.of(message));
+            changeSupport.firePropertyChange(AllChatsViewModel.CHAT_RECEIVED_MESSAGES_EVENT, true, getSelectedChat());
             chatRepository.moveChatUp(getSelectedChat());
         } else {
             Chat chatOfMessage = chatRepository.getChatById(message.getChatId());
             chatOfMessage.incrementUnreadCount();
             chatOfMessage.setLastMessage(message);
-            changeSupport.firePropertyChange("chatReceivedMessages", false, chatOfMessage);
+            changeSupport.firePropertyChange(AllChatsViewModel.CHAT_RECEIVED_MESSAGES_EVENT, false, chatOfMessage);
             chatRepository.moveChatUp(chatOfMessage);
         }
         messageRepository.acceptNewMessage(message);
