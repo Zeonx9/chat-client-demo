@@ -19,7 +19,7 @@ import com.ade.chatclient.repository.UsersRepository;
 import com.ade.chatclient.viewmodel.AllChatsViewModel;
 import com.ade.chatclient.viewmodel.AllUsersViewModel;
 import com.ade.chatclient.viewmodel.ChatPageViewModel;
-import com.ade.chatclient.viewmodel.UserProfileViewModel;
+import com.ade.chatclient.viewmodel.UserSettingsViewModel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -178,11 +178,11 @@ public class ClientModelImpl implements ClientModel {
         request.getAuthRequest().setLogin(myself.getUsername());
         selfRepository.changePassword(request)
                 .thenAccept(response -> {
-                            changeSupport.firePropertyChange(UserProfileViewModel.PASSWORD_CHANGED_RESPONDED_EVENT, null, "successfully!");
+                            changeSupport.firePropertyChange(UserSettingsViewModel.PASSWORD_CHANGED_RESPONDED_EVENT, null, "successfully!");
                             SettingsManager.changeSettings(Settings::setPassword, request.getNewPassword());
                         }
                 ).exceptionally(e -> {
-                    changeSupport.firePropertyChange(UserProfileViewModel.PASSWORD_CHANGED_RESPONDED_EVENT, null, "unsuccessful attempt!");
+                    changeSupport.firePropertyChange(UserSettingsViewModel.PASSWORD_CHANGED_RESPONDED_EVENT, null, "unsuccessful attempt!");
                     log.error("failed to change password", e);
                     return null;
                 });
