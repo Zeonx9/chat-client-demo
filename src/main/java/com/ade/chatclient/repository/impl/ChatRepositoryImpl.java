@@ -24,9 +24,13 @@ public class ChatRepositoryImpl implements ChatRepository {
     @Override
     public CompletableFuture<List<Chat>> fetchChats() {
         if (chatById.isEmpty()) {
-            return chatApi.fetchChatsOfUser(selfId).thenApply(chats -> {
+            var futureCounters = chatApi.getListOfUnreadCounters(selfId);
+            return chatApi.fetchChatsOfUser(selfId).thenCombine(futureCounters, (chats, counters) -> {
                 orderedChats = chats;
                 chatById = chats.stream().collect(Collectors.toMap(Chat::getId, Function.identity()));
+                for (var counter : counters) {
+                    chatById.get(counter.getChatId()).setUnreadCount(counter.getCount());
+                }
                 return chats;
             });
         } else {
