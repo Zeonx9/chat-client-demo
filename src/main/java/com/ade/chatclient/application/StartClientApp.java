@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 public class StartClientApp {
     private static ViewModelProvider viewModelProvider;
     // Содержит набор url для обращения к серверу, используется статически в других местах приложения
-    public final static ChatUrls URLS = ChatUrls.LOCAL;
+    public final static ChatUrls URLS = ChatUrls.DEV;
 
     /**
      * Метод, который запрашивает адрес сервера приложения
