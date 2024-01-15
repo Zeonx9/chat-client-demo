@@ -5,9 +5,7 @@ import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.application.util.ListViewSelector;
 import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.Chat;
-import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.view.GroupCreationDialog;
 import com.ade.chatclient.view.cellfactory.ChatListCellFactory;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -15,14 +13,10 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-//import javafx.scene.media.Media;
-//import javafx.scene.media.MediaPlayer;
-
 import lombok.Getter;
 import lombok.Setter;
 
 import java.beans.PropertyChangeEvent;
-import java.util.Optional;
 
 import static com.ade.chatclient.application.util.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
@@ -59,6 +53,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         model.addListener(CHAT_RECEIVED_MESSAGES_EVENT, runLaterListener(this::raiseChat));
     }
 
+
     /**
      * Перемещает чат в начало списка чатов. Если этот чат не открыт в данный момент, то воспроизводит звук уведомления.
      * Если в чет пришло новое сообщения, а он в это момент не открыт, то счетчик новых сообщений увеличится
@@ -74,9 +69,9 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             if ((boolean) event.getOldValue()) {
                 selected = chat;
             }
-            else {
+//            else {
 //                playSound();
-            }
+//            }
         }
     }
 
@@ -131,19 +126,6 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         selector.select(selected);
         return factory;
     }
-
-    /**
-     * Метод создает и запускает диалоговое окно для создания новой беседы, после чего получает результат работы диалогового окна и отправляет данные в модель для создания нового группового чата
-     */
-    public void showDialogAndWait() {
-        GroupCreationDialog dialog = GroupCreationDialog.getInstance();
-        dialog.init(new GroupCreationDialogModel());
-        dialog.populateUserList(model.getAllUsers());
-
-        Optional<GroupRequest> answer = dialog.showAndWait();
-        answer.ifPresent(model::createGroupChat);
-    }
-
 
     /**
      * При изменении текста newText в поле для поиска вызывает

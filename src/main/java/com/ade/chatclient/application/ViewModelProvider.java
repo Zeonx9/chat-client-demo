@@ -16,7 +16,8 @@ public class ViewModelProvider {
     private final ModelFactory modelFactory;
     private AllUsersViewModel allUsersViewModel;
     private AllChatsViewModel allChatsViewModel;
-    private UserProfileViewModel userProfileViewModel;
+    private UserSettingsViewModel userProfileViewModel;
+    private ProfileViewModel profileViewModel;
     private AdminViewModel adminViewModel;
 
     /**
@@ -29,7 +30,8 @@ public class ViewModelProvider {
         chatPageViewModel = new ChatPageViewModel(viewHandler, modelFactory.getModel());
         allUsersViewModel = new AllUsersViewModel(viewHandler, modelFactory.getModel());
         allChatsViewModel = new AllChatsViewModel(viewHandler, modelFactory.getModel());
-        userProfileViewModel = new UserProfileViewModel(viewHandler, modelFactory.getModel());
+        userProfileViewModel = new UserSettingsViewModel(viewHandler, modelFactory.getModel());
+        profileViewModel = new ProfileViewModel(viewHandler, modelFactory.getModel());
         adminViewModel = new AdminViewModel(viewHandler, modelFactory.getAdminModel());
     }
 

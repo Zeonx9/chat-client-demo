@@ -2,6 +2,7 @@ package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.application.ViewHandler;
+import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.model.ClientModel;
@@ -56,8 +57,11 @@ public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
     /**
      * @return фабрику ячеек для юзеров
      */
-    public static ListCell<User> getUserListCellFactory() {
-        return new UserListCellFactory();
+    public ListCell<User> getUserListCellFactory() {
+        return ViewModelUtils.loadCellFactory(
+                UserListCellFactory.class,
+                "user-list-cell-factory.fxml"
+        );
     }
 
     /**

@@ -1,25 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 
-<DialogPane fx:id="dialogPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="350.0" styleClass="chatsPane" stylesheets="@../styles/ChatPageViewStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.GroupInfoDialog">
-   <header>
-      <Label fx:id="groupInfo" prefWidth="350.0" styleClass="header2" text="Group info">
-         <padding>
-            <Insets left="25.0" top="15.0" />
-         </padding>
-      </Label>
-   </header>
+<DialogPane fx:id="dialogPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="350.0" styleClass="switch-pane" stylesheets="@../styles/CellFactoryStyleDark.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.GroupInfoDialog">
    <content>
       <Pane prefHeight="273.0" prefWidth="400.0">
-         <ImageView fitHeight="37.0" fitWidth="37.0" layoutX="27.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-            <Image url="@../img/group_icon.png" />
-         </ImageView>
-         <Label fx:id="membersCount" layoutX="75.0" layoutY="21.0" prefHeight="24.0" prefWidth="192.0" styleClass="header3" text="3 members" />
-         <ListView fx:id="listMembers" layoutX="27.0" layoutY="76.0" prefHeight="200.0" prefWidth="300.0" style="-fx-background-color: transparent;" styleClass="userListOfGroup" />
+          <AnchorPane prefHeight="200.0" prefWidth="350.0">
+              <StackPane fx:id="photoPane" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="135.0"
+                         AnchorPane.topAnchor="10.0"/>
+              <Label fx:id="groupName" alignment="CENTER" prefHeight="20.0" styleClass="groupName" text="Label"
+                     AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0"/>
+              <Label fx:id="countMembers" alignment="CENTER" prefHeight="20.0" styleClass="countMembers" text="Label"
+                     AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0"/>
+              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2f303b" height="10.0" stroke="TRANSPARENT"
+                         strokeType="INSIDE" width="350.0" AnchorPane.topAnchor="145.0"/>
+              <ListView fx:id="listMembers" prefHeight="250.0" prefWidth="300.0"
+                        style="-fx-background-color: transparent;" styleClass="cellFactoryListView"
+                        AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="160.0"/>
+              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2f303b" height="10.0" layoutX="10.0" layoutY="155.0"
+                         stroke="TRANSPARENT" strokeType="INSIDE" width="350.0" AnchorPane.leftAnchor="0.0"
+                         AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="415.0"/>
+              <Button mnemonicParsing="false" onAction="#onAddUsersButtonClicked" prefHeight="30.0" prefWidth="200.0"
+                      styleClass="simpleButton" text="Add users" AnchorPane.leftAnchor="75.0"
+                      AnchorPane.rightAnchor="75.0" AnchorPane.topAnchor="430.0"/>
+              <Button layoutX="85.0" layoutY="440.0" mnemonicParsing="false" onAction="#onEditGroupButtonClicked"
+                      prefHeight="30.0" prefWidth="200.0" styleClass="simpleButton" text="Edit group"
+                      AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="75.0" AnchorPane.topAnchor="470.0"/>
+              <Button layoutX="85.0" layoutY="480.0" mnemonicParsing="false" onAction="#onLeaveGroupButtonClicked"
+                      prefHeight="30.0" prefWidth="200.0" styleClass="simpleButton" text="Leave group"
+                      AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="75.0" AnchorPane.topAnchor="510.0"/>
+              <Label fx:id="systemMessage" alignment="CENTER" prefHeight="20.0" styleClass="systemMessage" text="Label"
+                     AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="550.0"/>
+          </AnchorPane>
       </Pane>
    </content>
    <ButtonType fx:constant="CLOSE" />

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="layout" maxHeight="50.0" maxWidth="350.0" minHeight="50.0" minWidth="350.0" prefHeight="50.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.cellfactory.UserListCellFactory">
+    <StackPane fx:id="photoPane" prefHeight="36.0" prefWidth="36.0" styleClass="photoPane" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="7.0" />
+    <Label fx:id="realNameLabel" layoutX="60.0" layoutY="15.0" style="-fx-text-fill: white" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="7.0" />
+    <Label fx:id="userNameLabel" layoutY="37.4" style="-fx-text-fill: lightgray" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="80.0" />
+</AnchorPane>
