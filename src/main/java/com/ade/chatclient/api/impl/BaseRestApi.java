@@ -1,4 +1,4 @@
-package com.ade.chatclient.api;
+package com.ade.chatclient.api.impl;
 
 import com.ade.chatclient.application.AsyncRequestHandler;
 import lombok.RequiredArgsConstructor;

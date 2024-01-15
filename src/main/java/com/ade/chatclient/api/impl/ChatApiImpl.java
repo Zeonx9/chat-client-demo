@@ -1,6 +1,5 @@
 package com.ade.chatclient.api.impl;
 
-import com.ade.chatclient.api.BaseRestApi;
 import com.ade.chatclient.api.ChatApi;
 import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.domain.Chat;

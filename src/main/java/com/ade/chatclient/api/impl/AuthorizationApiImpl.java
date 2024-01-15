@@ -1,7 +1,6 @@
 package com.ade.chatclient.api.impl;
 
 import com.ade.chatclient.api.AuthorizationApi;
-import com.ade.chatclient.api.BaseRestApi;
 import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.AuthResponse;
