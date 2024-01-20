@@ -31,9 +31,9 @@ public class ProfileViewModel extends AbstractChildViewModel<ClientModel> {
     public void setUserPersonalData() {
         fullNameProperty.set(prepareFullName(user));
         loginProperty.set(user.getUsername());
-        statusProperty.set("status is not available now");
+        statusProperty.set(user.getIsOnline() ? "online" : "last seen recently");
         birthDateProperty.set(formatDOB(user.getDateOfBirth()));
-        phoneNumberProperty.set("no data");
+        phoneNumberProperty.set(user.getPhoneNumber());
         companyNameProperty.set(model.getCompany().getName());
         initialsProperty.set(prepareInitialsToBeShown());
     }

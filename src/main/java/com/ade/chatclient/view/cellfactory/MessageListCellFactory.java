@@ -42,6 +42,7 @@ public class MessageListCellFactory extends ListCell<Message> {
 
         messageText.setText(prepareMessageToBeShown(item));
         dataText.setText(prepareMessageDataToBeShown(item));
+        dataText.setStyle("-fx-font-size: 10; -fx-text-fill: #FFFFFF");
         AnchorPane.clearConstraints(wrapper);
 
         if (item.getAuthor().getId().equals(selfId)) {

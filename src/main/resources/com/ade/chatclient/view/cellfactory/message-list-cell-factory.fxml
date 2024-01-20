@@ -3,6 +3,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane fx:id="layout" stylesheets="@../../styles/ChatPageViewStyleDark.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.cellfactory.MessageListCellFactory">
    <VBox fx:id="wrapper" styleClass="messageLayout">
@@ -12,6 +13,9 @@
       <Label fx:id="dataText" layoutY="13.0" styleClass="dataText" text="Label">
          <VBox.margin>
             <Insets bottom="10.0" top="5.0" />
-         </VBox.margin></Label>
+         </VBox.margin>
+         <font>
+            <Font size="8.0" />
+         </font></Label>
    </VBox>
 </AnchorPane>
