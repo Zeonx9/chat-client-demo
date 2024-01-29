@@ -10,6 +10,8 @@ import java.util.concurrent.CompletableFuture;
 public interface SelfRepository {
     CompletableFuture<AuthResponse> changePassword(ChangePasswordRequest request);
 
+    CompletableFuture<User> changeUserInfo(User request);
+
     void clear();
 
     void setMyself(User myself);

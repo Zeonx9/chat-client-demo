@@ -50,12 +50,16 @@ public class ClientModelImpl implements ClientModel {
     public void runModel() {
         myself = selfRepository.getMyself();
         company = selfRepository.getCompany();
-        chatRepository.setSelfId(myself.getId());
-        messageRepository.setSelfId(myself.getId());
-        usersRepository.setSelfId(myself.getId());
+        setIdToRepo();
         startWebSocketConnection();
         fetchUsers();
         fetchChats();
+    }
+
+    private void setIdToRepo() {
+        chatRepository.setSelfId(myself.getId());
+        messageRepository.setSelfId(myself.getId());
+        usersRepository.setSelfId(myself.getId());
     }
 
     @Override
@@ -178,11 +182,11 @@ public class ClientModelImpl implements ClientModel {
         request.getAuthRequest().setLogin(myself.getUsername());
         selfRepository.changePassword(request)
                 .thenAccept(response -> {
-                            changeSupport.firePropertyChange(UserSettingsViewModel.PASSWORD_CHANGED_RESPONDED_EVENT, null, "successfully!");
+                            changeSupport.firePropertyChange(UserSettingsViewModel.CHANGED_RESPONDED_EVENT, null, "successfully!");
                             SettingsManager.changeSettings(Settings::setPassword, request.getNewPassword());
                         }
                 ).exceptionally(e -> {
-                    changeSupport.firePropertyChange(UserSettingsViewModel.PASSWORD_CHANGED_RESPONDED_EVENT, null, "unsuccessful attempt!");
+                    changeSupport.firePropertyChange(UserSettingsViewModel.CHANGED_RESPONDED_EVENT, null, "unsuccessful attempt!");
                     log.error("failed to change password", e);
                     return null;
                 });
@@ -208,6 +212,24 @@ public class ClientModelImpl implements ClientModel {
         if (stompSessionApi != null) {
             stompSessionApi.sendDisconnectSignal(myself);
         }
+    }
+
+    @Override
+    public void changeUserInfo(User newUserInfo) {
+        newUserInfo.setId(myself.getId());
+        newUserInfo.setUsername(myself.getUsername());
+        newUserInfo.setIsOnline(true);
+        selfRepository.changeUserInfo(newUserInfo)
+                .thenAccept(response -> {
+                            changeSupport.firePropertyChange(UserSettingsViewModel.CHANGED_RESPONDED_EVENT, null, "successfully!");
+                            myself = response;
+                            setIdToRepo();
+                        }
+                ).exceptionally(e -> {
+                    changeSupport.firePropertyChange(UserSettingsViewModel.CHANGED_RESPONDED_EVENT, null, "unsuccessful attempt!");
+                    log.error("failed to change user info", e);
+                    return null;
+                });
     }
 
     private void acceptNewChat(Chat chat) {

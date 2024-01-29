@@ -29,11 +29,11 @@ public class UserSettingsViewModel extends AbstractChildViewModel<ClientModel> {
     private final StringProperty systemMessageProperty = new SimpleStringProperty();
     private PaneSwitcher paneSwitcher;
 
-    public static final String PASSWORD_CHANGED_RESPONDED_EVENT = "passwordChangeResponded";
+    public static final String CHANGED_RESPONDED_EVENT = "passwordChangeResponded";
     public UserSettingsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
 
-        model.addListener(PASSWORD_CHANGED_RESPONDED_EVENT, runLaterListener(this::showRequestResult));
+        model.addListener(CHANGED_RESPONDED_EVENT, runLaterListener(this::showRequestResult));
     }
 
     /**
