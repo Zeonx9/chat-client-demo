@@ -20,7 +20,7 @@ public class SelfApiImpl extends BaseRestApi implements SelfApi {
 
     @Override
     public CompletableFuture<User> changeUserInfo(User request) {
-        return handler.sendPut(String.format("/user/%d", request.getId()), request, User.class);
+        return handler.sendPut(String.format("/users/%d", request.getId()), request, User.class);
     }
 
 
