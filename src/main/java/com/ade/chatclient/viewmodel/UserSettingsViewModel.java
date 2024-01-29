@@ -3,9 +3,11 @@ package com.ade.chatclient.viewmodel;
 import com.ade.chatclient.application.*;
 import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.application.util.PaneSwitcher;
+import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.view.ChangingPasswordDialog;
+import com.ade.chatclient.view.EditProfileDialog;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.layout.Pane;
@@ -80,6 +82,11 @@ public class UserSettingsViewModel extends AbstractChildViewModel<ClientModel> {
     }
 
     public void showEditProfileDialogAndWait() {
-        systemMessageProperty.set("This function is not available now");
+        systemMessageProperty.set("");
+        EditProfileDialog dialog = EditProfileDialog.getInstance();
+        dialog.init(new EditProfileDialogModel());
+
+        Optional<User> answer = dialog.showAndWait();
+        answer.ifPresent(model::changeUserInfo);
     }
 }
