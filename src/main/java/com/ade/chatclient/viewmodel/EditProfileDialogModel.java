@@ -25,7 +25,8 @@ public class EditProfileDialogModel extends AbstractDialogModel<User> {
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate birthDate = LocalDate.parse(birthdayProperty.getValue(), formatter);
+        LocalDate birthDate = birthdayProperty.getValue() != null ?
+                LocalDate.parse(birthdayProperty.getValue(), formatter) : null;
 
         return User.builder()
                 .realName(firstNameProperty.getValue())

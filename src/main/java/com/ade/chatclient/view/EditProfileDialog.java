@@ -19,11 +19,11 @@ public class EditProfileDialog extends AbstractDialog<User, EditProfileDialogMod
     }
     @Override
     protected void initialize() {
-        firstNameTextField.textProperty().bind(viewModel.getFirstNameProperty());
-        surnameTextField.textProperty().bind(viewModel.getSurnameProperty());
-        patronymicTextField.textProperty().bind(viewModel.getPatronymicProperty());
-        phoneNumberTextField.textProperty().bind(viewModel.getPhoneNumberProperty());
-        birthdayTextField.textProperty().bind(viewModel.getBirthdayProperty());
+        firstNameTextField.textProperty().bindBidirectional(viewModel.getFirstNameProperty());
+        surnameTextField.textProperty().bindBidirectional(viewModel.getSurnameProperty());
+        patronymicTextField.textProperty().bindBidirectional(viewModel.getPatronymicProperty());
+        phoneNumberTextField.textProperty().bindBidirectional(viewModel.getPhoneNumberProperty());
+        birthdayTextField.textProperty().bindBidirectional(viewModel.getBirthdayProperty());
     }
 
     @Override

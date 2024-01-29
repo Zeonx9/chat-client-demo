@@ -60,6 +60,7 @@ public class ClientModelImpl implements ClientModel {
         chatRepository.setSelfId(myself.getId());
         messageRepository.setSelfId(myself.getId());
         usersRepository.setSelfId(myself.getId());
+        selfRepository.setMyself(myself);
     }
 
     @Override
