@@ -133,4 +133,6 @@ public interface ClientModel {
     void startWebSocketConnection();
 
     void stopWebSocketConnection();
+
+    void changeUserInfo(User newUserInfo);
 }

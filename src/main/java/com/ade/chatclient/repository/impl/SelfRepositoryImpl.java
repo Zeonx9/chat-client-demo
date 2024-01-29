@@ -32,6 +32,11 @@ public class SelfRepositoryImpl implements SelfRepository {
     }
 
     @Override
+    public CompletableFuture<User> changeUserInfo(User request) {
+        return selfApi.changeUserInfo(request);
+    }
+
+    @Override
     public void clear() {
         myself = null;
         company = null;
