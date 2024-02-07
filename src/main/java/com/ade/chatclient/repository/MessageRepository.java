@@ -13,4 +13,6 @@ public interface MessageRepository {
     CompletableFuture<List<Message>> getMessagesOfChat(Long chatId);
 
     void sendMessageToChat(String text, Long chatId);
+
+    void clear();
 }

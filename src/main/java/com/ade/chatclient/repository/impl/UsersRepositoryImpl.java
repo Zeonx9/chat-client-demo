@@ -36,6 +36,7 @@ public class UsersRepositoryImpl implements UsersRepository {
 
     @Override
     public void clearUsers() {
+        selfId = null;
         allUsers.clear();
     }
 

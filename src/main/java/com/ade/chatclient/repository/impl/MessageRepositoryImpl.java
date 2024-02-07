@@ -42,4 +42,10 @@ public class MessageRepositoryImpl implements MessageRepository {
     public void sendMessageToChat(String text, Long chatId) {
         messageApi.sendMessageToChat(text, chatId, selfId);
     }
+
+    @Override
+    public void clear() {
+        selfId = null;
+        messagesByChatId.clear();
+    }
 }

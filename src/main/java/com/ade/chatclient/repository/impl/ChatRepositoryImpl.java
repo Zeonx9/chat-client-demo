@@ -51,6 +51,7 @@ public class ChatRepositoryImpl implements ChatRepository {
 
     @Override
     public void clearChats() {
+        selfId = null;
         chatById.clear();
         orderedChats.clear();
     }
