@@ -7,9 +7,13 @@ import com.ade.chatclient.model.ClientModel;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
+import lombok.Setter;
 
+import java.beans.PropertyChangeEvent;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
 
 @Getter
 public class ProfileViewModel extends AbstractChildViewModel<ClientModel> {
@@ -20,11 +24,23 @@ public class ProfileViewModel extends AbstractChildViewModel<ClientModel> {
     private final StringProperty phoneNumberProperty = new SimpleStringProperty();
     private final StringProperty companyNameProperty = new SimpleStringProperty();
     private final StringProperty initialsProperty = new SimpleStringProperty();
+    @Setter
     private User user;
+
+    public static final String CHANGED_USER_INFO = "changeUserInfo";
 
     public ProfileViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
+
+        model.addListener(CHANGED_USER_INFO, runLaterListener(this::setUserInfo));
     }
+
+
+    private void setUserInfo(PropertyChangeEvent event) {
+        user = (User) event.getNewValue();
+        setUserPersonalData();
+    }
+
     /**
      * Метод получает из модели объект класса User пользователя и устанавливает личную информацию на экран
      */
@@ -37,9 +53,7 @@ public class ProfileViewModel extends AbstractChildViewModel<ClientModel> {
         companyNameProperty.set(model.getCompany().getName());
         initialsProperty.set(prepareInitialsToBeShown());
     }
-    public void setUser(User person) {
-        user = person;
-    }
+
 
     /**
      * @param user объект класса User - пользователь
