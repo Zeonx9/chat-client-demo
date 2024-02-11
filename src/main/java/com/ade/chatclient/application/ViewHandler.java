@@ -1,5 +1,6 @@
 package com.ade.chatclient.application;
 
+import com.ade.chatclient.ClientApplication;
 import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.application.structure.AbstractView;
 import com.ade.chatclient.application.structure.AbstractViewModel;
@@ -61,8 +62,12 @@ public class ViewHandler {
      * @param viewType константа указывающая на нужное вью
      */
     public void openView(Views viewType) {
+        Settings settings = SettingsManager.getSettings();
         FXMLLoader fxmlLoader = getLoader(viewType);
         Parent root = load(fxmlLoader);
+
+        root.getStylesheets().clear();
+        root.getStylesheets().add(String.valueOf(ClientApplication.class.getResource("styles/" + viewType.cssFile + settings.getTheme() + ".css")));
 
         AbstractView<AbstractViewModel<?>> view = fxmlLoader.getController();
         view.init(getViewModel(viewType));
@@ -79,8 +84,13 @@ public class ViewHandler {
      * @param placeHolder контейнер типа Pane или его наследник, на месте которого будет открыта новая панель
      */
     public void openPane(Views paneType, Pane placeHolder) {
+        Settings settings = SettingsManager.getSettings();
         FXMLLoader fxmlLoader = getLoader(paneType);
         Parent paneRoot = load(fxmlLoader);
+
+        paneRoot.getStylesheets().clear();
+        paneRoot.getStylesheets().add(String.valueOf(ClientApplication.class.getResource("styles/" + paneType.cssFile + settings.getTheme() + ".css")));
+
 
         AbstractView<AbstractChildViewModel<?>> pane = fxmlLoader.getController();
         pane.init((AbstractChildViewModel<?>) getViewModel(paneType));

@@ -24,7 +24,7 @@ public class ChangingPasswordDialog extends AbstractDialog<ChangePasswordRequest
     @FXML private Label errorMessage;
 
     public static ChangingPasswordDialog getInstance() {
-        return AbstractDialog.getInstance(ChangingPasswordDialog.class, "changing-password-dialog-view.fxml");
+        return AbstractDialog.getInstance(ChangingPasswordDialog.class, "changing-password-dialog-view.fxml", "ChatPageViewStyle");
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.ade.chatclient.view.cellfactory;
 
+import com.ade.chatclient.application.Settings;
+import com.ade.chatclient.application.SettingsManager;
 import com.ade.chatclient.domain.Message;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -10,6 +12,7 @@ import javafx.scene.layout.VBox;
 import lombok.RequiredArgsConstructor;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /**
  * Фабрика ячеек списка сообщений, предназначена для генерации и настройки ячеек в ListView, определяет, как они будут выглядеть для дальнейшей автоматической генерации
@@ -40,20 +43,30 @@ public class MessageListCellFactory extends ListCell<Message> {
             return;
         }
 
+        Settings settings = SettingsManager.getSettings();
+
         messageText.setText(prepareMessageToBeShown(item));
         dataText.setText(prepareMessageDataToBeShown(item));
-        dataText.setStyle("-fx-font-size: 10; -fx-text-fill: #FFFFFF");
+
         AnchorPane.clearConstraints(wrapper);
 
         if (item.getAuthor().getId().equals(selfId)) {
             AnchorPane.setRightAnchor(wrapper, 0.0);
             wrapper.setAlignment(Pos.CENTER_RIGHT);
             messagePane.setStyle("-fx-background-color: #3E46FF");
+            messageText.setStyle("-fx-text-fill: #FFFFFF");
         }
         else {
             AnchorPane.setLeftAnchor(wrapper, 0.0);
             wrapper.setAlignment(Pos.CENTER_LEFT);
-            messagePane.setStyle("-fx-background-color: #212229");
+            if (Objects.equals(settings.getTheme(), "Light")) {
+                messagePane.setStyle("-fx-background-color: #FFFFFF");
+                messageText.setStyle("-fx-text-fill: #212229");
+            }
+            else {
+                messagePane.setStyle("-fx-background-color: #212229");
+                messageText.setStyle("-fx-text-fill: #FFFFFF");
+            }
         }
         setGraphic(layout);
     }

@@ -34,6 +34,7 @@ public class ProfileView extends AbstractView<ProfileViewModel> {
 
     private void fillUserPhoto() {
         Circle circle = new Circle(40, Color.rgb(145, 145, 145));
+        initials.setStyle("-fx-text-fill: #FFFFFF");
         photoPane.getChildren().addAll(circle);
     }
 }

@@ -14,7 +14,7 @@ public class UserInfoDialog  extends AbstractDialog<User, EmptyDialogModel<User>
     @FXML private Pane profilePane;
 
     public static UserInfoDialog getInstance(){
-        UserInfoDialog instance = AbstractDialog.getInstance(UserInfoDialog.class, "user-info-dialog-view.fxml");
+        UserInfoDialog instance = AbstractDialog.getInstance(UserInfoDialog.class, "user-info-dialog-view.fxml", "ChatPageViewStyle");
         instance.init(new EmptyDialogModel<>());
         return instance;
     }

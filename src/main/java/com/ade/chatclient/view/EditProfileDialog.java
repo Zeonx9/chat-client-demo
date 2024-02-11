@@ -3,7 +3,6 @@ package com.ade.chatclient.view;
 import com.ade.chatclient.application.structure.AbstractDialog;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.viewmodel.EditProfileDialogModel;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
@@ -15,7 +14,7 @@ public class EditProfileDialog extends AbstractDialog<User, EditProfileDialogMod
     @FXML private TextField birthdayTextField;
 
     public static EditProfileDialog getInstance() {
-        return AbstractDialog.getInstance(EditProfileDialog.class, "edit-profile-dialog-view.fxml");
+        return AbstractDialog.getInstance(EditProfileDialog.class, "edit-profile-dialog-view.fxml", "ChatPageViewStyle");
     }
     @Override
     protected void initialize() {
