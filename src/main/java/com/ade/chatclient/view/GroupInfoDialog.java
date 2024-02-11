@@ -45,7 +45,7 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogMo
     }
 
     public static GroupInfoDialog getInstance(){
-        GroupInfoDialog instance = AbstractDialog.getInstance(GroupInfoDialog.class, "group-info-dialog-view.fxml");
+        GroupInfoDialog instance = AbstractDialog.getInstance(GroupInfoDialog.class, "group-info-dialog-view.fxml", "CellFactoryStyle");
         instance.init(new EmptyDialogModel<>());
         return instance;
     }

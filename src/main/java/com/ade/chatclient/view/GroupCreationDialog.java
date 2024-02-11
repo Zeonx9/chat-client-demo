@@ -26,7 +26,7 @@ public class GroupCreationDialog extends AbstractDialog<GroupRequest, GroupCreat
     @FXML private Button createGroupButton;
 
     public static GroupCreationDialog getInstance(){
-        return AbstractDialog.getInstance(GroupCreationDialog.class, "create-group-dialog-view.fxml");
+        return AbstractDialog.getInstance(GroupCreationDialog.class, "create-group-dialog-view.fxml", "ChatPageViewStyle");
     }
 
     /**
