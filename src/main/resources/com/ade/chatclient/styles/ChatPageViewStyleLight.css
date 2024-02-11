@@ -14,19 +14,19 @@
 }
 
 .background-chat-page {
-    -fx-background-color: #2F303B;
+    -fx-background-color: #CBDAFF;
 }
 
 .switch-pane {
-    -fx-background-color: #212229;
+    -fx-background-color: #FFFFFF;
 }
 
 .buttons-pane {
-    -fx-background-color: #212229;
+    -fx-background-color: #FFFFFF;
 }
 
 .showChatsBtn {
-    -fx-background-color: #2F303B;
+    -fx-background-color: #CBDAFF;
     -fx-background-image: url("../img/chat_btn.png");
 
     -fx-background-radius: 40px;
@@ -41,7 +41,7 @@
 }
 
 .showUsersBtn {
-    -fx-background-color: #2F303B;
+    -fx-background-color: #CBDAFF;
     -fx-background-image: url("../img/users_btn.png");
 
     -fx-background-radius: 40px;
@@ -56,7 +56,7 @@
 }
 
 .showUserProfileBtn {
-    -fx-background-color: #2F303B;
+    -fx-background-color: #CBDAFF;
     -fx-background-image: url("../img/user_profile_btn.png");
 
     -fx-background-radius: 40px;
@@ -71,7 +71,7 @@
 }
 
 .createGroupBtn {
-    -fx-background-color: #2F303B;
+    -fx-background-color: #CBDAFF;
     -fx-background-image: url("../img/create_group_btn.png");
 
     -fx-background-radius: 40px;
@@ -88,88 +88,91 @@
 .header {
     -fx-font-family: "Montserrat Bold";
     -fx-font-size: 14;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #212229;
 }
 
 .grayText {
-    -fx-text-fill: lightgray;
+    -fx-text-fill: #A4A4A4;
     -fx-font-size: 14;
     -fx-font-family: "Montserrat Regular";
 }
 
 .chatInfoBtn {
-    -fx-background-color: #212229;
-    -fx-background-image: url("../img/info_button.png");
+    -fx-background-color: #FFFFFF;
+    -fx-background-image: url("../img/info_button_blue.png");
 
     -fx-background-radius: 40px;
 }
 
 .chatInfoBtn:hover {
     -fx-background-color: #3E46FF;
+    -fx-background-image: url("../img/info_button.png");
 }
 
 .chatInfoBtn:focused {
     -fx-background-color: #3E46FF;
+    -fx-background-image: url("../img/info_button.png");
 }
 
 .photoPane {
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #212229;
     -fx-font-family: "Montserrat Bold";
     -fx-font-size: 14px;
 }
 
+
 .messageInput {
     -fx-font-family: "Montserrat Regular";
     -fx-font-size: 14;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #212229;
     -fx-background-radius: 10px;
-    -fx-background-color: #212229;
+    -fx-background-color: #FFFFFF;
 }
 
 .sendMessageBtn {
-    -fx-background-image: url("../img/send_mes_btn.png");
+    -fx-background-image: url("../img/send_mes_btn_hover.png");
     -fx-background-color: transparent;
 }
 
 .sendMessageBtn:hover {
-    -fx-background-image: url("../img/send_mes_btn_hover.png");
+    -fx-background-image: url("../img/send_mes_btn_black.png");
     -fx-background-color: transparent;
 }
 
 .sendMessageBtn:focused {
-    -fx-background-image: url("../img/send_mes_btn_hover.png");
+    -fx-background-image: url("../img/send_mes_btn_black.png");
     -fx-background-color: transparent;
 }
 
 .messageListView {
-    -fx-background-color: #2F303B;
+    -fx-background-color: #CBDAFF;
 }
 
 .messageListView .list-cell .dataText {
     -fx-font-family: "Montserrat Regular";
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: darkgray;
 }
 
 .messageListView .list-cell{
-    -fx-background-color: #2F303B;
+    -fx-background-color: #CBDAFF;
 }
 
 .messageListView .scroll-bar .track{
-    -fx-background-color: #2F303B;
+    -fx-background-color: #CBDAFF;
 }
 
 .messageListView .scroll-bar .thumb {
-    -fx-background-color: #212229;
+    -fx-background-color: #3E46FF;
 }
 
 .messageListView .scroll-bar .corner {
-    -fx-background-color: #2F303B ;
+    -fx-background-color: #CBDAFF ;
 }
 
 .messageListView .scroll-bar .increment-button, .messageListView .scroll-bar .decrement-button{
-    -fx-background-color: #2F303B;
-    -fx-border-color: #2F303B;
-    -fx-text-fill: #2F303B;
+    -fx-background-color: #CBDAFF;
+    -fx-border-color: #CBDAFF;
+    -fx-text-fill: #CBDAFF;
     -fx-background-insets: 0 0 0 0;
 }
 
@@ -179,27 +182,28 @@
 }
 
 .messageListView .list-cell:empty .label {
-    -fx-background-color: #2F303B;
+    -fx-background-color: #CBDAFF;
 }
 
 .messagePane {
     -fx-background-radius: 10px;
+    -fx-background-color: #CBDAFF;
 }
 
 .messageListView .list-cell .messageLayout {
-    -fx-background-color: #2F303B;
+    -fx-background-color: #CBDAFF;
 }
 
 .simpleButton {
-    -fx-background-color: #2F303B;
+    -fx-background-color: #3E46FF;
     -fx-background-radius: 5px;
     -fx-font-family: "Montserrat Regular";
     -fx-font-size: 14;
-    -fx-text-fill: #A4A4A4;
+    -fx-text-fill: #FFFFFF;
 }
 
 .simpleButton:hover {
-    -fx-background-color: #3E46FF;
+    -fx-background-color: #777CFF;
 }
 
 .simpleButton:focused {
@@ -214,7 +218,7 @@
 
 .fullName {
     -fx-font-family: "Montserrat Bold";
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #212229;
     -fx-font-size: 14;
 }
 
@@ -232,28 +236,28 @@
 
 .text {
     -fx-font-family: "Montserrat Regular";
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #212229;
     -fx-font-size: 14;
 }
 
 .initials {
     -fx-font-family: "Montserrat Bold";
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #212229;
     -fx-font-size: 20;
 }
 
 .infoArea {
-    -fx-background-color: #212229;
+    -fx-background-color: #3E46FF;
     -fx-background-radius: 10;
 }
 
 .textInput {
     -fx-font-family: "Montserrat Regular";
     -fx-font-size: 14;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #212229;
     -fx-background-radius: 5px;
 
-    -fx-background-color: #2F303B;
+    -fx-background-color: #CBDAFF;
     -fx-border-radius: 0px;
     -fx-border-width: 0 0 0 0;
 }
@@ -273,7 +277,7 @@
 .header2 {
     -fx-font-family: "Montserrat Medium";
     -fx-font-size: 20;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #212229;
 }
 
 .cellFactoryListView .list-view {
@@ -281,25 +285,25 @@
 }
 
 .cellFactoryListView .scroll-bar {
-    -fx-background-color: #212229;
+    -fx-background-color: #FFFFFF;
 }
 
 .cellFactoryListView .scroll-bar .track{
-    -fx-background-color: #212229;
+    -fx-background-color: #FFFFFF;
 }
 
 .cellFactoryListView .scroll-bar .thumb {
-    -fx-background-color: #2F303B;
+    -fx-background-color: #3E46FF;
 }
 
 .cellFactoryListView .scroll-bar .corner {
-    -fx-background-color: #212229 ;
+    -fx-background-color: #FFFFFF ;
 }
 
 .cellFactoryListView .scroll-bar .increment-button, .cellFactoryListView .scroll-bar .decrement-button{
-    -fx-background-color: #212229;
-    -fx-border-color: #212229;
-    -fx-text-fill: #212229;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #FFFFFF;
+    -fx-text-fill: #FFFFFF;
     -fx-background-insets: 0 0 0 0;
 }
 
@@ -309,27 +313,15 @@
 }
 
 .cellFactoryListView .list-cell {
-    -fx-background-color: #212229;
+    -fx-background-color: #FFFFFF;
     -fx-font-family: "Montserrat Medium";
     -fx-font-size: 14;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #212229;
     -fx-padding: 0;
 }
 
-.cellFactoryListView .list-cell .chatNameLabel {
-    -fx-text-fill: #FFFFFF;
-}
-
-.cellFactoryListView .list-cell .lastMessageDateLabel {
-    -fx-text-fill: lightgray;
-}
-
-.cellFactoryListView .list-cell .lastMsgLabel {
-    -fx-text-fill: lightgray;
-}
-
 .cellFactoryListView .list-cell .realNameLabel {
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #212229;
 }
 
 .cellFactoryListView .list-cell .userNameLabel {
@@ -338,18 +330,6 @@
 
 .cellFactoryListView .list-cell:hover {
     -fx-background-color: #3E46FF;
-}
-
-.cellFactoryListView .list-cell:hover .chatNameLabel {
-    -fx-text-fill: #FFFFFF;
-}
-
-.cellFactoryListView .list-cell:hover .lastMessageDateLabel {
-    -fx-text-fill: #FFFFFF;
-}
-
-.cellFactoryListView .list-cell:hover .lastMsgLabel {
-    -fx-text-fill: #FFFFFF;
 }
 
 .cellFactoryListView .list-cell:hover .realNameLabel {
@@ -362,17 +342,6 @@
 
 .cellFactoryListView .list-cell:focused {
     -fx-background-color: #3E46FF;
-}
-
-.cellFactoryListView .list-cell:focused .chatNameLabel {
-    -fx-text-fill: #FFFFFF;
-}
-
-.cellFactoryListView .list-cell:focused .lastMessageDateLabel {
-    -fx-text-fill: #FFFFFF;
-}
-
-.cellFactoryListView .list-cell:focused .lastMsgLabel {
     -fx-text-fill: #FFFFFF;
 }
 
@@ -385,8 +354,13 @@
 }
 
 .cellFactoryListView .list-cell:empty {
-    -fx-background-color: #212229;
+    -fx-background-color: #FFFFFF;
     -fx-padding: 0;
+}
+
+.cellFactoryListView .list-cell:selected {
+    -fx-text-fill: #FFFFFF;
+    -fx-background-color: #3E46FF;
 }
 
 .selectedListView .list-cell{
@@ -409,25 +383,25 @@
 }
 
 .selectedListView .scroll-bar {
-    -fx-background-color: #212229;
+    -fx-background-color: #FFFFFF;
 }
 
 .selectedListView .scroll-bar .track{
-    -fx-background-color: #212229;
+    -fx-background-color: #FFFFFF;
 }
 
 .selectedListView .scroll-bar .thumb {
-    -fx-background-color: #2F303B;
+    -fx-background-color: #3E46FF;
 }
 
 .selectedListView .scroll-bar .corner {
-    -fx-background-color: #212229 ;
+    -fx-background-color: #FFFFFF ;
 }
 
 .selectedListView .scroll-bar .increment-button, .selectedListView .scroll-bar .decrement-button{
-    -fx-background-color: #212229;
-    -fx-border-color: #212229;
-    -fx-text-fill: #212229;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #FFFFFF;
+    -fx-text-fill: #FFFFFF;
     -fx-background-insets: 0 0 0 0;
 }
 
