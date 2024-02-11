@@ -1,10 +1,14 @@
 package com.ade.chatclient.view;
 
+import com.ade.chatclient.application.Settings;
+import com.ade.chatclient.application.SettingsManager;
 import com.ade.chatclient.application.structure.AbstractView;
 import com.ade.chatclient.viewmodel.UserSettingsViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+
+import java.util.Objects;
 
 /**
  * Класс выступает в роли контроллера для панели личного кабинета пользователя, управляет поведением и отображением элементов на экране
@@ -41,4 +45,14 @@ public class UserSettingsView extends AbstractView<UserSettingsViewModel> {
      * Метод вызывает функцию открытия диалогового окна для редактирования личного профиля пользователя
      */
     public void onEditProfileButtonClicked() {viewModel.showEditProfileDialogAndWait();}
+
+    /**
+     * Метод изменяет цветовую тему плиложения и запускает процесс выхода из аккаунта для полной смены темы
+     */
+    public void onChangeThemeButtonClicked() {
+        Settings settings = SettingsManager.getSettings();
+        String newTheme = Objects.equals(settings.getTheme(), "Dark") ? "Light" : "Dark";
+        SettingsManager.changeSettings(Settings::setTheme, newTheme);
+        viewModel.logOut();
+    }
 }
