@@ -7,7 +7,6 @@ import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.ConnectEvent;
 import com.ade.chatclient.dtos.ReadNotification;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
@@ -41,9 +40,10 @@ public class StompSessionApiIml implements StompSessionApi {
         stompClient = new WebSocketStompClient(webSocketClient);
 
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-        converter.getObjectMapper().registerModule(new JavaTimeModule());
+        converter.getObjectMapper().findAndRegisterModules();
         stompClient.setMessageConverter(converter);
     }
+
 
     private <T> StompFrameHandler makeSubscriptionHandler(Class<T> klass, Consumer<T> handler) {
         return new StompFrameHandler() {
