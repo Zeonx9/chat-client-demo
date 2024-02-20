@@ -13,7 +13,8 @@ module com.ade.chatclient {
     requires spring.messaging;
     requires spring.websocket;
     requires org.slf4j;
-
+    requires spring.web;
+    requires org.apache.httpcomponents.client5.httpclient5;
 
     exports com.ade.chatclient;
     opens com.ade.chatclient to javafx.fxml;

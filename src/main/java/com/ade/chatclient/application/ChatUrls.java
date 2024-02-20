@@ -14,11 +14,11 @@ public enum ChatUrls {
     private final String port;
 
     public String getServerUrl() {
-        return "http://" + ip + ":" + port + ROUTE_PREFIX;
+        return "https://" + ip + ":" + port + ROUTE_PREFIX;
     }
 
     public String getStompEndpointUrl() {
-        return "ws://" + ip + ":" + port + WS_ENDPOINT;
+        return "wss://" + ip + ":" + port + WS_ENDPOINT;
     }
 }
 
