@@ -1,13 +1,12 @@
 package com.ade.chatclient.view.cellfactory;
 
 import com.ade.chatclient.domain.User;
+import com.ade.chatclient.view.components.UserPhoto;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 /**
  * Фабрика ячеек списка пользователей, предназначена для генерации и настройки ячеек в ListView, определяет, как они будут выглядеть для дальнейшей автоматической генерации
@@ -36,18 +35,12 @@ public class UserListCellFactory extends ListCell<User> {
         realNameLabel.setText(prepareUserToBeShown(item));
         userNameLabel.setText(item.getUsername());
 
-        Circle circle = new Circle(20, Color.rgb(145, 145, 145));
-        Label label = new Label(prepareInitialsToBeShown(item));
-        label.setStyle("-fx-text-fill: #FFFFFF");
-        photoPane.getChildren().addAll(circle, label);
+        UserPhoto.setPaneContent(photoPane.getChildren(), item);
 
         setGraphic(layout);
 
     }
 
-    private String prepareInitialsToBeShown(User user) {
-        return user.getRealName().charAt(0) + "" + user.getSurname().charAt(0);
-    }
 
     /**
      *

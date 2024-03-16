@@ -4,8 +4,12 @@ import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.view.components.UserPhoto;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +27,7 @@ public class ProfileViewModel extends AbstractChildViewModel<ClientModel> {
     private final StringProperty birthDateProperty = new SimpleStringProperty();
     private final StringProperty phoneNumberProperty = new SimpleStringProperty();
     private final StringProperty companyNameProperty = new SimpleStringProperty();
-    private final StringProperty initialsProperty = new SimpleStringProperty();
+    private final ObservableList<Node> chatIconNodes = FXCollections.observableArrayList();
     @Setter
     private User user;
 
@@ -51,7 +55,7 @@ public class ProfileViewModel extends AbstractChildViewModel<ClientModel> {
         birthDateProperty.set(formatDOB(user.getDateOfBirth()));
         phoneNumberProperty.set(user.getPhoneNumber());
         companyNameProperty.set(model.getCompany().getName());
-        initialsProperty.set(prepareInitialsToBeShown());
+        UserPhoto.setPaneContent(chatIconNodes, user);
     }
 
 
@@ -76,11 +80,6 @@ public class ProfileViewModel extends AbstractChildViewModel<ClientModel> {
             return "-";
         }
         return date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-    }
-
-    private String prepareInitialsToBeShown() {
-        return Character.toUpperCase(user.getRealName().charAt(0)) + "" +
-                Character.toUpperCase(user.getSurname().charAt(0));
     }
 
     private String thisOrEmpty(String value) {

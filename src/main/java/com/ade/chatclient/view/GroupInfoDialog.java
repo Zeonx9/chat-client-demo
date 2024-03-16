@@ -5,12 +5,11 @@ import com.ade.chatclient.application.structure.EmptyDialogModel;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.GroupChatInfo;
 import com.ade.chatclient.domain.User;
+import com.ade.chatclient.view.components.UserPhoto;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,10 +37,7 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogMo
         listMembers.getItems().setAll(chat.getMembers());
         listMembers.setCellFactory(param -> viewModel.getUserListCellFactory());
 
-        Circle circle = new Circle(40, Color.rgb(145, 145, 145));
-        Label label = new Label(prepareInitialsToBeShown(chat));
-        label.setStyle("-fx-text-fill: #FFFFFF; -fx-font-size: 20");
-        photoPane.getChildren().addAll(circle, label);
+        UserPhoto.setPaneContent(photoPane.getChildren(), chat, null);
     }
 
     public static GroupInfoDialog getInstance(){
@@ -56,15 +52,6 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogMo
     @Override
     protected String getTitleString() {
         return "Group info";
-    }
-
-    private String prepareInitialsToBeShown(Chat chat) {
-        String[] chatName = chat.getGroup().getName().split(" ");
-        StringBuilder result = new StringBuilder();
-        for (String s : chatName) {
-            result.append(Character.toUpperCase(s.charAt(0)));
-        }
-        return result.toString();
     }
 
     @FXML private void onAddUsersButtonClicked() {systemMessage.setText("This function is not available now");}
