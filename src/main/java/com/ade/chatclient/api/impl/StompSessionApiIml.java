@@ -2,24 +2,22 @@ package com.ade.chatclient.api.impl;
 
 import com.ade.chatclient.api.StompSessionApi;
 import com.ade.chatclient.application.ApplicationStompSessionHandler;
+import com.ade.chatclient.application.HttpClientFactory;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.ConnectEvent;
 import com.ade.chatclient.dtos.ReadNotification;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.web.socket.client.WebSocketClient;
-import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.RestTemplateXhrTransport;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
-import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -34,16 +32,16 @@ public class StompSessionApiIml implements StompSessionApi {
 
     public StompSessionApiIml() {
         List<Transport> transports = List.of(
-                new WebSocketTransport(new StandardWebSocketClient()),
-                new RestTemplateXhrTransport()
+                new RestTemplateXhrTransport(HttpClientFactory.getTrustingRestTemplate())
         );
         WebSocketClient webSocketClient = new SockJsClient(transports);
         stompClient = new WebSocketStompClient(webSocketClient);
 
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-        converter.getObjectMapper().registerModule(new JavaTimeModule());
+        converter.getObjectMapper().findAndRegisterModules();
         stompClient.setMessageConverter(converter);
     }
+
 
     private <T> StompFrameHandler makeSubscriptionHandler(Class<T> klass, Consumer<T> handler) {
         return new StompFrameHandler() {

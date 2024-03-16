@@ -23,7 +23,9 @@ import static com.ade.chatclient.application.StartClientApp.URLS;
  */
 @RequiredArgsConstructor
 public class AsyncRequestHandler {
-    private final static HttpClient client = HttpClient.newHttpClient();
+
+
+    private final static HttpClient client = HttpClientFactory.getTrustingHttpClient();
     private final static ObjectMapper mapper = new ObjectMapper();
 
     static {
