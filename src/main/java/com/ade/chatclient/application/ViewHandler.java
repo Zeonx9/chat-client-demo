@@ -4,7 +4,6 @@ import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.application.structure.AbstractView;
 import com.ade.chatclient.application.structure.AbstractViewModel;
 import com.ade.chatclient.view.LogInView;
-import com.ade.chatclient.viewmodel.BackgroundService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -31,10 +30,10 @@ public class ViewHandler {
     private final ViewModelProvider viewModelProvider;
 
     /**
-     * создает новый ViewHandler,
+     * Создает новый ViewHandler,
      * при создании инициализирует все вью-модели, передавая им ссылку на ViewHandler
      * @param stage Stage, который предоставляет ClientApplication
-     * @param viewModelProvider фабрика вьд-модел, для дальшейшей инициализации вью
+     * @param viewModelProvider фабрика вьд-модель, для дальнейшей инициализации вью
      */
     public ViewHandler(Stage stage, ViewModelProvider viewModelProvider) {
         this.viewModelProvider = viewModelProvider;
@@ -43,23 +42,22 @@ public class ViewHandler {
     }
 
     /**
-     * метод, который запускает самое первое вью, которое должно быть показано пользователю
+     * Метод, который запускает самое первое вью. Оно должно быть показано пользователю
      */
     public void start() {
         openView(LOG_IN_VIEW);
     }
 
     /**
-     * запускает потоки, которые будут работать в фоне и проверять
+     * Запускает потоки, которые будут работать в фоне и проверять
      * наличие новых сообщений или чатов
      */
-    public void startBackGroundServices() {
-        BackgroundService backgroundService = viewModelProvider.getBackgroundService();
-        backgroundService.run();
+    public void runNextModel() {
+        viewModelProvider.runClientModel();
     }
 
     /**
-     * метод, который открывает указанное с помощью константы вью
+     * Метод, который открывает указанное с помощью константы вью
      * @param viewType константа указывающая на нужное вью
      */
     public void openView(Views viewType) {

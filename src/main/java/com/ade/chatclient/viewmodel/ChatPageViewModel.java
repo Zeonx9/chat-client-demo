@@ -1,27 +1,36 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.application.structure.AbstractViewModel;
 import com.ade.chatclient.application.ViewHandler;
+import com.ade.chatclient.application.Views;
+import com.ade.chatclient.application.structure.AbstractViewModel;
 import com.ade.chatclient.application.util.BottomScroller;
 import com.ade.chatclient.application.util.PaneSwitcher;
 import com.ade.chatclient.application.util.ViewModelUtils;
-import com.ade.chatclient.application.Views;
 import com.ade.chatclient.domain.Message;
+import com.ade.chatclient.domain.User;
+import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.view.GroupCreationDialog;
 import com.ade.chatclient.view.GroupInfoDialog;
+import com.ade.chatclient.view.UserInfoDialog;
 import com.ade.chatclient.view.cellfactory.MessageListCellFactory;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import lombok.Getter;
 
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
 
@@ -32,15 +41,23 @@ import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListene
 @Getter
 public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final ListProperty<Message> messageListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final ObservableList<Node> chatIconNodes = FXCollections.observableArrayList();
     private final StringProperty messageTextProperty = new SimpleStringProperty();
     private final BooleanProperty showChatsButtonDisabled = new SimpleBooleanProperty(true);
     private final BooleanProperty showUsersButtonDisabled = new SimpleBooleanProperty(false);
     private final BooleanProperty showUserProfileDisabled = new SimpleBooleanProperty(false);
-    private final BooleanProperty infoButtonFocusProperty = new SimpleBooleanProperty(false);
-    private final StringProperty selectedChatNameProperty = new SimpleStringProperty();
+    private final BooleanProperty disableProperty = new SimpleBooleanProperty(true);
+    private final BooleanProperty infoAreaDisableProperty = new SimpleBooleanProperty(false);
+    private final DoubleProperty infoAreaOpacityProperty = new SimpleDoubleProperty(100);
     private final DoubleProperty opacityProperty = new SimpleDoubleProperty(0);
+    private final StringProperty selectedChatNameProperty = new SimpleStringProperty();
+    private final StringProperty selectedChatInfoProperty = new SimpleStringProperty();
+    private final StringProperty openViewNameProperty = new SimpleStringProperty();
     private BottomScroller<Message> scroller;
     private PaneSwitcher paneSwitcher;
+
+    public static final String GOT_MESSAGES_EVENT = "gotMessages";
+    public static final String NEW_MESSAGES_IN_SELECTED_EVENT = "newMessagesInSelected";
 
     public ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
@@ -59,12 +76,39 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
             List<Message> messages = (List<Message>) event.getNewValue();
             messageListProperty.clear();
             messageListProperty.addAll(messages);
-            selectedChatNameProperty.setValue(model.getSelectedChat().getChatName(model.getMyself().getId()));
+            fillChatInfo();
             scroller.scrollDown();
         }
+        opacityProperty.set(100);
+        disableProperty.set(false);
 
-        if (model.getSelectedChat().getIsPrivate()) opacityProperty.set(0);
-        else opacityProperty.set(100);
+        infoAreaDisableProperty.set(true);
+        infoAreaOpacityProperty.set(0);
+    }
+
+    private void fillChatInfo() {
+        synchronized (messageListProperty) {
+            selectedChatNameProperty.setValue(model.getSelectedChat().getChatName(model.getMyself().getId()));
+            Boolean isPrivateChat = model.getSelectedChat().getIsPrivate();
+            List<User> members = model.getSelectedChat().getMembers();
+            Circle circle = new Circle(20, Color.rgb(145, 145, 145));
+            Label label = new Label();
+            label.setStyle("-fx-text-fill: #FFFFFF");
+
+            if (isPrivateChat) {
+                for (User user : members) {
+                    if (!user.getId().equals(model.getMyself().getId())) {
+                        selectedChatInfoProperty.set(user.getUsername());
+                        label.setText(user.getRealName().charAt(0) + "" + user.getSurname().charAt(0));
+                    }
+                }
+            } else {
+                selectedChatInfoProperty.setValue(members.size() + " members");
+                label.setText(String.valueOf(Character.toUpperCase(model.getSelectedChat().getGroup().getName().charAt(0))));
+            }
+
+            chatIconNodes.addAll(circle, label);
+        }
     }
 
     /**
@@ -106,7 +150,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
      * Метод осуществляет переключение на вью с личным кабинетом пользователя
      */
     public void openProfilePane() {
-        paneSwitcher.switchTo(Views.USER_PROFILE_VIEW);
+        paneSwitcher.switchTo(Views.USER_SETTINGS_VIEW);
     }
 
     /**
@@ -150,6 +194,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         showUserProfileDisabled.set(index == 0);
         showUsersButtonDisabled.set(index == 1);
         showChatsButtonDisabled.set(index == 2);
+        openViewNameProperty.set(index == 1 ? "Users" : index == 0 ? "Profile" : "Recent");
     }
 
     /**
@@ -170,11 +215,31 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
      */
     public void showDialog() {
         if (model.getSelectedChat().getIsPrivate()) {
-            return;
-        }
+            List<User> members = model.getSelectedChat().getMembers();
+            for (User user: members)
+                if (!user.equals(model.getMyself()))
+                    viewHandler.getViewModelProvider().getProfileViewModel().setUser(user);
 
-        GroupInfoDialog dialog = GroupInfoDialog.getInstance();
-        dialog.setChat(model.getSelectedChat());
-        dialog.showAndWait();
+            UserInfoDialog userInfoDialog = UserInfoDialog.getInstance();
+            userInfoDialog.setProfilePane(viewHandler);
+            userInfoDialog.showAndWait();
+        }
+        else {
+            GroupInfoDialog dialog = GroupInfoDialog.getInstance();
+            dialog.setChat(model.getSelectedChat());
+            dialog.showAndWait();
+        }
+    }
+
+    /**
+     * Метод создает и запускает диалоговое окно для создания новой беседы, после чего получает результат работы диалогового окна и отправляет данные в модель для создания нового группового чата
+     */
+    public void showDialogAndWait() {
+        GroupCreationDialog dialog = GroupCreationDialog.getInstance();
+        dialog.init(new GroupCreationDialogModel());
+        dialog.populateUserList(model.getAllUsers());
+
+        Optional<GroupRequest> answer = dialog.showAndWait();
+        answer.ifPresent(model::createGroupChat);
     }
 }

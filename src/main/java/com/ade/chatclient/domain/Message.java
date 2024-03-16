@@ -18,6 +18,7 @@ public class Message {
     private LocalDateTime dateTime;
     private User author;
     private Long chatId;
+    private Boolean isAuxiliary;
 
     @Override
     public boolean equals(Object o) {

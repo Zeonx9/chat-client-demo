@@ -1,29 +1,23 @@
 package com.ade.chatclient.view;
 
 import com.ade.chatclient.application.structure.AbstractView;
-import com.ade.chatclient.viewmodel.UserProfileViewModel;
+import com.ade.chatclient.viewmodel.UserSettingsViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 
 /**
  * Класс выступает в роли контроллера для панели личного кабинета пользователя, управляет поведением и отображением элементов на экране
  */
-public class UserProfileView extends AbstractView<UserProfileViewModel> {
-    @FXML private Label fullName;
-    @FXML private Label birthDate;
-    @FXML private Label userName;
-    @FXML private Label companyName;
-    @FXML private Label passwordResultMessage;
+public class UserSettingsView extends AbstractView<UserSettingsViewModel> {
+    @FXML private Pane profilePane;
+    @FXML private Label systemMessage;
 
     @Override
     protected void initialize() {
-        fullName.textProperty().bind(viewModel.getFullNameProperty());
-        birthDate.textProperty().bind(viewModel.getBirthDateProperty());
-        userName.textProperty().bind(viewModel.getUserNameProperty());
-        companyName.textProperty().bind(viewModel.getCompanyNameProperty());
-        passwordResultMessage.textProperty().bind(viewModel.getResultMessageProperty());
+        systemMessage.textProperty().bind(viewModel.getSystemMessageProperty());
 
-        viewModel.setUserPersonalData();
+        viewModel.openUserProfile(profilePane);
     }
 
     /**
@@ -42,4 +36,9 @@ public class UserProfileView extends AbstractView<UserProfileViewModel> {
     public void onLogOutButtonClicked() {
         viewModel.logOut();
     }
+
+    /**
+     * Метод вызывает функцию открытия диалогового окна для редактирования личного профиля пользователя
+     */
+    public void onEditProfileButtonClicked() {viewModel.showEditProfileDialogAndWait();}
 }

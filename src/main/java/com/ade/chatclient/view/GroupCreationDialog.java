@@ -4,7 +4,6 @@ import com.ade.chatclient.application.structure.AbstractDialog;
 import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.GroupRequest;
-import com.ade.chatclient.viewmodel.AllUsersViewModel;
 import com.ade.chatclient.viewmodel.GroupCreationDialogModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -12,6 +11,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.List;
 
 /**
@@ -45,7 +45,7 @@ public class GroupCreationDialog extends AbstractDialog<GroupRequest, GroupCreat
 
 
         listOfUsers.itemsProperty().bind(viewModel.getUserListProperty());
-        listOfUsers.setCellFactory(param -> AllUsersViewModel.getUserListCellFactory());
+        listOfUsers.setCellFactory(param -> viewModel.getUserListCellFactory());
         listOfUsers.getSelectionModel().selectedItemProperty()
                 .addListener(ViewModelUtils.changeListener(viewModel::onNewMemberSelected));
 

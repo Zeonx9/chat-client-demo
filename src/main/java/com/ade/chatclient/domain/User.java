@@ -18,6 +18,9 @@ public class User {
     private String realName;
     private String surname;
     private LocalDate dateOfBirth;
+    private String phoneNumber;
+    private Boolean isOnline;
+    private String patronymic;
 
     @Override
     public boolean equals(Object o) {

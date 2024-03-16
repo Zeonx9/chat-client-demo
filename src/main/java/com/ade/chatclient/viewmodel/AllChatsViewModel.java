@@ -1,13 +1,11 @@
 package com.ade.chatclient.viewmodel;
 
+import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.application.util.ListViewSelector;
-import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.Chat;
-import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.view.GroupCreationDialog;
 import com.ade.chatclient.view.cellfactory.ChatListCellFactory;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -15,16 +13,10 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-//import javafx.scene.media.Media;
-//import javafx.scene.media.MediaPlayer;
-
-import javafx.util.Duration;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.beans.PropertyChangeEvent;
-import java.io.File;
-import java.util.Optional;
 
 import static com.ade.chatclient.application.util.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
@@ -46,14 +38,19 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     private Chat selected;
     public ListViewSelector<Chat> selector;
 
+    public static final String GOT_CHATS_EVENT = "gotChats";
+    public static final String NEW_CHAT_CREATED_EVENT = "NewChatCreated";
+    public static final String SELECTED_CHAT_MODIFIED_EVENT = "selectedChatModified";
+    public static final String CHAT_RECEIVED_MESSAGES_EVENT = "chatReceivedMessages";
+
     public AllChatsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
 
         //заменяет значение chatListProperty новым значением (лист чатов)
-        model.addListener("gotChats", runLaterListener(listReplacer(chatListProperty)));
-        model.addListener("NewChatCreated", runLaterListener(this::newChatCreated));
-        model.addListener("selectedChatModified", runLaterListener(this::selectedChatModified));
-        model.addListener("chatReceivedMessages", runLaterListener(this::raiseChat));
+        model.addListener(GOT_CHATS_EVENT, runLaterListener(listReplacer(chatListProperty)));
+        model.addListener(NEW_CHAT_CREATED_EVENT, runLaterListener(this::newChatCreated));
+        model.addListener(SELECTED_CHAT_MODIFIED_EVENT, runLaterListener(this::selectedChatModified));
+        model.addListener(CHAT_RECEIVED_MESSAGES_EVENT, runLaterListener(this::raiseChat));
     }
 
 
@@ -72,9 +69,9 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             if ((boolean) event.getOldValue()) {
                 selected = chat;
             }
-            else {
+//            else {
 //                playSound();
-            }
+//            }
         }
     }
 
@@ -129,19 +126,6 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         selector.select(selected);
         return factory;
     }
-
-    /**
-     * Метод создает и запускает диалоговое окно для создания новой беседы, после чего получает результат работы диалогового окна и отправляет данные в модель для создания нового группового чата
-     */
-    public void showDialogAndWait() {
-        GroupCreationDialog dialog = GroupCreationDialog.getInstance();
-        dialog.init(new GroupCreationDialogModel());
-        dialog.populateUserList(model.getAllUsers());
-
-        Optional<GroupRequest> answer = dialog.showAndWait();
-        answer.ifPresent(model::createGroupChat);
-    }
-
 
     /**
      * При изменении текста newText в поле для поиска вызывает

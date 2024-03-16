@@ -1,10 +1,12 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.application.structure.AbstractDialogModel;
+import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.GroupChatInfo;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.view.cellfactory.SelectedUsersCellFactory;
+import com.ade.chatclient.view.cellfactory.UserListCellFactory;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ButtonType;
@@ -74,7 +76,6 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
     public void onMouseClickedListener(MouseEvent evt) {
         if (selected != null) {
             selectedUsersListProperty.remove(selected);
-//            System.out.println(selectedUsersListProperty);
         }
     }
 
@@ -99,5 +100,12 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
      */
     public static ListCell<User> getSelectedUsersCellFactory() {
         return new SelectedUsersCellFactory();
+    }
+
+    public ListCell<User> getUserListCellFactory() {
+        return ViewModelUtils.loadCellFactory(
+                UserListCellFactory.class,
+                "user-list-cell-factory.fxml"
+        );
     }
 }

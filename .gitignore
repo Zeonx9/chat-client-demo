@@ -1,4 +1,3 @@
 # Project exclude paths
 /target/
 /.idea/
-/src/main/resources/com/ade/chatclient/login-password/

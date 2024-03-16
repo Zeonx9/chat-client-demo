@@ -42,7 +42,7 @@ jobs:
         run: mvn package -DskipTests
 
       - name: Create artifact directory
-        run: mkdir staging ; copy target/*.exe staging
+        run: mkdir staging ; copy target/*.exe staging ; copy target/*.jar staging
 
       - name: Show staged files
         run: cd staging ; ls

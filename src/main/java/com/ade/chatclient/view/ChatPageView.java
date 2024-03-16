@@ -5,25 +5,35 @@ import com.ade.chatclient.application.structure.AbstractView;
 import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.viewmodel.ChatPageViewModel;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import lombok.Getter;
 
 /**
  * Класс выступает в роли контроллера для основного окна приложения, управляет поведением и отображением элементов на экране
  */
 public class ChatPageView extends AbstractView<ChatPageViewModel> {
+    @FXML private AnchorPane messageField;
     @FXML private Button showUserProfileButton;
+    @FXML private Button createGroupButton;
     @FXML private Button showChatsButton;
     @FXML private Button showUsersButton;
-    @FXML private Label userNameLabel;
+    @FXML private Label chatNameLabel;
+    @FXML private Label chatInfoLabel;
+    @FXML private Label viewNameLabel;
     @FXML private ListView<Message> messageListView;
     @FXML private TextField messageTextField;
     @FXML private Button infoButton;
+    @FXML private Button sendButton;
+    @FXML private StackPane photoPane;
+    @FXML private AnchorPane infoArea;
     @Getter
     @FXML private Pane placeHolder;
 
@@ -33,17 +43,30 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         viewModel.addPaneSwitcher(placeHolder);
 
         messageTextField.textProperty().bindBidirectional(viewModel.getMessageTextProperty());
-        userNameLabel.textProperty().bind(viewModel.getSelectedChatNameProperty());
+        chatNameLabel.textProperty().bind(viewModel.getSelectedChatNameProperty());
+        chatInfoLabel.textProperty().bind(viewModel.getSelectedChatInfoProperty());
+        viewNameLabel.textProperty().bind(viewModel.getOpenViewNameProperty());
+        messageListView.itemsProperty().bind(viewModel.getMessageListProperty());
         showChatsButton.disableProperty().bind(viewModel.getShowChatsButtonDisabled());
         showUsersButton.disableProperty().bind(viewModel.getShowUsersButtonDisabled());
         showUserProfileButton.disableProperty().bind(viewModel.getShowUserProfileDisabled());
-        messageListView.itemsProperty().bind(viewModel.getMessageListProperty());
 
         messageListView.setCellFactory(messageListView -> viewModel.getMessageCellFactory());
         messageTextField.setOnKeyPressed(ViewModelUtils.enterKeyHandler(viewModel::sendMessage));
 
         infoButton.opacityProperty().bind(viewModel.getOpacityProperty());
-        infoButton.focusTraversableProperty().bind(viewModel.getInfoButtonFocusProperty());
+        infoButton.disableProperty().bind(viewModel.getDisableProperty());
+        createGroupButton.setFocusTraversable(false);
+
+        messageField.opacityProperty().bind(viewModel.getOpacityProperty());
+        messageTextField.disableProperty().bind(viewModel.getDisableProperty());
+        sendButton.opacityProperty().bind(viewModel.getOpacityProperty());
+        sendButton.disableProperty().bind(viewModel.getDisableProperty());
+
+        infoArea.opacityProperty().bind(viewModel.getInfoAreaOpacityProperty());
+        infoArea.disableProperty().bind(viewModel.getInfoAreaDisableProperty());
+
+        Bindings.bindContent(photoPane.getChildren(), viewModel.getChatIconNodes());
 
         viewModel.openChatPane();
     }
@@ -70,6 +93,13 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
     @FXML
     protected void onShowUsersClicked() {
         viewModel.openUsersPane();
+    }
+
+    /**
+     * Метод вызывает функцию открытия диалогового окна для создания нового чата, после чего вызывает функцию создания беседы в Model, срабатывает при нажатии на кнопку Create Group
+     */
+    @FXML protected void onNewChatClicked() {
+        viewModel.showDialogAndWait();
     }
 
     /**
