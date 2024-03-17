@@ -51,11 +51,14 @@ public class ProfileViewModel extends AbstractChildViewModel<ClientModel> {
     public void setUserPersonalData() {
         fullNameProperty.set(prepareFullName(user));
         loginProperty.set(user.getUsername());
-        statusProperty.set(user.getIsOnline() ? "online" : "last seen recently");
+        statusProperty.set(user.getIsOnline() == Boolean.TRUE ? "online" : "last seen recently");
         birthDateProperty.set(formatDOB(user.getDateOfBirth()));
         phoneNumberProperty.set(user.getPhoneNumber());
         companyNameProperty.set(model.getCompany().getName());
-        UserPhoto.setPaneContent(chatIconNodes, user);
+
+        chatIconNodes.clear();
+
+        UserPhoto.setPaneContent(chatIconNodes, user, 40);
     }
 
 

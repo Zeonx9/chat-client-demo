@@ -39,7 +39,7 @@ import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListene
 @Getter
 public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final ListProperty<Message> messageListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
-    private ObservableList<Node> chatIconNodes = FXCollections.observableArrayList();
+    private final ObservableList<Node> chatIconNodes = FXCollections.observableArrayList();
     private final StringProperty messageTextProperty = new SimpleStringProperty();
     private final BooleanProperty showChatsButtonDisabled = new SimpleBooleanProperty(true);
     private final BooleanProperty showUsersButtonDisabled = new SimpleBooleanProperty(false);
@@ -86,7 +86,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
 
     private void fillChatInfo() {
         synchronized (messageListProperty) {
-            chatIconNodes = FXCollections.observableArrayList();
+            chatIconNodes.clear();
 
             selectedChatNameProperty.setValue(model.getSelectedChat().getChatName(model.getMyself().getId()));
             Boolean isPrivateChat = model.getSelectedChat().getIsPrivate();
@@ -102,7 +102,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
                 selectedChatInfoProperty.setValue(members.size() + " members");
             }
 
-            UserPhoto.setPaneContent(chatIconNodes, model.getSelectedChat(), model.getMyself().getId());
+            UserPhoto.setPaneContent(chatIconNodes, model.getSelectedChat(), model.getMyself().getId(), 20);
         }
     }
 

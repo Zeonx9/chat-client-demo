@@ -52,7 +52,7 @@ public class ChatListCellFactory extends ListCell<Chat> {
         lastMsgLabel.setText(prepareLastMessage(item));
         lastMessageDateLabel.setText(prepareLastMessageDate(item));
 
-        UserPhoto.setPaneContent(photoPane.getChildren(), item, selfId);
+        UserPhoto.setPaneContent(photoPane.getChildren(), item, selfId, 20);
 
         if (item.getUnreadCount() != 0) {
             countUnreadMessages.setText(String.valueOf(item.getUnreadCount()));

@@ -37,7 +37,7 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogMo
         listMembers.getItems().setAll(chat.getMembers());
         listMembers.setCellFactory(param -> viewModel.getUserListCellFactory());
 
-        UserPhoto.setPaneContent(photoPane.getChildren(), chat, null);
+        UserPhoto.setPaneContent(photoPane.getChildren(), chat, null, 40);
     }
 
     public static GroupInfoDialog getInstance(){

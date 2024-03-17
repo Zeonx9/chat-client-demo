@@ -24,7 +24,7 @@ public class ProfileView extends AbstractView<ProfileViewModel> {
         phoneNumber.textProperty().bind(viewModel.getPhoneNumberProperty());
         birthDate.textProperty().bind(viewModel.getBirthDateProperty());
         companyName.textProperty().bind(viewModel.getCompanyNameProperty());
-        Bindings.bindContent(photoPane.getChildren(), viewModel.getChatIconNodes());
+        Bindings.bindContentBidirectional(photoPane.getChildren(), viewModel.getChatIconNodes());
 
         viewModel.setUserPersonalData();
     }

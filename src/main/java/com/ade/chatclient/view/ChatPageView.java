@@ -66,7 +66,7 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         infoArea.opacityProperty().bind(viewModel.getInfoAreaOpacityProperty());
         infoArea.disableProperty().bind(viewModel.getInfoAreaDisableProperty());
 
-        Bindings.bindContent(photoPane.getChildren(), viewModel.getChatIconNodes());
+        Bindings.bindContentBidirectional(photoPane.getChildren(), viewModel.getChatIconNodes());
 
         viewModel.openChatPane();
     }
