@@ -37,7 +37,7 @@ public class RepositoryFactory {
 
     public SelfRepository provideSelfRepository() {
         if (selfRepository == null) {
-            selfRepository = new SelfRepositoryImpl(apiFactory.provideSelfApi());
+            selfRepository = new SelfRepositoryImpl(apiFactory.provideSelfApi(), apiFactory.provideFileApi());
         }
         return selfRepository;
     }

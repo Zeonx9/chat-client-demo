@@ -9,6 +9,5 @@ import java.util.concurrent.CompletableFuture;
 public interface SelfApi {
     CompletableFuture<AuthResponse> changePassword(ChangePasswordRequest request);
 
-
     CompletableFuture<User> changeUserInfo(User request);
 }

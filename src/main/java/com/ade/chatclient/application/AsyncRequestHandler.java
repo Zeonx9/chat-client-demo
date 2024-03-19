@@ -11,12 +11,14 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import static com.ade.chatclient.application.StartClientApp.URLS;
+
 
 /**
  * Главный класс обрабатывающий HTTP запрос исходящие из приложения
@@ -25,7 +27,7 @@ import static com.ade.chatclient.application.StartClientApp.URLS;
 @RequiredArgsConstructor
 public class AsyncRequestHandler {
 
-
+    private final static String CONTENT_TYPE_JSON = "application/json";
     private final static HttpClient client = HttpClientFactory.getTrustingHttpClient();
     private final static ObjectMapper mapper = new ObjectMapper();
 
@@ -102,7 +104,7 @@ public class AsyncRequestHandler {
 
     private CompletableFuture<HttpResponse<String>> sendGETAsync(String path, Map<String, String> params) {
         return client.sendAsync(
-                configureRequest(path, params, true)
+                configureRequest(path, params, true, CONTENT_TYPE_JSON)
                         .GET()
                         .build(),
                 HttpResponse.BodyHandlers.ofString()
@@ -115,7 +117,7 @@ public class AsyncRequestHandler {
 
     private CompletableFuture<HttpResponse<String>> sendPOSTAsync(String path, String body, boolean authorized) {
         return client.sendAsync(
-                configureRequest(path, Map.of(), authorized)
+                configureRequest(path, Map.of(), authorized, CONTENT_TYPE_JSON)
                         .POST(HttpRequest.BodyPublishers.ofString(body))
                         .build(),
                 HttpResponse.BodyHandlers.ofString()
@@ -133,7 +135,7 @@ public class AsyncRequestHandler {
     private <T> CompletableFuture<HttpResponse<String>> sendPUTAsync(String path, T body) {
         try {
             return client.sendAsync(
-                    configureRequest(path, Map.of(), true)
+                    configureRequest(path, Map.of(), true, CONTENT_TYPE_JSON)
                             .PUT(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(body)))
                             .build(),
                     HttpResponse.BodyHandlers.ofString()
@@ -146,7 +148,7 @@ public class AsyncRequestHandler {
 
     public CompletableFuture<byte[]> sendGetResource(String path) {
         CompletableFuture<HttpResponse<byte[]>> response = client.sendAsync(
-                configureRequest(path, Map.of(), false)
+                configureRequest(path, Map.of(), false, CONTENT_TYPE_JSON)
                         .GET()
                         .build(),
                 HttpResponse.BodyHandlers.ofByteArray());
@@ -154,7 +156,17 @@ public class AsyncRequestHandler {
         return response.thenApply(HttpResponse::body);
     }
 
-    private HttpRequest.Builder configureRequest(String path, Map<String, String> params, boolean authorized) {
+    public <T> CompletableFuture<T> sendPostResource(String path, Path filePath, Class<T> tClass) {
+        MultipartEntity multipart = new MultipartEntity(filePath);
+        CompletableFuture<HttpResponse<String>> response =
+                client.sendAsync(configureRequest(path, Map.of(), true, multipart.getContentType())
+                        .POST(HttpRequest.BodyPublishers.ofByteArray(multipart.photoToByteArray()))
+                        .build(),
+                        HttpResponse.BodyHandlers.ofString());
+        return response.thenApply(mapperOf(tClass));
+    }
+
+    private HttpRequest.Builder configureRequest(String path, Map<String, String> params, boolean authorized, String contentType) {
         if (authorized && authToken == null) {
             throw new IllegalStateException("Authorized request cannot be built, token is not set yet!");
         }
@@ -169,7 +181,7 @@ public class AsyncRequestHandler {
 
         var builder = HttpRequest.newBuilder()
                 .uri(URI.create(uriStr))
-                .header("Content-Type", "application/json")
+                .header("Content-Type", contentType)
                 .header("ngrok-skip-browser-warning", "skip");
         if (!authorized) {
             return builder;

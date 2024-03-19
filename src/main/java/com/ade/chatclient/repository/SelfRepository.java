@@ -5,6 +5,7 @@ import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.AuthResponse;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 
+import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public interface SelfRepository {
@@ -21,4 +22,6 @@ public interface SelfRepository {
     void setCompany(Company company);
 
     Company getCompany();
+
+    CompletableFuture<User> changeProfilePhoto(Path path);
 }

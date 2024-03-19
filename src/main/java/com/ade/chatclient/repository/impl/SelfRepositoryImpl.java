@@ -1,5 +1,6 @@
 package com.ade.chatclient.repository.impl;
 
+import com.ade.chatclient.api.FileApi;
 import com.ade.chatclient.api.SelfApi;
 import com.ade.chatclient.domain.Company;
 import com.ade.chatclient.domain.User;
@@ -11,12 +12,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RequiredArgsConstructor
 public class SelfRepositoryImpl implements SelfRepository {
     private final SelfApi selfApi;
+    private final FileApi fileApi;
 
     @Setter
     @Getter
@@ -42,4 +45,11 @@ public class SelfRepositoryImpl implements SelfRepository {
         company = null;
     }
 
+    @Override
+    public CompletableFuture<User> changeProfilePhoto(Path path) {
+        return fileApi.uploadFile(myself.getId(), path).thenApply(user -> {
+            myself = user;
+            return user;
+        });
+    }
 }
