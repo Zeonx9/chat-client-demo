@@ -31,7 +31,8 @@ public class ModelFactory {
                     repositoryFactory.provideMessageRepository(),
                     repositoryFactory.provideChatRepository(),
                     repositoryFactory.provideUsersRepository(),
-                    repositoryFactory.provideSelfRepository()
+                    repositoryFactory.provideSelfRepository(),
+                    repositoryFactory.provideFileRepository()
             );
         }
         return clientModel;

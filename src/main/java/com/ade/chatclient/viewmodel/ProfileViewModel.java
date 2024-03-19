@@ -59,6 +59,12 @@ public class ProfileViewModel extends AbstractChildViewModel<ClientModel> {
         chatIconNodes.clear();
 
         UserPhoto.setPaneContent(chatIconNodes, user, 40);
+//        try {
+//            Files.write(Paths.get("1.png"), model.getThumbnailUserPhoto(user).get());
+//        } catch (Exception ignore) {
+//
+//        }
+
     }
 
 

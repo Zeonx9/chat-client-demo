@@ -18,6 +18,7 @@ public class ApiFactory {
     private UsersApi usersApi;
     private SelfApi selfApi;
     private AdminApi adminApi;
+    private FileApi fileApi;
 
     public AuthorizationApi provideAuthorizationApi() {
         if (authApi == null) {
@@ -66,5 +67,13 @@ public class ApiFactory {
             adminApi = new AdminApiImpl(requestHandler);
         }
         return adminApi;
+    }
+
+    public FileApi provideFileApi() {
+        if (fileApi == null) {
+            fileApi = new FileApiImpl(requestHandler);
+        }
+
+        return fileApi;
     }
 }

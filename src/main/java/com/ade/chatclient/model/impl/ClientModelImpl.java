@@ -12,10 +12,7 @@ import com.ade.chatclient.dtos.ConnectEvent;
 import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.dtos.ReadNotification;
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.repository.ChatRepository;
-import com.ade.chatclient.repository.MessageRepository;
-import com.ade.chatclient.repository.SelfRepository;
-import com.ade.chatclient.repository.UsersRepository;
+import com.ade.chatclient.repository.*;
 import com.ade.chatclient.viewmodel.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +23,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @Getter
 @Setter
@@ -37,6 +35,7 @@ public class ClientModelImpl implements ClientModel {
     private final ChatRepository chatRepository;
     private final UsersRepository usersRepository;
     private final SelfRepository selfRepository;
+    private final FileRepository fileRepository;
 
     private Chat selectedChat;
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
@@ -62,6 +61,7 @@ public class ClientModelImpl implements ClientModel {
         usersRepository.clearUsers();
         messageRepository.clear();
         selfRepository.clear();
+        fileRepository.clear();
     }
 
     @Override
@@ -230,6 +230,11 @@ public class ClientModelImpl implements ClientModel {
                     log.error("failed to change user info", e);
                     return null;
                 });
+    }
+
+    @Override
+    public CompletableFuture<byte[]> getThumbnailUserPhoto(User user) {
+        return fileRepository.getFile(user.getThumbnailPhotoId());
     }
 
     private void acceptNewChat(Chat chat) {
