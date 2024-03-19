@@ -2,10 +2,12 @@ package com.ade.chatclient.view.components;
 
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import lombok.extern.slf4j.Slf4j;
@@ -37,11 +39,15 @@ public class UserPhoto {
         } else {
             CompletableFuture<Image> future = imageRequest.apply(user.getThumbnailPhotoId());
             future.thenAccept(image -> {
-                log.info("got image with id = " + user.getThumbnailPhotoId());
-//                ImageView imageView = new ImageView(image);
-//                Circle circle = new Circle(size, Color.rgb(145, 145, 145));
-//                imageView.setClip(circle);
-//                pane.addAll(circle);
+//                log.info("got image with id = " + user.getThumbnailPhotoId());
+                ImageView imageView = new ImageView(image);
+                imageView.setFitWidth(size * 2);
+                imageView.setFitHeight(size * 2);
+                Circle circle = new Circle(size);
+                circle.setCenterX(size);
+                circle.setCenterY(size);
+                imageView.setClip(circle);
+                Platform.runLater(() -> pane.addAll(imageView));
             });
         }
     }
