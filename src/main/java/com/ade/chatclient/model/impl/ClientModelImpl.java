@@ -14,12 +14,12 @@ import com.ade.chatclient.dtos.ReadNotification;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.repository.*;
 import com.ade.chatclient.viewmodel.*;
+import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.*;
@@ -237,7 +237,7 @@ public class ClientModelImpl implements ClientModel {
     @Override
     public void uploadUserProfilePhoto(File photo) {
         byte[] fileContent;
-        try(InputStream inputStream = new FileInputStream(photo)) {
+        try (InputStream inputStream = new FileInputStream(photo)) {
             long fileSize = photo.length();
             fileContent = new byte[(int) fileSize];
             int bytesRead = inputStream.read(fileContent);
@@ -245,8 +245,7 @@ public class ClientModelImpl implements ClientModel {
             if (bytesRead < fileSize) {
                 throw new IOException("Не удалось прочитать весь файл: " + bytesRead + " байтов прочитано из " + fileSize);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.error(e.getMessage());
         }
 
@@ -255,14 +254,9 @@ public class ClientModelImpl implements ClientModel {
 
     @Override
     public CompletableFuture<Image> getPhotoById(String photoId) {
-        //TODO А тут отдай мне картинку
-        return null;
+        return fileRepository.getFile(photoId).thenApply(bytes -> new Image(new ByteArrayInputStream(bytes)));
     }
 
-    @Override
-    public CompletableFuture<byte[]> getThumbnailUserPhoto(User user) {
-        return fileRepository.getFile(user.getThumbnailPhotoId());
-    }
 
     private void acceptNewChat(Chat chat) {
         changeSupport.firePropertyChange(AllChatsViewModel.NEW_CHAT_CREATED_EVENT, null, chat);

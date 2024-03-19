@@ -1,9 +1,10 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.application.*;
+import com.ade.chatclient.application.StartClientApp;
+import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.application.util.PaneSwitcher;
-import com.ade.chatclient.domain.User;
+import com.ade.chatclient.domain.EditProfileResult;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.view.ChangingPasswordDialog;
@@ -16,9 +17,9 @@ import lombok.Getter;
 import java.beans.PropertyChangeEvent;
 import java.util.Optional;
 
+import static com.ade.chatclient.application.Views.LOG_IN_VIEW;
 import static com.ade.chatclient.application.Views.PROFILE_VIEW;
 import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
-import static com.ade.chatclient.application.Views.LOG_IN_VIEW;
 
 /**
  * Класс, который связывает model с UserProfileView
@@ -30,6 +31,7 @@ public class UserSettingsViewModel extends AbstractChildViewModel<ClientModel> {
     private PaneSwitcher paneSwitcher;
 
     public static final String CHANGED_RESPONDED_EVENT = "passwordChangeResponded";
+
     public UserSettingsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
 
@@ -83,10 +85,11 @@ public class UserSettingsViewModel extends AbstractChildViewModel<ClientModel> {
 
     public void showEditProfileDialogAndWait() {
         systemMessageProperty.set("");
-        EditProfileDialog dialog = EditProfileDialog.getInstance();
+        EditProfileDialog dialog = EditProfileDialog.getInstance(model.getMyself());
         dialog.init(new EditProfileDialogModel());
 
-        Optional<User> answer = dialog.showAndWait();
-        answer.ifPresent(model::changeUserInfo);
+        Optional<EditProfileResult> answer = dialog.showAndWait();
+        answer.map(EditProfileResult::getUser).ifPresent(model::changeUserInfo);
+        answer.map(EditProfileResult::getFile).ifPresent(model::uploadUserProfilePhoto);
     }
 }
