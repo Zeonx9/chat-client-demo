@@ -40,6 +40,21 @@
     -fx-background-color: #777CFF;
 }
 
+.showPhotoBtn {
+    -fx-background-color: #2F303B;
+    -fx-background-image: url("../img/photo_btn.png");
+
+    -fx-background-radius: 40px;
+}
+
+.showPhotoBtn:hover {
+    -fx-background-color: #3E46FF;
+}
+
+.showPhotoBtn:focused {
+    -fx-background-color: #777CFF;
+}
+
 .showUsersBtn {
     -fx-background-color: #2F303B;
     -fx-background-image: url("../img/users_btn.png");

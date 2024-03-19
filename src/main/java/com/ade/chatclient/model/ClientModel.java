@@ -6,7 +6,9 @@ import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.dtos.GroupRequest;
 
+import java.awt.*;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -138,4 +140,8 @@ public interface ClientModel {
     void changeUserInfo(User newUserInfo);
 
     CompletableFuture<byte[]> getThumbnailUserPhoto(User user);
+
+    void uploadUserProfilePhoto(File photo);
+
+    CompletableFuture<Image> getPhotoById(String photoId);
 }
