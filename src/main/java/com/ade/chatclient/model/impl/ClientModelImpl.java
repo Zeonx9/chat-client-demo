@@ -22,10 +22,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @Getter
 @Setter
@@ -230,6 +233,31 @@ public class ClientModelImpl implements ClientModel {
                     log.error("failed to change user info", e);
                     return null;
                 });
+    }
+
+    @Override
+    public void uploadUserProfilePhoto(File photo) {
+        byte[] fileContent;
+        try(InputStream inputStream = new FileInputStream(photo)) {
+            long fileSize = photo.length();
+            fileContent = new byte[(int) fileSize];
+            int bytesRead = inputStream.read(fileContent);
+
+            if (bytesRead < fileSize) {
+                throw new IOException("Не удалось прочитать весь файл: " + bytesRead + " байтов прочитано из " + fileSize);
+            }
+        }
+        catch (IOException e) {
+            log.error(e.getMessage());
+        }
+
+        //TODO Даша забирай байтики - fileContent
+    }
+
+    @Override
+    public CompletableFuture<Image> getPhotoById(String photoId) {
+        //TODO А тут отдай мне картинку
+        return null;
     }
 
     private void acceptNewChat(Chat chat) {

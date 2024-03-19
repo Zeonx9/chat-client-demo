@@ -6,8 +6,11 @@ import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.dtos.GroupRequest;
 
+import java.awt.*;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Интерфейс, который должна реализовывать модель, используемый для придания гибкости структуре модели
@@ -135,4 +138,8 @@ public interface ClientModel {
     void stopWebSocketConnection();
 
     void changeUserInfo(User newUserInfo);
+
+    void uploadUserProfilePhoto(File photo);
+
+    CompletableFuture<Image> getPhotoById(String photoId);
 }
