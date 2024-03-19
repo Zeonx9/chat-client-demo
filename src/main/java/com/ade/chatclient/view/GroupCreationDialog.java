@@ -9,10 +9,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * Класс выступает в роли контроллера для диалогового окна для создания бемеды, управляет поведением и отображением элементов на экране
@@ -54,6 +57,10 @@ public class GroupCreationDialog extends AbstractDialog<GroupRequest, GroupCreat
         selectedUsers.setOnMouseClicked(viewModel::onMouseClickedListener);
         selectedUsers.getSelectionModel().selectedItemProperty()
                 .addListener(ViewModelUtils.changeListener((viewModel::onAlreadySelectedClickListener)));
+    }
+
+    public void setImageRequest(Function<String, CompletableFuture<Image>> imageRequest) {
+        viewModel.setImageRequest(imageRequest);
     }
 
     @Override

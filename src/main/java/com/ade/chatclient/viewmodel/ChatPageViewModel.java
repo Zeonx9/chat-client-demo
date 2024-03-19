@@ -102,7 +102,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
                 selectedChatInfoProperty.setValue(members.size() + " members");
             }
 
-            UserPhoto.setPaneContent(chatIconNodes, model.getSelectedChat(), model.getMyself().getId(), 20);
+            UserPhoto.setPaneContent(chatIconNodes, model.getSelectedChat(), model.getMyself().getId(), 20, model::getPhotoById);
         }
     }
 
@@ -222,6 +222,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         else {
             GroupInfoDialog dialog = GroupInfoDialog.getInstance();
             dialog.setChat(model.getSelectedChat());
+            dialog.setImageRequest(model::getPhotoById);
             dialog.showAndWait();
         }
     }
@@ -232,6 +233,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     public void showDialogAndWait() {
         GroupCreationDialog dialog = GroupCreationDialog.getInstance();
         dialog.init(new GroupCreationDialogModel());
+        dialog.setImageRequest(model::getPhotoById);
         dialog.populateUserList(model.getAllUsers());
 
         Optional<GroupRequest> answer = dialog.showAndWait();

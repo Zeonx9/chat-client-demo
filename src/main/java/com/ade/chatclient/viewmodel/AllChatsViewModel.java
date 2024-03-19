@@ -122,7 +122,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
                 ChatListCellFactory.class,
                 "chat-list-cell-factory.fxml"
         );
-        factory.init(model.getMyself().getId());
+        factory.init(model.getMyself().getId(), model::getPhotoById);
         selector.select(selected);
         return factory;
     }

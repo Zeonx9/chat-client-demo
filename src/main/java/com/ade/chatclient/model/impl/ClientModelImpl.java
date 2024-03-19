@@ -17,15 +17,18 @@ import com.ade.chatclient.repository.MessageRepository;
 import com.ade.chatclient.repository.SelfRepository;
 import com.ade.chatclient.repository.UsersRepository;
 import com.ade.chatclient.viewmodel.*;
+import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -257,7 +260,7 @@ public class ClientModelImpl implements ClientModel {
     @Override
     public CompletableFuture<Image> getPhotoById(String photoId) {
         //TODO А тут отдай мне картинку
-        return null;
+        return CompletableFuture.completedFuture(null);
     }
 
     private void acceptNewChat(Chat chat) {

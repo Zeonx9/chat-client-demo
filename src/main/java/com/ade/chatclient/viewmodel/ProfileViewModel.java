@@ -58,7 +58,7 @@ public class ProfileViewModel extends AbstractChildViewModel<ClientModel> {
 
         chatIconNodes.clear();
 
-        UserPhoto.setPaneContent(chatIconNodes, user, 40);
+        UserPhoto.setPaneContent(chatIconNodes, user, 40, model::getPhotoById);
     }
 
 

@@ -6,6 +6,7 @@ import com.ade.chatclient.view.components.UserPhoto;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * Фабрика ячеек списка чатов, предназначена для генерации и настройки ячеек в ListView, определяет, как они будут выглядеть для дальнейшей автоматической генерации
@@ -28,9 +31,11 @@ public class ChatListCellFactory extends ListCell<Chat> {
     @FXML private Label lastMsgLabel;
     @FXML private Label lastMessageDateLabel;
     @FXML private Label countUnreadMessages;
+    private Function<String, CompletableFuture<Image>> imageRequest;
 
-    public void init(Long selfId) {
+    public void init(Long selfId, Function<String, CompletableFuture<Image>> imageRequest) {
         this.selfId = selfId;
+        this.imageRequest = imageRequest;
     }
 
     /**
@@ -52,7 +57,7 @@ public class ChatListCellFactory extends ListCell<Chat> {
         lastMsgLabel.setText(prepareLastMessage(item));
         lastMessageDateLabel.setText(prepareLastMessageDate(item));
 
-        UserPhoto.setPaneContent(photoPane.getChildren(), item, selfId, 20);
+        UserPhoto.setPaneContent(photoPane.getChildren(), item, selfId, 20, imageRequest);
 
         if (item.getUnreadCount() != 0) {
             countUnreadMessages.setText(String.valueOf(item.getUnreadCount()));

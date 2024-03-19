@@ -10,15 +10,20 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 @Getter
+@RequiredArgsConstructor
 public class EditProfileDialogModel extends AbstractDialogModel<EditProfileResult> {
     private final ObservableList<Node> chatIconNodes = FXCollections.observableArrayList();
     private final StringProperty firstNameProperty = new SimpleStringProperty();
@@ -26,6 +31,7 @@ public class EditProfileDialogModel extends AbstractDialogModel<EditProfileResul
     private final StringProperty patronymicProperty = new SimpleStringProperty();
     private final StringProperty phoneNumberProperty = new SimpleStringProperty();
     private final StringProperty birthdayProperty = new SimpleStringProperty();
+    private final Function<String, CompletableFuture<Image>> imageRequest;
     @Setter
     private static User mySelf = new User();
     private File file;
@@ -57,7 +63,7 @@ public class EditProfileDialogModel extends AbstractDialogModel<EditProfileResul
         phoneNumberProperty.set(mySelf.getPhoneNumber());
 
         chatIconNodes.clear();
-        UserPhoto.setPaneContent(chatIconNodes, mySelf, 40);
+        UserPhoto.setPaneContent(chatIconNodes, mySelf, 40, imageRequest);
     }
 
     public void openFileChooser() {

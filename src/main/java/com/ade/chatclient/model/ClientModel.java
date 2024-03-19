@@ -5,8 +5,8 @@ import com.ade.chatclient.domain.Company;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.dtos.GroupRequest;
+import javafx.scene.image.Image;
 
-import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.List;

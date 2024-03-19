@@ -58,10 +58,12 @@ public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
      * @return фабрику ячеек для юзеров
      */
     public ListCell<User> getUserListCellFactory() {
-        return ViewModelUtils.loadCellFactory(
+        UserListCellFactory factory = ViewModelUtils.loadCellFactory(
                 UserListCellFactory.class,
                 "user-list-cell-factory.fxml"
         );
+        factory.init(model::getPhotoById);
+        return factory;
     }
 
     /**

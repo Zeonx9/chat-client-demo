@@ -9,9 +9,13 @@ import com.ade.chatclient.view.components.UserPhoto;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * Класс выступает в роли контроллера для диалогового окна с информацией о беседе, управляет поведением и отображением элементов на экране
@@ -37,7 +41,11 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogMo
         listMembers.getItems().setAll(chat.getMembers());
         listMembers.setCellFactory(param -> viewModel.getUserListCellFactory());
 
-        UserPhoto.setPaneContent(photoPane.getChildren(), chat, null, 40);
+        UserPhoto.setPaneContent(photoPane.getChildren(), chat, null, 40, viewModel.getImageRequest());
+    }
+
+    public void setImageRequest(Function<String, CompletableFuture<Image>> imageRequest) {
+        viewModel.setImageRequest(imageRequest);
     }
 
     public static GroupInfoDialog getInstance(){
