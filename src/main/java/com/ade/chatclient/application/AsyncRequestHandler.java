@@ -39,8 +39,9 @@ public class AsyncRequestHandler {
 
     /**
      * строит GET запрос с параметрами и преобразует ответ к нужному типу
-     * @param path путь до точки входа на сервер
-     * @param params параметры запроса
+     *
+     * @param path       путь до точки входа на сервер
+     * @param params     параметры запроса
      * @param tReference указывает тип, к которому надо привести ответ от сервера
      * @return преобразованный ответ от сервера
      * @throws RuntimeException при невозможности сериализовать объект
@@ -51,7 +52,8 @@ public class AsyncRequestHandler {
 
     /**
      * строит GET запрос без параметров и преобразует ответ к нужному типу
-     * @param path путь до точки входа на сервер
+     *
+     * @param path       путь до точки входа на сервер
      * @param tReference указывает тип, к которому надо привести ответ от сервера
      * @return преобразованный ответ от сервера
      * @throws RuntimeException при невозможности сериализовать объект
@@ -62,7 +64,8 @@ public class AsyncRequestHandler {
 
     /**
      * строит GET запрос без параметров и преобразует ответ к нужному типу
-     * @param path путь до точки входа на сервер
+     *
+     * @param path   путь до точки входа на сервер
      * @param tClass указывает тип, к которому надо привести ответ от сервера
      * @return преобразованный ответ от сервера
      * @throws RuntimeException при невозможности сериализовать объект
@@ -86,9 +89,10 @@ public class AsyncRequestHandler {
 
     /**
      * строит PUT запрос без параметров и преобразует ответ к нужному типу
-     * @param path путь до точки входа на сервер
+     *
+     * @param path    путь до точки входа на сервер
      * @param bodyObj объект, который необходимо отправить
-     * @param vClass указывает тип, к которому надо привести ответ от сервера
+     * @param vClass  указывает тип, к которому надо привести ответ от сервера
      * @return преобразованный ответ от сервера
      * @throws RuntimeException при невозможности сериализовать объект
      */
@@ -126,7 +130,7 @@ public class AsyncRequestHandler {
         }
     }
 
-    private  <T> CompletableFuture<HttpResponse<String>> sendPUTAsync(String path, T body) {
+    private <T> CompletableFuture<HttpResponse<String>> sendPUTAsync(String path, T body) {
         try {
             return client.sendAsync(
                     configureRequest(path, Map.of(), true)
@@ -138,6 +142,16 @@ public class AsyncRequestHandler {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public CompletableFuture<byte[]> sendGetResource(String path) {
+        CompletableFuture<HttpResponse<byte[]>> response = client.sendAsync(
+                configureRequest(path, Map.of(), false)
+                        .GET()
+                        .build(),
+                HttpResponse.BodyHandlers.ofByteArray());
+
+        return response.thenApply(HttpResponse::body);
     }
 
     private HttpRequest.Builder configureRequest(String path, Map<String, String> params, boolean authorized) {

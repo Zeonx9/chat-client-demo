@@ -12,6 +12,7 @@ public class RepositoryFactory {
     private UsersRepository usersRepository;
     private SelfRepository selfRepository;
     private AdminRepository adminRepository;
+    private FileRepository fileRepository;
 
     public ChatRepository provideChatRepository() {
         if (chatRepository == null) {
@@ -46,5 +47,13 @@ public class RepositoryFactory {
             adminRepository = new AdminRepositoryImpl(apiFactory.provideAdminApi());
         }
         return adminRepository;
+    }
+
+    public FileRepository provideFileRepository() {
+        if (fileRepository == null) {
+            fileRepository = new FileRepositoryImpl(apiFactory.provideFileApi());
+        }
+
+        return fileRepository;
     }
 }

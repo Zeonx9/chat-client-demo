@@ -12,10 +12,7 @@ import com.ade.chatclient.dtos.ConnectEvent;
 import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.dtos.ReadNotification;
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.repository.ChatRepository;
-import com.ade.chatclient.repository.MessageRepository;
-import com.ade.chatclient.repository.SelfRepository;
-import com.ade.chatclient.repository.UsersRepository;
+import com.ade.chatclient.repository.*;
 import com.ade.chatclient.viewmodel.*;
 import javafx.scene.image.Image;
 import lombok.Getter;
@@ -43,6 +40,7 @@ public class ClientModelImpl implements ClientModel {
     private final ChatRepository chatRepository;
     private final UsersRepository usersRepository;
     private final SelfRepository selfRepository;
+    private final FileRepository fileRepository;
 
     private Chat selectedChat;
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
@@ -68,6 +66,7 @@ public class ClientModelImpl implements ClientModel {
         usersRepository.clearUsers();
         messageRepository.clear();
         selfRepository.clear();
+        fileRepository.clear();
     }
 
     @Override
@@ -241,7 +240,7 @@ public class ClientModelImpl implements ClientModel {
     @Override
     public void uploadUserProfilePhoto(File photo) {
         byte[] fileContent;
-        try(InputStream inputStream = new FileInputStream(photo)) {
+        try (InputStream inputStream = new FileInputStream(photo)) {
             long fileSize = photo.length();
             fileContent = new byte[(int) fileSize];
             int bytesRead = inputStream.read(fileContent);
@@ -249,8 +248,7 @@ public class ClientModelImpl implements ClientModel {
             if (bytesRead < fileSize) {
                 throw new IOException("Не удалось прочитать весь файл: " + bytesRead + " байтов прочитано из " + fileSize);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.error(e.getMessage());
         }
 
@@ -259,9 +257,9 @@ public class ClientModelImpl implements ClientModel {
 
     @Override
     public CompletableFuture<Image> getPhotoById(String photoId) {
-        //TODO А тут отдай мне картинку
-        return CompletableFuture.completedFuture(null);
+        return fileRepository.getFile(photoId).thenApply(bytes -> new Image(new ByteArrayInputStream(bytes)));
     }
+
 
     private void acceptNewChat(Chat chat) {
         changeSupport.firePropertyChange(AllChatsViewModel.NEW_CHAT_CREATED_EVENT, null, chat);

@@ -31,6 +31,7 @@ public class UserSettingsViewModel extends AbstractChildViewModel<ClientModel> {
     private PaneSwitcher paneSwitcher;
 
     public static final String CHANGED_RESPONDED_EVENT = "passwordChangeResponded";
+
     public UserSettingsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
 
