@@ -237,7 +237,9 @@ public class ClientModelImpl implements ClientModel {
 
     @Override
     public void uploadUserProfilePhoto(File photo) {
-        selfRepository.changeProfilePhoto(Path.of(photo.toString()));
+        selfRepository.changeProfilePhoto(Path.of(photo.toString()))
+                .thenAccept(newPhoto ->
+                        changeSupport.firePropertyChange(ProfileViewModel.CHANGED_USER_INFO, null, getMyself()));
     }
 
     @Override
