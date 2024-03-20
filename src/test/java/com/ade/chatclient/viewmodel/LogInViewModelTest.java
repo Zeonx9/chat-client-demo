@@ -1,15 +1,17 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.application.ViewHandler;
+import com.ade.chatclient.model.AuthorizationModel;
 import javafx.beans.property.SimpleStringProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 /**
@@ -20,8 +22,10 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class LogInViewModelTest {
     private LogInViewModel underTest;
-    @Mock private ClientModel model;
-    @Mock private ViewHandler handler;
+    @Mock
+    private AuthorizationModel model;
+    @Mock
+    private ViewHandler handler;
 
     @BeforeEach
     void setUp() {

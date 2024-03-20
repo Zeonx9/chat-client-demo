@@ -1,6 +1,9 @@
 package com.ade.chatclient.application.structure;
 
 
+import com.ade.chatclient.ClientApplication;
+import com.ade.chatclient.application.Settings;
+import com.ade.chatclient.application.SettingsManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -54,7 +57,7 @@ public abstract class AbstractDialog<T, M extends AbstractDialogModel<T>> extend
      * @param fxml название файла, в котором описан интерфейс диалогового окна
      * @return контроллер диалогового окна
      */
-     protected static <C extends AbstractDialog<?, ?>> C getInstance(Class<C> selfClass, String fxml) {
+     protected static <C extends AbstractDialog<?, ?>> C getInstance(Class<C> selfClass, String fxml, String styleName) {
          FXMLLoader loader = new FXMLLoader(selfClass.getResource(fxml));
          DialogPane pane;
          try {
@@ -62,7 +65,12 @@ public abstract class AbstractDialog<T, M extends AbstractDialogModel<T>> extend
          } catch (IOException e) {
              throw new RuntimeException(e);
          }
+
+         Settings settings = SettingsManager.getSettings();
+
          C controller = loader.getController();
+         pane.getStylesheets().clear();
+         pane.getStylesheets().add(String.valueOf(ClientApplication.class.getResource("styles/" + styleName + settings.getTheme() + ".css")));
          controller.setDialogPane(pane);
          return controller;
     }

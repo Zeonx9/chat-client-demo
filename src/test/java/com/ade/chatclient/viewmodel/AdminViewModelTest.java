@@ -5,13 +5,15 @@ import com.ade.chatclient.domain.Company;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.RegisterData;
-import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.model.AdminModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.time.LocalDate;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
@@ -19,7 +21,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class AdminViewModelTest {
     private AdminViewModel underTest;
-    @Mock private ClientModel model;
+    @Mock private AdminModel model;
     @Mock private ViewHandler handler;
 
     @BeforeEach

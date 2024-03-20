@@ -1,0 +1,193 @@
+@font-face {
+    font-family: 'Montserrat Bold';
+    src: url('../fonts/Montserrat-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat Medium';
+    src: url('../fonts/Montserrat-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat Regular';
+    src: url('../fonts/Montserrat-Regular.ttf');
+}
+
+.switch-pane {
+    -fx-background-color: #212229;
+}
+
+.search {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 10px;
+    -fx-background-color: #2F303B;
+}
+
+.cellFactoryListView .list-view {
+    -fx-padding: 0;
+}
+
+.cellFactoryListView .scroll-bar {
+    -fx-background-color: #212229;
+}
+
+.cellFactoryListView .scroll-bar .track{
+    -fx-background-color: #212229;
+}
+
+.cellFactoryListView .scroll-bar .thumb {
+    -fx-background-color: #2F303B;
+}
+
+.cellFactoryListView .scroll-bar .corner {
+    -fx-background-color: #212229 ;
+}
+
+.cellFactoryListView .scroll-bar .increment-button, .cellFactoryListView .scroll-bar .decrement-button{
+    -fx-background-color: #212229;
+    -fx-border-color: #212229;
+    -fx-text-fill: #212229;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.cellFactoryListView .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-pref-height: 0;
+}
+
+.cellFactoryListView .list-cell {
+    -fx-background-color: #212229;
+    -fx-font-family: "Montserrat Medium";
+    -fx-font-size: 14;
+    -fx-text-fill: #FFFFFF;
+    -fx-padding: 0;
+}
+
+.cellFactoryListView .list-cell .chatNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell .lastMessageDateLabel {
+    -fx-text-fill: #A4A4A4;
+}
+
+.cellFactoryListView .list-cell .lastMsgLabel {
+    -fx-text-fill: #A4A4A4;
+}
+
+.cellFactoryListView .list-cell .realNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell .userNameLabel {
+    -fx-text-fill: #A4A4A4;
+}
+
+.cellFactoryListView .list-cell:hover {
+    -fx-background-color: #3E46FF;
+}
+
+.cellFactoryListView .list-cell:hover .chatNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:hover .lastMessageDateLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:hover .lastMsgLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:hover .realNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:hover .userNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:focused {
+    -fx-background-color: #3E46FF;
+}
+
+.cellFactoryListView .list-cell:focused .chatNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:focused .lastMessageDateLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:focused .lastMsgLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:focused .realNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:focused .userNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:empty {
+    -fx-background-color: #212229;
+    -fx-padding: 0;
+}
+
+.photoPane {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Montserrat Bold";
+    -fx-font-size: 14px;
+}
+
+.countUnreadMessages {
+    display: inline-block;
+    -fx-font-family: "Montserrat Bold";
+    -fx-font-size: 12px;
+    -fx-text-fill: #FFFFFF;
+    -fx-background: #3E46FF;
+    -fx-background-color: -fx-background ;
+    -fx-background-radius: 30px;
+}
+
+.groupName {
+    -fx-font-family: "Montserrat Bold";
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 14;
+}
+
+.countMembers {
+    -fx-font-family: "Montserrat Regular";
+    -fx-text-fill: #A4A4A4;
+    -fx-font-size: 14;
+}
+
+.simpleButton {
+    -fx-background-color: #2F303B;
+    -fx-background-radius: 5px;
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+    -fx-text-fill: #A4A4A4;
+}
+
+.simpleButton:hover {
+    -fx-background-color: #3E46FF;
+}
+
+.simpleButton:focused {
+    -fx-background-color: #777CFF;
+}
+
+.systemMessage {
+    -fx-font-family: "Montserrat Medium";
+    -fx-text-fill: #3E46FF;
+    -fx-font-size: 14;
+}
+
+.rectangle {
+    -fx-fill: #2f303b;
+}

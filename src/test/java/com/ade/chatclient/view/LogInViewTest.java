@@ -1,7 +1,7 @@
 package com.ade.chatclient.view;
 
 import com.ade.chatclient.application.ViewHandler;
-import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.model.AuthorizationModel;
 import com.ade.chatclient.viewmodel.LogInViewModel;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
@@ -28,14 +29,17 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class LogInViewTest {
     private static FXMLLoader loader;
-    @Mock private ViewHandler handler;
-    @Mock private ClientModel model;
+    @Mock
+    private ViewHandler handler;
+    @Mock
+    private AuthorizationModel model;
     private LogInView underTest;
 
     @BeforeAll
     static void beforeAll() throws IOException {
         try {
-            Platform.startup(() -> {});
+            Platform.startup(() -> {
+            });
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -51,7 +55,7 @@ class LogInViewTest {
     }
 
     @Test
-    void buttonIsDisabledAtStart(){
+    void buttonIsDisabledAtStart() {
         //given
         String login = " ";
         String password = " ";

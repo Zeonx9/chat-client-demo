@@ -4,15 +4,18 @@ import com.ade.chatclient.application.structure.AbstractDialog;
 import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.GroupRequest;
-import com.ade.chatclient.viewmodel.AllUsersViewModel;
 import com.ade.chatclient.viewmodel.GroupCreationDialogModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * Класс выступает в роли контроллера для диалогового окна для создания бемеды, управляет поведением и отображением элементов на экране
@@ -26,7 +29,7 @@ public class GroupCreationDialog extends AbstractDialog<GroupRequest, GroupCreat
     @FXML private Button createGroupButton;
 
     public static GroupCreationDialog getInstance(){
-        return AbstractDialog.getInstance(GroupCreationDialog.class, "create-group-dialog-view.fxml");
+        return AbstractDialog.getInstance(GroupCreationDialog.class, "create-group-dialog-view.fxml", "ChatPageViewStyle");
     }
 
     /**
@@ -45,7 +48,7 @@ public class GroupCreationDialog extends AbstractDialog<GroupRequest, GroupCreat
 
 
         listOfUsers.itemsProperty().bind(viewModel.getUserListProperty());
-        listOfUsers.setCellFactory(param -> AllUsersViewModel.getUserListCellFactory());
+        listOfUsers.setCellFactory(param -> viewModel.getUserListCellFactory());
         listOfUsers.getSelectionModel().selectedItemProperty()
                 .addListener(ViewModelUtils.changeListener(viewModel::onNewMemberSelected));
 
@@ -54,6 +57,10 @@ public class GroupCreationDialog extends AbstractDialog<GroupRequest, GroupCreat
         selectedUsers.setOnMouseClicked(viewModel::onMouseClickedListener);
         selectedUsers.getSelectionModel().selectedItemProperty()
                 .addListener(ViewModelUtils.changeListener((viewModel::onAlreadySelectedClickListener)));
+    }
+
+    public void setImageRequest(Function<String, CompletableFuture<Image>> imageRequest) {
+        viewModel.setImageRequest(imageRequest);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.application.ViewHandler;
+import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.model.ClientModel;
@@ -24,10 +25,11 @@ import static com.ade.chatclient.application.Views.ALL_CHATS_VIEW;
 public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
     private final ListProperty<User> usersListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
 
+    public static final String ALL_USERS_EVENT = "AllUsers";
     public AllUsersViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
         //заменяет значение usersListProperty новым значением (лист юзеров)
-        model.addListener("AllUsers", runLaterListener(listReplacer(usersListProperty)));
+        model.addListener(ALL_USERS_EVENT, runLaterListener(listReplacer(usersListProperty)));
     }
 
     /**
@@ -55,8 +57,13 @@ public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
     /**
      * @return фабрику ячеек для юзеров
      */
-    public static ListCell<User> getUserListCellFactory() {
-        return new UserListCellFactory();
+    public ListCell<User> getUserListCellFactory() {
+        UserListCellFactory factory = ViewModelUtils.loadCellFactory(
+                UserListCellFactory.class,
+                "user-list-cell-factory.fxml"
+        );
+        factory.init(model::getPhotoById);
+        return factory;
     }
 
     /**

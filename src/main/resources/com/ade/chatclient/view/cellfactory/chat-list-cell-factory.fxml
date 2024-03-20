@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="layout" prefHeight="70.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.cellfactory.ChatListCellFactory">
-   <ImageView layoutX="10.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0">
-      <Image url="@../../img/user_avatar_chat_icon.png" />
-   </ImageView>
-   <Label fx:id="chatNameLabel" layoutX="60.0" layoutY="15.0" style="-fx-text-fill: white" AnchorPane.leftAnchor="70.0" />
-   <Label fx:id="lastMsgLabel" layoutY="37.4" style="-fx-text-fill: lightgray" AnchorPane.leftAnchor="70.0" />
-   <Label fx:id="countUnreadMessages" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutY="25.0" prefHeight="20.0" styleClass="countUnreadMessages" AnchorPane.rightAnchor="10.0" />
+<AnchorPane fx:id="layout" maxHeight="50.0" maxWidth="350.0" minHeight="50.0" minWidth="350.0" prefHeight="50.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.cellfactory.ChatListCellFactory">
+   <StackPane fx:id="photoPane" prefHeight="36.0" prefWidth="36.0" styleClass="photoPane" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="7.0" />
+   <Label fx:id="lastMessageDateLabel" styleClass="lastMessageDateLabel" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="7.0" />
+   <Label fx:id="chatNameLabel" styleClass="chatNameLabel" layoutX="60.0" layoutY="15.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="7.0" />
+   <Label fx:id="lastMsgLabel" styleClass="lastMsgLabel" layoutY="37.4" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="80.0" />
+   <Label fx:id="countUnreadMessages" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="20.0" styleClass="countUnreadMessages" AnchorPane.bottomAnchor="7.0" AnchorPane.rightAnchor="20.0">
+      <padding>
+         <Insets left="3.0" right="3.0" />
+      </padding></Label>
 </AnchorPane>

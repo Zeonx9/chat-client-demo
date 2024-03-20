@@ -1,17 +1,30 @@
 package com.ade.chatclient.view.cellfactory;
 
-import com.ade.chatclient.ClientApplication;
 import com.ade.chatclient.domain.User;
+import com.ade.chatclient.view.components.UserPhoto;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * Фабрика ячеек списка пользователей, предназначена для генерации и настройки ячеек в ListView, определяет, как они будут выглядеть для дальнейшей автоматической генерации
  */
 public class UserListCellFactory extends ListCell<User> {
+    @FXML private AnchorPane layout;
+    @FXML private StackPane photoPane;
+    @FXML private Label realNameLabel;
+    @FXML private Label userNameLabel;
+    private Function<String, CompletableFuture<Image>> imageRequest;
 
-    private final ImageView imageView = new ImageView();
+    public void init(Function<String, CompletableFuture<Image>> imageRequest) {
+        this.imageRequest = imageRequest;
+    }
 
     /**
      * Метод заполняет все значения в полях ячейки, а так же устанавливает imageView в качестве графики - иконка пользователя
@@ -21,20 +34,22 @@ public class UserListCellFactory extends ListCell<User> {
     @Override
     protected void updateItem(User item, boolean empty) {
         super.updateItem(item, empty);
+
+        setText(null);
         if (empty || item == null) {
-            setText(null);
             setGraphic(null);
             return;
         }
 
-        setText(prepareUserToBeShown(item));
-        var imgStream = ClientApplication.class.getResourceAsStream("img/user_avatar_chat_icon.png");
-        if (imgStream == null) {
-            throw new RuntimeException("image stream is null");
-        }
-        imageView.setImage(new Image(imgStream));
-        setGraphic(imageView);
+        realNameLabel.setText(prepareUserToBeShown(item));
+        userNameLabel.setText(item.getUsername());
+
+        UserPhoto.setPaneContent(photoPane.getChildren(), item, 20, imageRequest);
+
+        setGraphic(layout);
+
     }
+
 
     /**
      *
@@ -44,4 +59,6 @@ public class UserListCellFactory extends ListCell<User> {
     private static String prepareUserToBeShown(User user) {
         return user.getRealName() + " " + user.getSurname();
     }
+
+
 }

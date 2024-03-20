@@ -2,41 +2,48 @@ package com.ade.chatclient.application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import static com.ade.chatclient.application.StartClientApp.URLS;
+
+
 /**
  * Главный класс обрабатывающий HTTP запрос исходящие из приложения
  * два обязательх поля, которые должны быть вставленны через сеттеры.
  */
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class AsyncRequestHandler {
-    private final static HttpClient client = HttpClient.newHttpClient();
+
+    private final static String CONTENT_TYPE_JSON = "application/json";
+    private final static HttpClient client = HttpClientFactory.getTrustingHttpClient();
     private final static ObjectMapper mapper = new ObjectMapper();
 
     static {
         mapper.findAndRegisterModules();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    @Setter
-    private String url;
     @Setter
     private String authToken;
 
     /**
      * строит GET запрос с параметрами и преобразует ответ к нужному типу
-     * @param path путь до точки входа на сервер
-     * @param params параметры запроса
+     *
+     * @param path       путь до точки входа на сервер
+     * @param params     параметры запроса
      * @param tReference указывает тип, к которому надо привести ответ от сервера
      * @return преобразованный ответ от сервера
      * @throws RuntimeException при невозможности сериализовать объект
@@ -47,7 +54,8 @@ public class AsyncRequestHandler {
 
     /**
      * строит GET запрос без параметров и преобразует ответ к нужному типу
-     * @param path путь до точки входа на сервер
+     *
+     * @param path       путь до точки входа на сервер
      * @param tReference указывает тип, к которому надо привести ответ от сервера
      * @return преобразованный ответ от сервера
      * @throws RuntimeException при невозможности сериализовать объект
@@ -58,7 +66,8 @@ public class AsyncRequestHandler {
 
     /**
      * строит GET запрос без параметров и преобразует ответ к нужному типу
-     * @param path путь до точки входа на сервер
+     *
+     * @param path   путь до точки входа на сервер
      * @param tClass указывает тип, к которому надо привести ответ от сервера
      * @return преобразованный ответ от сервера
      * @throws RuntimeException при невозможности сериализовать объект
@@ -82,9 +91,10 @@ public class AsyncRequestHandler {
 
     /**
      * строит PUT запрос без параметров и преобразует ответ к нужному типу
-     * @param path путь до точки входа на сервер
+     *
+     * @param path    путь до точки входа на сервер
      * @param bodyObj объект, который необходимо отправить
-     * @param vClass указывает тип, к которому надо привести ответ от сервера
+     * @param vClass  указывает тип, к которому надо привести ответ от сервера
      * @return преобразованный ответ от сервера
      * @throws RuntimeException при невозможности сериализовать объект
      */
@@ -94,7 +104,7 @@ public class AsyncRequestHandler {
 
     private CompletableFuture<HttpResponse<String>> sendGETAsync(String path, Map<String, String> params) {
         return client.sendAsync(
-                configureRequest(path, params, true)
+                configureRequest(path, params, true, CONTENT_TYPE_JSON)
                         .GET()
                         .build(),
                 HttpResponse.BodyHandlers.ofString()
@@ -107,7 +117,7 @@ public class AsyncRequestHandler {
 
     private CompletableFuture<HttpResponse<String>> sendPOSTAsync(String path, String body, boolean authorized) {
         return client.sendAsync(
-                configureRequest(path, Map.of(), authorized)
+                configureRequest(path, Map.of(), authorized, CONTENT_TYPE_JSON)
                         .POST(HttpRequest.BodyPublishers.ofString(body))
                         .build(),
                 HttpResponse.BodyHandlers.ofString()
@@ -122,10 +132,10 @@ public class AsyncRequestHandler {
         }
     }
 
-    private  <T> CompletableFuture<HttpResponse<String>> sendPUTAsync(String path, T body) {
+    private <T> CompletableFuture<HttpResponse<String>> sendPUTAsync(String path, T body) {
         try {
             return client.sendAsync(
-                    configureRequest(path, Map.of(), true)
+                    configureRequest(path, Map.of(), true, CONTENT_TYPE_JSON)
                             .PUT(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(body)))
                             .build(),
                     HttpResponse.BodyHandlers.ofString()
@@ -136,15 +146,32 @@ public class AsyncRequestHandler {
 
     }
 
-    private HttpRequest.Builder configureRequest(String path, Map<String, String> params, boolean authorized) {
-        if (url == null) {
-            throw new IllegalStateException("URL of server is not set yet!");
-        }
+    public CompletableFuture<byte[]> sendGetResource(String path) {
+        CompletableFuture<HttpResponse<byte[]>> response = client.sendAsync(
+                configureRequest(path, Map.of(), false, CONTENT_TYPE_JSON)
+                        .GET()
+                        .build(),
+                HttpResponse.BodyHandlers.ofByteArray());
+
+        return response.thenApply(HttpResponse::body);
+    }
+
+    public <T> CompletableFuture<T> sendPostResource(String path, Path filePath, Class<T> tClass) {
+        MultipartEntity multipart = new MultipartEntity(filePath);
+        CompletableFuture<HttpResponse<String>> response =
+                client.sendAsync(configureRequest(path, Map.of(), true, multipart.getContentType())
+                        .POST(HttpRequest.BodyPublishers.ofByteArray(multipart.photoToByteArray()))
+                        .build(),
+                        HttpResponse.BodyHandlers.ofString());
+        return response.thenApply(mapperOf(tClass));
+    }
+
+    private HttpRequest.Builder configureRequest(String path, Map<String, String> params, boolean authorized, String contentType) {
         if (authorized && authToken == null) {
             throw new IllegalStateException("Authorized request cannot be built, token is not set yet!");
         }
 
-        String uriStr = url + path;
+        String uriStr = URLS.getServerUrl() + path;
         if (!params.isEmpty())
             uriStr += "?";
 
@@ -154,7 +181,7 @@ public class AsyncRequestHandler {
 
         var builder = HttpRequest.newBuilder()
                 .uri(URI.create(uriStr))
-                .header("Content-Type", "application/json")
+                .header("Content-Type", contentType)
                 .header("ngrok-skip-browser-warning", "skip");
         if (!authorized) {
             return builder;

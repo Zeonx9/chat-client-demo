@@ -3,7 +3,6 @@
 
 module com.ade.chatclient {
     requires javafx.controls;
-    requires javafx.media;
     requires javafx.fxml;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
@@ -11,8 +10,11 @@ module com.ade.chatclient {
     requires java.net.http;
     requires lombok;
     requires java.desktop;
-
-
+    requires spring.messaging;
+    requires spring.websocket;
+    requires org.slf4j;
+    requires spring.web;
+    requires org.apache.httpcomponents.client5.httpclient5;
 
     exports com.ade.chatclient;
     opens com.ade.chatclient to javafx.fxml;
@@ -43,4 +45,16 @@ module com.ade.chatclient {
 
     exports com.ade.chatclient.application.structure;
     opens com.ade.chatclient.application.structure to javafx.fxml;
+
+    exports com.ade.chatclient.api;
+    opens com.ade.chatclient.api to javafx.fxml;
+
+    exports com.ade.chatclient.repository;
+    opens com.ade.chatclient.repository to javafx.fxml;
+    exports com.ade.chatclient.api.impl;
+    opens com.ade.chatclient.api.impl to javafx.fxml;
+    exports com.ade.chatclient.repository.impl;
+    opens com.ade.chatclient.repository.impl to javafx.fxml;
+    exports com.ade.chatclient.model.impl;
+    opens com.ade.chatclient.model.impl to javafx.fxml;
 }

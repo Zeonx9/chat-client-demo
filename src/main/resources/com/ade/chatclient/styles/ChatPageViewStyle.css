@@ -53,24 +53,6 @@
     -fx-background-color: #1A1A22;
 }
 
-.buttonSend {
-    -fx-background-radius: 15px;
-    -fx-background-color: transparent;
-    -fx-background-image: url("../img/send_mes.png");
-}
-
-.buttonSend:hover {
-    -fx-background-radius: 15px;
-    -fx-background-color: transparent;
-    -fx-background-image: url("../img/send_mes_hover.png");
-}
-
-.buttonSend:focused {
-    -fx-background-radius: 15px;
-    -fx-background-color: transparent;
-    -fx-background-image: url("../img/send_mes_focused.png");
-}
-
 .messageInput {
     -fx-font-family: "Poppins Regular";
     -fx-font-size: 17;
@@ -95,11 +77,6 @@
 
 .showChatsBtn:focused {
     -fx-opacity: 30%;
-}
-
-.ShowUsersBtn {
-    -fx-background-color: transparent;
-    -fx-background-image: url("../img/all_users_btn.png");
 }
 
 .ShowUsersBtn:hover {
@@ -336,17 +313,6 @@
 
 .infoButton:focused {
     -fx-background-color: #3A3C4D;
-}
-
-.countUnreadMessages {
-    display: inline-block;
-        -fx-font-family: "Poppins Medium";
-        -fx-font-size: 12;
-        -fx-text-fill: #FFFFFF;
-        -fx-background: #3D77A3;
-        -fx-background-color: -fx-background ;
-        -fx-background-radius: 30px;
-        -fx-padding: 6px ;
 }
 
 .date-picker .arrow-button > {

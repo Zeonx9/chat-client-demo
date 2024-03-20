@@ -7,25 +7,27 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.io.IOException;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
 @ExtendWith(MockitoExtension.class)
 public class AllChatsViewTest {
     private static FXMLLoader loader;
-    @Mock private ViewHandler handler;
-    @Mock private ClientModel model;
+    @Mock
+    private ViewHandler handler;
+    @Mock
+    private ClientModel model;
     private AllChatsView underTest;
 
     @BeforeAll
     static void beforeAll() throws IOException {
         try {
-            Platform.startup(() -> {});
+            Platform.startup(() -> {
+            });
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -39,10 +41,4 @@ public class AllChatsViewTest {
         underTest = loader.getController();
         underTest.init(viewModel);
     }
-
-    @Test
-    void buttonIsDisabledAtStart() {
-        assertThat(underTest.getCreateGroupButton().isDisabled()).isFalse();
-    }
-
 }

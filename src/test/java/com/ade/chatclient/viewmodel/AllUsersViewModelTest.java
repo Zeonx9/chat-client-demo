@@ -10,20 +10,22 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ade.chatclient.application.Views.ALL_CHATS_VIEW;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class AllUsersViewModelTest {
     private AllUsersViewModel underTest;
     @Mock
     private ClientModel model;
-    @Mock private ViewHandler handler;
+    @Mock
+    private ViewHandler handler;
     Pane placeHolder;
 
     @BeforeEach
@@ -65,7 +67,7 @@ public class AllUsersViewModelTest {
     void onSelectedItemChange() {
         //given
         User newValue = User.builder().id(1L).build();
-        Chat chat = Chat.builder().id(1L).build();
+        Chat chat = Chat.builder().id(1L).unreadCount(0).build();
 
         // when
         given(model.createDialogFromAllUsers(newValue)).willReturn(chat);

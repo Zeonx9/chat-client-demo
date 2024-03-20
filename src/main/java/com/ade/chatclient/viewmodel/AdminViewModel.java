@@ -1,11 +1,11 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.application.structure.AbstractViewModel;
 import com.ade.chatclient.application.StartClientApp;
 import com.ade.chatclient.application.ViewHandler;
+import com.ade.chatclient.application.structure.AbstractViewModel;
 import com.ade.chatclient.dtos.AuthRequest;
 import com.ade.chatclient.dtos.RegisterData;
-import com.ade.chatclient.model.ClientModel;
+import com.ade.chatclient.model.AdminModel;
 import javafx.beans.property.*;
 import lombok.Getter;
 
@@ -17,7 +17,7 @@ import static com.ade.chatclient.application.Views.LOG_IN_VIEW;
  * Класс, который связывает model с AdminView
  */
 @Getter
-public class AdminViewModel extends AbstractViewModel<ClientModel> {
+public class AdminViewModel extends AbstractViewModel<AdminModel> {
     private final StringProperty empNameAndSurnameProperty = new SimpleStringProperty();
     private final ObjectProperty<LocalDate> empBirthdateProperty = new SimpleObjectProperty<>();
     private final StringProperty empLoginProperty = new SimpleStringProperty();
@@ -26,7 +26,7 @@ public class AdminViewModel extends AbstractViewModel<ClientModel> {
     private final BooleanProperty disableProperty = new SimpleBooleanProperty(true);
 
 
-    public AdminViewModel(ViewHandler viewHandler, ClientModel model) {
+    public AdminViewModel(ViewHandler viewHandler, AdminModel model) {
         super(viewHandler, model);
     }
 
