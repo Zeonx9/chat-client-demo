@@ -11,11 +11,14 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * Класс отвечающий за окно для создания группового чата, связан с GroupCreationDialog(view)
@@ -27,6 +30,9 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
     private final ListProperty<User> selectedUsersListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final StringProperty nameOfGroup = new SimpleStringProperty();
     private final BooleanProperty isFilled = new SimpleBooleanProperty(true);
+
+    @Setter
+    private Function<String, CompletableFuture<Image>> imageRequest;
     private User selected;
 
     /**
@@ -103,9 +109,11 @@ public class GroupCreationDialogModel extends AbstractDialogModel<GroupRequest> 
     }
 
     public ListCell<User> getUserListCellFactory() {
-        return ViewModelUtils.loadCellFactory(
+        UserListCellFactory factory= ViewModelUtils.loadCellFactory(
                 UserListCellFactory.class,
                 "user-list-cell-factory.fxml"
         );
+        factory.init(imageRequest);
+        return factory;
     }
 }

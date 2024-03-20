@@ -12,14 +12,9 @@ import com.ade.chatclient.dtos.ConnectEvent;
 import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.dtos.ReadNotification;
 import com.ade.chatclient.model.ClientModel;
-import com.ade.chatclient.repository.ChatRepository;
-import com.ade.chatclient.repository.MessageRepository;
-import com.ade.chatclient.repository.SelfRepository;
-import com.ade.chatclient.repository.UsersRepository;
-import com.ade.chatclient.viewmodel.AllChatsViewModel;
-import com.ade.chatclient.viewmodel.AllUsersViewModel;
-import com.ade.chatclient.viewmodel.ChatPageViewModel;
-import com.ade.chatclient.viewmodel.UserSettingsViewModel;
+import com.ade.chatclient.repository.*;
+import com.ade.chatclient.viewmodel.*;
+import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -27,8 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.*;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @Getter
 @Setter
@@ -40,39 +38,37 @@ public class ClientModelImpl implements ClientModel {
     private final ChatRepository chatRepository;
     private final UsersRepository usersRepository;
     private final SelfRepository selfRepository;
+    private final FileRepository fileRepository;
 
-    private User myself;
     private Chat selectedChat;
-    private Company company;
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
     @Override
     public void runModel() {
-        myself = selfRepository.getMyself();
-        company = selfRepository.getCompany();
-        chatRepository.setSelfId(myself.getId());
-        messageRepository.setSelfId(myself.getId());
-        usersRepository.setSelfId(myself.getId());
+        setIdToRepo();
         startWebSocketConnection();
         fetchUsers();
         fetchChats();
     }
 
+    private void setIdToRepo() {
+        chatRepository.setSelfId(selfRepository.getMyself().getId());
+        messageRepository.setSelfId(selfRepository.getMyself().getId());
+        usersRepository.setSelfId(selfRepository.getMyself().getId());
+    }
+
     @Override
     public void clearModel() {
-        myself = null;
         setSelectedChat(null);
-        setCompany(null);
         chatRepository.clearChats();
         usersRepository.clearUsers();
+        messageRepository.clear();
         selfRepository.clear();
+        fileRepository.clear();
     }
 
     @Override
     public synchronized void fetchChats() {
-        if (myself == null) {
-            return;
-        }
         chatRepository.fetchChats().thenAccept(chats ->
                 changeSupport.firePropertyChange(AllChatsViewModel.GOT_CHATS_EVENT, null, chats)
         );
@@ -102,7 +98,7 @@ public class ClientModelImpl implements ClientModel {
             selectedChat = chat;
         }
         fetchChatMessages();
-        stompSessionApi.sendReadChatSignal(new ReadNotification(myself.getId(), chat.getId()));
+        stompSessionApi.sendReadChatSignal(new ReadNotification(selfRepository.getMyself().getId(), chat.getId()));
     }
 
     @Override
@@ -122,7 +118,7 @@ public class ClientModelImpl implements ClientModel {
 
     @Override
     public void fetchUsers() {
-        usersRepository.fetchUsers(company.getId())
+        usersRepository.fetchUsers(selfRepository.getCompany().getId())
                 .thenAccept(userList ->
                         changeSupport.firePropertyChange(AllUsersViewModel.ALL_USERS_EVENT, null, userList));
     }
@@ -134,8 +130,8 @@ public class ClientModelImpl implements ClientModel {
 
     @Override
     public void createGroupChat(GroupRequest groupRequest) {
-        groupRequest.getIds().add(myself.getId());
-        groupRequest.getGroupInfo().setCreator(myself);
+        groupRequest.getIds().add(selfRepository.getMyself().getId());
+        groupRequest.getGroupInfo().setCreator(selfRepository.getMyself());
         chatRepository.createNewGroupChat(groupRequest);
     }
 
@@ -174,15 +170,20 @@ public class ClientModelImpl implements ClientModel {
     }
 
     @Override
+    public Company getCompany() {
+        return selfRepository.getCompany();
+    }
+
+    @Override
     public void changePassword(ChangePasswordRequest request) {
-        request.getAuthRequest().setLogin(myself.getUsername());
+        request.getAuthRequest().setLogin(selfRepository.getMyself().getUsername());
         selfRepository.changePassword(request)
                 .thenAccept(response -> {
-                            changeSupport.firePropertyChange(UserSettingsViewModel.PASSWORD_CHANGED_RESPONDED_EVENT, null, "successfully!");
+                            changeSupport.firePropertyChange(UserSettingsViewModel.CHANGED_RESPONDED_EVENT, null, "successfully!");
                             SettingsManager.changeSettings(Settings::setPassword, request.getNewPassword());
                         }
                 ).exceptionally(e -> {
-                    changeSupport.firePropertyChange(UserSettingsViewModel.PASSWORD_CHANGED_RESPONDED_EVENT, null, "unsuccessful attempt!");
+                    changeSupport.firePropertyChange(UserSettingsViewModel.CHANGED_RESPONDED_EVENT, null, "unsuccessful attempt!");
                     log.error("failed to change password", e);
                     return null;
                 });
@@ -194,21 +195,58 @@ public class ClientModelImpl implements ClientModel {
     }
 
     @Override
+    public User getMyself() {
+        return selfRepository.getMyself();
+    }
+
+    @Override
     public void startWebSocketConnection() {
         stompSessionApi.connect();
-        stompSessionApi.subscribeTopicConnection(company.getId(), this::acceptNewConnectEvent);
-        stompSessionApi.subscribeQueueMessages(myself.getId(), this::acceptNewMessage);
-        stompSessionApi.subscribeQueueChats(myself.getId(), this::acceptNewChat);
-        stompSessionApi.subscribeQueueReadNotifications(myself.getId(), this::acceptNewReadNotification);
-        stompSessionApi.sendConnectSignal(myself);
+        stompSessionApi.subscribeTopicConnection(selfRepository.getCompany().getId(), this::acceptNewConnectEvent);
+        stompSessionApi.subscribeQueueMessages(selfRepository.getMyself().getId(), this::acceptNewMessage);
+        stompSessionApi.subscribeQueueChats(selfRepository.getMyself().getId(), this::acceptNewChat);
+        stompSessionApi.subscribeQueueReadNotifications(selfRepository.getMyself().getId(), this::acceptNewReadNotification);
+        stompSessionApi.sendConnectSignal(selfRepository.getMyself());
     }
 
     @Override
     public void stopWebSocketConnection() {
         if (stompSessionApi != null) {
-            stompSessionApi.sendDisconnectSignal(myself);
+            stompSessionApi.sendDisconnectSignal(selfRepository.getMyself());
         }
     }
+
+    @Override
+    public void changeUserInfo(User newUserInfo) {
+        newUserInfo.setId(selfRepository.getMyself().getId());
+        newUserInfo.setUsername(selfRepository.getMyself().getUsername());
+        newUserInfo.setIsOnline(true);
+        selfRepository.changeUserInfo(newUserInfo)
+                .thenAccept(response -> {
+                            changeSupport.firePropertyChange(UserSettingsViewModel.CHANGED_RESPONDED_EVENT, null, "successfully!");
+                            changeSupport.firePropertyChange(ProfileViewModel.CHANGED_USER_INFO, null, response);
+                            selfRepository.setMyself(response);
+                            setIdToRepo();
+                        }
+                ).exceptionally(e -> {
+                    changeSupport.firePropertyChange(UserSettingsViewModel.CHANGED_RESPONDED_EVENT, null, "unsuccessful attempt!");
+                    log.error("failed to change user info", e);
+                    return null;
+                });
+    }
+
+    @Override
+    public void uploadUserProfilePhoto(File photo) {
+        selfRepository.changeProfilePhoto(Path.of(photo.toString()))
+                .thenAccept(newPhoto ->
+                        changeSupport.firePropertyChange(ProfileViewModel.CHANGED_USER_INFO, null, getMyself()));
+    }
+
+    @Override
+    public CompletableFuture<Image> getPhotoById(String photoId) {
+        return fileRepository.getFile(photoId).thenApply(bytes -> new Image(new ByteArrayInputStream(bytes)));
+    }
+
 
     private void acceptNewChat(Chat chat) {
         changeSupport.firePropertyChange(AllChatsViewModel.NEW_CHAT_CREATED_EVENT, null, chat);

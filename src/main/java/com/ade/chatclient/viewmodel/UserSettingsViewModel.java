@@ -1,11 +1,14 @@
 package com.ade.chatclient.viewmodel;
 
-import com.ade.chatclient.application.*;
+import com.ade.chatclient.application.StartClientApp;
+import com.ade.chatclient.application.ViewHandler;
 import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.application.util.PaneSwitcher;
+import com.ade.chatclient.domain.EditProfileResult;
 import com.ade.chatclient.dtos.ChangePasswordRequest;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.view.ChangingPasswordDialog;
+import com.ade.chatclient.view.EditProfileDialog;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.layout.Pane;
@@ -14,9 +17,9 @@ import lombok.Getter;
 import java.beans.PropertyChangeEvent;
 import java.util.Optional;
 
+import static com.ade.chatclient.application.Views.LOG_IN_VIEW;
 import static com.ade.chatclient.application.Views.PROFILE_VIEW;
 import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
-import static com.ade.chatclient.application.Views.LOG_IN_VIEW;
 
 /**
  * Класс, который связывает model с UserProfileView
@@ -27,11 +30,12 @@ public class UserSettingsViewModel extends AbstractChildViewModel<ClientModel> {
     private final StringProperty systemMessageProperty = new SimpleStringProperty();
     private PaneSwitcher paneSwitcher;
 
-    public static final String PASSWORD_CHANGED_RESPONDED_EVENT = "passwordChangeResponded";
+    public static final String CHANGED_RESPONDED_EVENT = "passwordChangeResponded";
+
     public UserSettingsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
 
-        model.addListener(PASSWORD_CHANGED_RESPONDED_EVENT, runLaterListener(this::showRequestResult));
+        model.addListener(CHANGED_RESPONDED_EVENT, runLaterListener(this::showRequestResult));
     }
 
     /**
@@ -80,6 +84,12 @@ public class UserSettingsViewModel extends AbstractChildViewModel<ClientModel> {
     }
 
     public void showEditProfileDialogAndWait() {
-        systemMessageProperty.set("This function is not available now");
+        systemMessageProperty.set("");
+        EditProfileDialog dialog = EditProfileDialog.getInstance(model.getMyself());
+        dialog.init(new EditProfileDialogModel(model::getPhotoById));
+
+        Optional<EditProfileResult> answer = dialog.showAndWait();
+        answer.map(EditProfileResult::getUser).ifPresent(model::changeUserInfo);
+        answer.map(EditProfileResult::getFile).ifPresent(model::uploadUserProfilePhoto);
     }
 }

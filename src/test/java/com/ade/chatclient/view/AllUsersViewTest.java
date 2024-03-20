@@ -10,18 +10,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.io.IOException;
 
 @ExtendWith(MockitoExtension.class)
 public class AllUsersViewTest {
     private static FXMLLoader loader;
-    @Mock private ViewHandler handler;
-    @Mock private ClientModel model;
+    @Mock
+    private ViewHandler handler;
+    @Mock
+    private ClientModel model;
     private AllUsersView underTest;
 
     @BeforeAll
     static void beforeAll() throws IOException {
-//        Platform.startup(() -> {});
+        Platform.startup(() -> {
+        });
         loader = new FXMLLoader(AllUsersView.class.getResource("all-users-view.fxml"));
         loader.load();
     }
@@ -32,8 +36,6 @@ public class AllUsersViewTest {
         underTest = loader.getController();
         underTest.init(viewModel);
     }
-
-
 
 }
 

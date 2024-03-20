@@ -8,37 +8,32 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListView;
-//import javafx.scene.media.Media;
-//import javafx.scene.media.MediaPlayer;
+import javafx.scene.input.MouseEvent;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import javafx.application.Platform;
-import javafx.scene.input.MouseEvent;
-import java.io.File;
+
 import java.io.IOException;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AllChatsViewModelTest {
+public class AllChatsViewModelTest extends RunPlatform {
     private AllChatsViewModel underTest;
-    @Mock private ClientModel model;
-    @Mock private ViewHandler handler;
+    @Mock
+    private ClientModel model;
+    @Mock
+    private ViewHandler handler;
     private static FXMLLoader loader;
 
     @BeforeAll
     static void initJfxRuntime() throws IOException {
-        try {
-            Platform.startup(() -> {});
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
         loader = new FXMLLoader(AllChatsView.class.getResource("all-chats-view.fxml"));
         loader.load();
     }
@@ -81,8 +76,8 @@ public class AllChatsViewModelTest {
     @Test
     void onMouseClickedListener() {
         //given
-        Chat chat1 = Chat.builder().id(1L).build();
-        Chat chat2 = Chat.builder().id(2L).build();
+        Chat chat1 = Chat.builder().id(1L).unreadCount(0).build();
+        Chat chat2 = Chat.builder().id(2L).unreadCount(0).build();
         ObservableList<Chat> chatList = FXCollections.observableArrayList(chat1, chat2);
         ListView<Chat> listView = new ListView<>(chatList);
         listView.getSelectionModel().select(chat2);

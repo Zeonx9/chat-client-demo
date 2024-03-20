@@ -65,12 +65,72 @@
     -fx-padding: 0;
 }
 
+.cellFactoryListView .list-cell .chatNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell .lastMessageDateLabel {
+    -fx-text-fill: #A4A4A4;
+}
+
+.cellFactoryListView .list-cell .lastMsgLabel {
+    -fx-text-fill: #A4A4A4;
+}
+
+.cellFactoryListView .list-cell .realNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell .userNameLabel {
+    -fx-text-fill: #A4A4A4;
+}
+
 .cellFactoryListView .list-cell:hover {
     -fx-background-color: #3E46FF;
 }
 
+.cellFactoryListView .list-cell:hover .chatNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:hover .lastMessageDateLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:hover .lastMsgLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:hover .realNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:hover .userNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
 .cellFactoryListView .list-cell:focused {
     -fx-background-color: #3E46FF;
+}
+
+.cellFactoryListView .list-cell:focused .chatNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:focused .lastMessageDateLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:focused .lastMsgLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:focused .realNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:focused .userNameLabel {
+    -fx-text-fill: #FFFFFF;
 }
 
 .cellFactoryListView .list-cell:empty {
@@ -126,4 +186,8 @@
     -fx-font-family: "Montserrat Medium";
     -fx-text-fill: #3E46FF;
     -fx-font-size: 14;
+}
+
+.rectangle {
+    -fx-fill: #2f303b;
 }

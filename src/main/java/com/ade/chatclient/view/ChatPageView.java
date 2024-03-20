@@ -66,7 +66,7 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         infoArea.opacityProperty().bind(viewModel.getInfoAreaOpacityProperty());
         infoArea.disableProperty().bind(viewModel.getInfoAreaDisableProperty());
 
-        Bindings.bindContent(photoPane.getChildren(), viewModel.getChatIconNodes());
+        Bindings.bindContentBidirectional(photoPane.getChildren(), viewModel.getChatIconNodes());
 
         viewModel.openChatPane();
     }
@@ -105,14 +105,14 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
     /**
      * Метод вызывает функцию смены Pane внутри placeHolder на окно с личным кабинетом пользователя и функциями его управления
      */
-    public void onShowUserProfileClicked() {
+    @FXML protected void onShowUserProfileClicked() {
         viewModel.openProfilePane();
     }
 
     /**
      * Метод вызывает функцию открытия диалогового окна для просмотра информации о беседе, в которой пользователь сейчас находится
      */
-    public void onInfoButtonClicked() {
+    @FXML protected void onInfoButtonClicked() {
         viewModel.showDialog();
     }
 }

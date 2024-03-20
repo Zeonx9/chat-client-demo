@@ -14,4 +14,6 @@ public class Settings {
     private String login = "";
     @Builder.Default
     private String password = "";
+    @Builder.Default
+    private String theme = "Dark";
 }

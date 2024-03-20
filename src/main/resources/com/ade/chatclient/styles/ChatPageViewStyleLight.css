@@ -1,0 +1,417 @@
+@font-face {
+    font-family: 'Montserrat Bold';
+    src: url('../fonts/Montserrat-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat Medium';
+    src: url('../fonts/Montserrat-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat Regular';
+    src: url('../fonts/Montserrat-Regular.ttf');
+}
+
+.background-chat-page {
+    -fx-background-color: #CBDAFF;
+}
+
+.switch-pane {
+    -fx-background-color: #FFFFFF;
+}
+
+.buttons-pane {
+    -fx-background-color: #FFFFFF;
+}
+
+.showChatsBtn {
+    -fx-background-color: #CBDAFF;
+    -fx-background-image: url("../img/chat_btn.png");
+
+    -fx-background-radius: 40px;
+}
+
+.showChatsBtn:hover {
+    -fx-background-color: #3E46FF;
+}
+
+.showChatsBtn:focused {
+    -fx-background-color: #777CFF;
+}
+
+.showUsersBtn {
+    -fx-background-color: #CBDAFF;
+    -fx-background-image: url("../img/users_btn.png");
+
+    -fx-background-radius: 40px;
+}
+
+.showUsersBtn:hover {
+    -fx-background-color: #3E46FF;
+}
+
+.showUsersBtn:focused {
+    -fx-background-color: #777CFF;
+}
+
+.showUserProfileBtn {
+    -fx-background-color: #CBDAFF;
+    -fx-background-image: url("../img/user_profile_btn.png");
+
+    -fx-background-radius: 40px;
+}
+
+.showUserProfileBtn:hover {
+    -fx-background-color: #3E46FF;
+}
+
+.showUserProfileBtn:focused {
+    -fx-background-color: #777CFF;
+}
+
+.createGroupBtn {
+    -fx-background-color: #CBDAFF;
+    -fx-background-image: url("../img/create_group_btn.png");
+
+    -fx-background-radius: 40px;
+}
+
+.createGroupBtn:hover {
+    -fx-background-color: #3E46FF;
+}
+
+.createGroupBtn:focused {
+    -fx-background-color: #777CFF;
+}
+
+.header {
+    -fx-font-family: "Montserrat Bold";
+    -fx-font-size: 14;
+    -fx-text-fill: #212229;
+}
+
+.grayText {
+    -fx-text-fill: #A4A4A4;
+    -fx-font-size: 14;
+    -fx-font-family: "Montserrat Regular";
+}
+
+.chatInfoBtn {
+    -fx-background-color: #FFFFFF;
+    -fx-background-image: url("../img/info_button_blue.png");
+
+    -fx-background-radius: 40px;
+}
+
+.chatInfoBtn:hover {
+    -fx-background-color: #3E46FF;
+    -fx-background-image: url("../img/info_button.png");
+}
+
+.chatInfoBtn:focused {
+    -fx-background-color: #3E46FF;
+    -fx-background-image: url("../img/info_button.png");
+}
+
+.photoPane {
+    -fx-text-fill: #212229;
+    -fx-font-family: "Montserrat Bold";
+    -fx-font-size: 14px;
+}
+
+
+.messageInput {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+    -fx-text-fill: #212229;
+    -fx-background-radius: 10px;
+    -fx-background-color: #FFFFFF;
+}
+
+.sendMessageBtn {
+    -fx-background-image: url("../img/send_mes_btn_hover.png");
+    -fx-background-color: transparent;
+}
+
+.sendMessageBtn:hover {
+    -fx-background-image: url("../img/send_mes_btn_black.png");
+    -fx-background-color: transparent;
+}
+
+.sendMessageBtn:focused {
+    -fx-background-image: url("../img/send_mes_btn_black.png");
+    -fx-background-color: transparent;
+}
+
+.messageListView {
+    -fx-background-color: #CBDAFF;
+}
+
+.messageListView .list-cell .dataText {
+    -fx-font-family: "Montserrat Regular";
+    -fx-text-fill: darkgray;
+}
+
+.messageListView .list-cell{
+    -fx-background-color: #CBDAFF;
+}
+
+.messageListView .scroll-bar .track{
+    -fx-background-color: #CBDAFF;
+}
+
+.messageListView .scroll-bar .thumb {
+    -fx-background-color: #3E46FF;
+}
+
+.messageListView .scroll-bar .corner {
+    -fx-background-color: #CBDAFF ;
+}
+
+.messageListView .scroll-bar .increment-button, .messageListView .scroll-bar .decrement-button{
+    -fx-background-color: #CBDAFF;
+    -fx-border-color: #CBDAFF;
+    -fx-text-fill: #CBDAFF;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.messageListView .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-pref-height: 0;
+}
+
+.messageListView .list-cell:empty .label {
+    -fx-background-color: #CBDAFF;
+}
+
+.messagePane {
+    -fx-background-radius: 10px;
+    -fx-background-color: #CBDAFF;
+}
+
+.messageListView .list-cell .messageLayout {
+    -fx-background-color: #CBDAFF;
+}
+
+.simpleButton {
+    -fx-background-color: #3E46FF;
+    -fx-background-radius: 5px;
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+    -fx-text-fill: #FFFFFF;
+}
+
+.simpleButton:hover {
+    -fx-background-color: #777CFF;
+}
+
+.simpleButton:focused {
+    -fx-background-color: #777CFF;
+}
+
+.systemMessage {
+    -fx-font-family: "Montserrat Medium";
+    -fx-text-fill: #3E46FF;
+    -fx-font-size: 14;
+}
+
+.fullName {
+    -fx-font-family: "Montserrat Bold";
+    -fx-text-fill: #212229;
+    -fx-font-size: 14;
+}
+
+.loginText {
+    -fx-font-family: "Montserrat Regular";
+    -fx-text-fill: #A4A4A4;
+    -fx-font-size: 14;
+}
+
+.onlineStatus {
+    -fx-font-family: "Montserrat Regular";
+    -fx-text-fill: #3E46FF;
+    -fx-font-size: 14;
+}
+
+.text {
+    -fx-font-family: "Montserrat Regular";
+    -fx-text-fill: #212229;
+    -fx-font-size: 14;
+}
+
+.initials {
+    -fx-font-family: "Montserrat Bold";
+    -fx-text-fill: #212229;
+    -fx-font-size: 20;
+}
+
+.infoArea {
+    -fx-background-color: #3E46FF;
+    -fx-background-radius: 10;
+}
+
+.textInput {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+    -fx-text-fill: #212229;
+    -fx-background-radius: 5px;
+
+    -fx-background-color: #CBDAFF;
+    -fx-border-radius: 0px;
+    -fx-border-width: 0 0 0 0;
+}
+
+.textInput:hover {
+    -fx-border-color: #3E46FF;
+    -fx-border-radius: 3px;
+    -fx-border-width: 0 0 0 3;
+}
+
+.textInput:focused {
+    -fx-border-color: #3E46FF;
+    -fx-border-radius: 3px;
+    -fx-border-width: 0 0 0 3;
+}
+
+.header2 {
+    -fx-font-family: "Montserrat Medium";
+    -fx-font-size: 20;
+    -fx-text-fill: #212229;
+}
+
+.cellFactoryListView .list-view {
+    -fx-padding: 0;
+}
+
+.cellFactoryListView .scroll-bar {
+    -fx-background-color: #FFFFFF;
+}
+
+.cellFactoryListView .scroll-bar .track{
+    -fx-background-color: #FFFFFF;
+}
+
+.cellFactoryListView .scroll-bar .thumb {
+    -fx-background-color: #3E46FF;
+}
+
+.cellFactoryListView .scroll-bar .corner {
+    -fx-background-color: #FFFFFF ;
+}
+
+.cellFactoryListView .scroll-bar .increment-button, .cellFactoryListView .scroll-bar .decrement-button{
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #FFFFFF;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.cellFactoryListView .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-pref-height: 0;
+}
+
+.cellFactoryListView .list-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-font-family: "Montserrat Medium";
+    -fx-font-size: 14;
+    -fx-text-fill: #212229;
+    -fx-padding: 0;
+}
+
+.cellFactoryListView .list-cell .realNameLabel {
+    -fx-text-fill: #212229;
+}
+
+.cellFactoryListView .list-cell .userNameLabel {
+    -fx-text-fill: #A4A4A4;
+}
+
+.cellFactoryListView .list-cell:hover {
+    -fx-background-color: #3E46FF;
+}
+
+.cellFactoryListView .list-cell:hover .realNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:hover .userNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:focused {
+    -fx-background-color: #3E46FF;
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:focused .realNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:focused .userNameLabel {
+    -fx-text-fill: #FFFFFF;
+}
+
+.cellFactoryListView .list-cell:empty {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 0;
+}
+
+.cellFactoryListView .list-cell:selected {
+    -fx-text-fill: #FFFFFF;
+    -fx-background-color: #3E46FF;
+}
+
+.selectedListView .list-cell{
+    -fx-background-color: transparent;
+}
+
+.selectedListView .list-cell .label{
+    display: inline-block;
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 13;
+    -fx-text-fill: #FFFFFF;
+    -fx-background: #3E46FF;
+    -fx-background-color: -fx-background ;
+    -fx-background-radius: 25px;
+    -fx-padding: 5px;
+}
+
+.selectedListView .list-cell:empty .label {
+    -fx-background-color: transparent;
+}
+
+.selectedListView .scroll-bar {
+    -fx-background-color: #FFFFFF;
+}
+
+.selectedListView .scroll-bar .track{
+    -fx-background-color: #FFFFFF;
+}
+
+.selectedListView .scroll-bar .thumb {
+    -fx-background-color: #3E46FF;
+}
+
+.selectedListView .scroll-bar .corner {
+    -fx-background-color: #FFFFFF ;
+}
+
+.selectedListView .scroll-bar .increment-button, .selectedListView .scroll-bar .decrement-button{
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #FFFFFF;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.selectedListView .scroll-bar:vertical {
+    -fx-opacity: 0;
+    -fx-pref-height: 0;
+}
+
+.infoAreaText {
+    -fx-font-family: "Montserrat Bold";
+    -fx-font-size: 14;
+    -fx-text-fill: #FFFFFF;
+}
