@@ -22,7 +22,13 @@ import java.util.function.Function;
 public class UserPhoto {
 
     public static void setPaneContent(ObservableList<Node> pane, Chat chat, Long selfId, int size, Function<String, CompletableFuture<Image>> imageRequest) {
-        if (!ifIconPresent(chat)) {
+        if (ifIconPresent(chat)) {
+            chat.getMembers().forEach(member -> {
+                if (!Objects.equals(member.getId(), selfId))
+                    UserPhoto.setPaneContent(pane, member, size, imageRequest);
+            });
+        }
+        else {
             Circle circle = new Circle(size, Color.rgb(145, 145, 145));
             Label label = new Label(prepareInitialsToBeShown(chat, selfId));
             label.setStyle("-fx-text-fill: #FFFFFF");
@@ -54,11 +60,10 @@ public class UserPhoto {
 
     private static boolean ifIconPresent(User user) {
         return user.getThumbnailPhotoId() != null;
-//        return false;
     }
 
     private static boolean ifIconPresent(Chat chat) {
-        return false;
+        return chat.getIsPrivate();
     }
 
     private static String prepareInitialsToBeShown(Chat chat, Long id) {

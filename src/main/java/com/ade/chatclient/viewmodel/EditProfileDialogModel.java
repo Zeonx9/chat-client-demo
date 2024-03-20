@@ -11,6 +11,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -74,6 +76,18 @@ public class EditProfileDialogModel extends AbstractDialogModel<EditProfileResul
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
             this.file = file;
+
+            Image image = new Image(file.toURI().toString());
+            ImageView imageView = new ImageView(image);
+            imageView.setFitWidth(40 * 2);
+            imageView.setFitHeight(40 * 2);
+            Circle circle = new Circle(40);
+            circle.setCenterX(40);
+            circle.setCenterY(40);
+            imageView.setClip(circle);
+
+            chatIconNodes.clear();
+            chatIconNodes.add(imageView);
         }
     }
 
