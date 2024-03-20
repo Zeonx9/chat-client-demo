@@ -84,8 +84,15 @@ public class UserPhoto {
     }
 
     private static String prepareInitialsToBeShown(User user) {
-        return Character.toUpperCase(user.getRealName().charAt(0)) + "" +
-                Character.toUpperCase(user.getSurname().charAt(0));
+        String raw = thisOrEmpty(user.getRealName()) + thisOrEmpty(user.getSurname());
+        if (raw.isBlank()) {
+            return String.valueOf(Character.toUpperCase(user.getUsername().charAt(0)));
+        }
+        return raw.trim();
+    }
+
+    private static String thisOrEmpty(String value) {
+        return value == null ? "" : value.isEmpty() ? "" : String.valueOf(Character.toUpperCase(value.charAt(0)));
     }
 }
 
