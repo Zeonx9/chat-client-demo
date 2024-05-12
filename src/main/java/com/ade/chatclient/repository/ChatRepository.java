@@ -1,6 +1,7 @@
 package com.ade.chatclient.repository;
 
 import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.dtos.ChangeGroupName;
 import com.ade.chatclient.dtos.GroupRequest;
 
 import java.util.List;
@@ -24,4 +25,6 @@ public interface ChatRepository extends Searchable<Chat>{
     CompletableFuture<Chat> createNewPrivateChat(Long userId);
 
     void setSelfId(Long selfId);
+
+    CompletableFuture<Chat> editGroupName(long chatId, ChangeGroupName changeGroupName);
 }

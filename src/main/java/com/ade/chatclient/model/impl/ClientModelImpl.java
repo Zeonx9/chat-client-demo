@@ -7,10 +7,7 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Company;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
-import com.ade.chatclient.dtos.ChangePasswordRequest;
-import com.ade.chatclient.dtos.ConnectEvent;
-import com.ade.chatclient.dtos.GroupRequest;
-import com.ade.chatclient.dtos.ReadNotification;
+import com.ade.chatclient.dtos.*;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.repository.*;
 import com.ade.chatclient.viewmodel.*;
@@ -286,6 +283,16 @@ public class ClientModelImpl implements ClientModel {
 
     private void acceptNewConnectEvent(ConnectEvent event) {
 
+    }
+
+    @Override
+    public void editGroupName(String chatName) {
+        chatRepository.editGroupName(selectedChat.getId(), ChangeGroupName.builder().groupName(chatName).build())
+                .thenAccept(chat -> changeSupport.firePropertyChange(
+                        ChatPageViewModel.GROUP_CHAT_NAME_UPDATE,
+                        null,
+                        chat.getGroup().getName())
+                );
     }
 
 }

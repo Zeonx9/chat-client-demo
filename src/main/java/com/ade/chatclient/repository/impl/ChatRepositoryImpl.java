@@ -3,6 +3,7 @@ package com.ade.chatclient.repository.impl;
 import com.ade.chatclient.api.ChatApi;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
+import com.ade.chatclient.dtos.ChangeGroupName;
 import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.dtos.UnreadCounterDto;
 import com.ade.chatclient.repository.ChatRepository;
@@ -95,5 +96,22 @@ public class ChatRepositoryImpl implements ChatRepository {
                 return chat.getGroup().getName().toLowerCase().startsWith(processedString);
             }
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public CompletableFuture<Chat> editGroupName(long chatId, ChangeGroupName changeGroupName) {
+        return chatApi.editGroupName(chatId, changeGroupName).thenApply(chat -> {
+            updateGroupChatInfo(chatId, chat);
+            return chat;
+        });
+    }
+
+    private void updateGroupChatInfo(long chatId, Chat newChat) {
+        chatById.get(chatId).setGroup(newChat.getGroup());
+        orderedChats.forEach(chat -> {
+            if (chat.getId() == chatId) {
+                chat.setGroup(newChat.getGroup());
+            }
+        });
     }
 }

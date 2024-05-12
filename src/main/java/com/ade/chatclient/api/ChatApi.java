@@ -1,6 +1,7 @@
 package com.ade.chatclient.api;
 
 import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.dtos.ChangeGroupName;
 import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.dtos.UnreadCounterDto;
 
@@ -10,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 public interface ChatApi {
     CompletableFuture<List<Chat>> fetchChatsOfUser(Long userId);
 
-//    CompletableFuture<Chat> fetchChatById(Long userId, Long chatId);
+    CompletableFuture<Chat> editGroupName(long chatId, ChangeGroupName changeGroupName);
 
     void createNewGroupChat(GroupRequest groupRequest);
 

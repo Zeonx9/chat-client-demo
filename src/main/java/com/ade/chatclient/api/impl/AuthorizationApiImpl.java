@@ -14,7 +14,6 @@ public class AuthorizationApiImpl extends BaseRestApi implements AuthorizationAp
 
     @Override
     public AuthResponse authorize(String login, String password) throws ExecutionException, InterruptedException {
-        //todo добавить try catch
         return handler.sendPost(
                 "/auth/login",
                 AuthRequest.builder().login(login).password(password).build(),

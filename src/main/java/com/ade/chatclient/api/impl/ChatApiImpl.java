@@ -4,6 +4,7 @@ import com.ade.chatclient.api.ChatApi;
 import com.ade.chatclient.application.AsyncRequestHandler;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.TypeReferences;
+import com.ade.chatclient.dtos.ChangeGroupName;
 import com.ade.chatclient.dtos.GroupRequest;
 import com.ade.chatclient.dtos.UnreadCounterDto;
 
@@ -23,13 +24,14 @@ public class ChatApiImpl extends BaseRestApi implements ChatApi {
         );
     }
 
-//    @Override
-//    public CompletableFuture<Chat> fetchChatById(Long userId, Long chatId) {
-//        return handler.sendGet(
-//                String.format("/chats/%d", chatId),
-//                Chat.class
-//        );
-//    }
+    @Override
+    public CompletableFuture<Chat> editGroupName(long chatId, ChangeGroupName changeGroupName) {
+        return handler.sendPut(
+                String.format("/chats/%d/group_name", chatId),
+                changeGroupName,
+                Chat.class
+        );
+    }
 
     @Override
     public void createNewGroupChat(GroupRequest groupRequest) {

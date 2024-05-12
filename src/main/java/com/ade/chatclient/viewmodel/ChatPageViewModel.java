@@ -56,12 +56,22 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
 
     public static final String GOT_MESSAGES_EVENT = "gotMessages";
     public static final String NEW_MESSAGES_IN_SELECTED_EVENT = "newMessagesInSelected";
+    public static final String GROUP_CHAT_NAME_UPDATE = "groupChatNameUpdate";
 
     public ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
 
         model.addListener(GOT_MESSAGES_EVENT, runLaterListener(this::fillMessageHistory));
         model.addListener(NEW_MESSAGES_IN_SELECTED_EVENT, runLaterListener(this::newSelectedMessages));
+        model.addListener(GROUP_CHAT_NAME_UPDATE, runLaterListener(this::groupChatNameUpdate));
+    }
+
+    private void groupChatNameUpdate(PropertyChangeEvent event) {
+        synchronized (selectedChatNameProperty) {
+            @SuppressWarnings("unchecked")
+            String newChatName = (String) event.getNewValue();
+            selectedChatNameProperty.setValue(newChatName);
+        }
     }
 
     /**
