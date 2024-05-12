@@ -219,7 +219,12 @@ public class AsyncRequestHandler {
     }
 
     private static <T> Function<HttpResponse<String>, T> mapperOf(Class<T> objectClass) {
-        return response -> mapResponse(response, objectClass);
+        return response -> {
+            if (objectClass == String.class) {
+                return objectClass.cast(response.body());
+            }
+            return mapResponse(response, objectClass);
+        };
     }
 
     private static <T> Function<HttpResponse<String>, T> mapperOf(TypeReference<T> typRef) {

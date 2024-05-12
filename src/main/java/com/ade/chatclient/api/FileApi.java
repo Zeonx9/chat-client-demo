@@ -8,5 +8,7 @@ import java.util.concurrent.CompletableFuture;
 public interface FileApi {
     CompletableFuture<byte[]> fetchImage(String fileId);
 
-    CompletableFuture<User> uploadFile(long userId, Path path);
+    CompletableFuture<User> uploadUserPhoto(long userId, Path path);
+
+    CompletableFuture<String> uploadPhoto(Path path);
 }

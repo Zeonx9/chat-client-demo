@@ -22,7 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
@@ -109,11 +110,20 @@ public class ClientModelImpl implements ClientModel {
     }
 
     @Override
-    public void sendMessageToChat(String text) {
+    public void sendMessageToChat(String text, File photo) {
         if (selectedChat == null) {
             return;
         }
-        messageRepository.sendMessageToChat(text, getSelectedChat().getId());
+        if (photo == null) {
+            messageRepository.sendMessageToChat(text, getSelectedChat().getId(), null);
+        } else {
+            uploadPhoto(photo).thenAccept(photoId ->
+                    messageRepository.sendMessageToChat(text, getSelectedChat().getId(), photoId));
+        }
+    }
+
+    private CompletableFuture<String> uploadPhoto(File photo) {
+        return fileRepository.uploadPhoto(Path.of(photo.toString()));
     }
 
     @Override

@@ -158,7 +158,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
 
         String message = messageTextProperty.get();
         if (message.length() <= 250) {
-            model.sendMessageToChat(message);
+            model.sendMessageToChat(message, null);
         }
         else {
             int startIndex = 0;
@@ -169,7 +169,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
                     if (lastSpaceIndex != -1 && lastSpaceIndex > startIndex)
                         endIndex = lastSpaceIndex;
                 }
-                    model.sendMessageToChat(message.substring(startIndex, endIndex));
+                    model.sendMessageToChat(message.substring(startIndex, endIndex), null);
                 try {
                     TimeUnit.MILLISECONDS.sleep(50);
                 } catch (InterruptedException e) {

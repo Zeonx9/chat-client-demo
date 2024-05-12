@@ -18,7 +18,12 @@ public class FileApiImpl extends BaseRestApi implements FileApi {
     }
 
     @Override
-    public CompletableFuture<User> uploadFile(long userId, Path path) {
+    public CompletableFuture<User> uploadUserPhoto(long userId, Path path) {
         return handler.sendPostResource(String.format("/users/%d/profile_photo", userId), path, User.class);
+    }
+
+    @Override
+    public CompletableFuture<String> uploadPhoto(Path path) {
+        return handler.sendPostResource("/upload", path, String.class);
     }
 }

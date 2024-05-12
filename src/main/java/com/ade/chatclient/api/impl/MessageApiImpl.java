@@ -25,9 +25,13 @@ public class MessageApiImpl extends BaseRestApi implements MessageApi {
     }
 
     @Override
-    public void sendMessageToChat(String text, Long chatId, Long selfId) {
+    public void sendMessageToChat(String text, Long chatId, Long selfId, String attachment) {
+        String url = "/users/%d/chats/%d/message";
+        if (attachment != null) {
+            url += "?attachment=" + attachment;
+        }
         handler.sendPost(
-                String.format("/users/%d/chats/%d/message", selfId, chatId),
+                String.format(url, selfId, chatId),
                 Message.builder().text(text).dateTime(LocalDateTime.now()).build(),
                 Message.class, true
         );

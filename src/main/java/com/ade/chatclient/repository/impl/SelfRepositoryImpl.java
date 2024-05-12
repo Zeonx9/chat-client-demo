@@ -47,7 +47,7 @@ public class SelfRepositoryImpl implements SelfRepository {
 
     @Override
     public CompletableFuture<User> changeProfilePhoto(Path path) {
-        return fileApi.uploadFile(myself.getId(), path).thenApply(user -> {
+        return fileApi.uploadUserPhoto(myself.getId(), path).thenApply(user -> {
             myself = user;
             return user;
         });

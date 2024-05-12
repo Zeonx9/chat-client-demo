@@ -39,8 +39,8 @@ public class MessageRepositoryImpl implements MessageRepository {
     }
 
     @Override
-    public void sendMessageToChat(String text, Long chatId) {
-        messageApi.sendMessageToChat(text, chatId, selfId);
+    public void sendMessageToChat(String text, Long chatId, String attachment) {
+        messageApi.sendMessageToChat(text, chatId, selfId, attachment);
     }
 
     @Override

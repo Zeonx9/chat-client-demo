@@ -8,5 +8,5 @@ import java.util.concurrent.CompletableFuture;
 public interface MessageApi {
     CompletableFuture<List<Message>> fetchMessagesFromChatById(Long chaId, Long selfId);
 
-    void sendMessageToChat(String text, Long chatId, Long selfId);
+    void sendMessageToChat(String text, Long chatId, Long selfId, String attachment);
 }

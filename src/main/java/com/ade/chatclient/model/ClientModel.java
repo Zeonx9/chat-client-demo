@@ -70,7 +70,7 @@ public interface ClientModel {
      *
      * @param text текст сообщения
      */
-    void sendMessageToChat(String text);
+    void sendMessageToChat(String text, File photo);
 
     /**
      * Отправляет GET запрос на получение списка всех чатов авторизованного пользователя и уведомляет об изменениях через лисенер "gotChats"
