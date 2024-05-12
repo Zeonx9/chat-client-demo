@@ -4,6 +4,7 @@ import com.ade.chatclient.api.ChatApi;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.GroupRequest;
+import com.ade.chatclient.dtos.UnreadCounterDto;
 import com.ade.chatclient.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -24,15 +25,18 @@ public class ChatRepositoryImpl implements ChatRepository {
     @Override
     public CompletableFuture<List<Chat>> fetchChats() {
         if (chatById.isEmpty()) {
-            var futureCounters = chatApi.getListOfUnreadCounters(selfId);
-            return chatApi.fetchChatsOfUser(selfId).thenCombine(futureCounters, (chats, counters) -> {
-                orderedChats = chats;
-                chatById = chats.stream().collect(Collectors.toMap(Chat::getId, Function.identity()));
-                for (var counter : counters) {
-                    chatById.get(counter.getChatId()).setUnreadCount(counter.getCount());
-                }
-                return chats;
-            });
+            return chatApi.fetchChatsOfUser(selfId)
+                    .thenCompose(chats -> chatApi.getListOfUnreadCounters(selfId)
+                            .thenApply(counters -> {
+                                orderedChats = chats;
+                                chatById = chats.stream().collect(Collectors.toMap(Chat::getId, Function.identity()));
+                                for (UnreadCounterDto counter : counters) {
+                                    if (chatById.containsKey(counter.getChatId())) {
+                                        chatById.get(counter.getChatId()).setUnreadCount(counter.getCount());
+                                    }
+                                }
+                                return chats;
+                            }));
         } else {
             return CompletableFuture.completedFuture(orderedChats);
         }

@@ -60,6 +60,7 @@ public class ClientModelImpl implements ClientModel {
 
     @Override
     public void clearModel() {
+        stopWebSocketConnection();
         setSelectedChat(null);
         chatRepository.clearChats();
         usersRepository.clearUsers();
@@ -264,7 +265,7 @@ public class ClientModelImpl implements ClientModel {
     }
 
     private void acceptNewMessage(Message message) {
-        if (Objects.equals(message.getChatId(), getSelectedChat().getId())) {
+        if (getSelectedChat() != null && Objects.equals(message.getChatId(), getSelectedChat().getId())) {
             getSelectedChat().setLastMessage(message);
             changeSupport.firePropertyChange(ChatPageViewModel.NEW_MESSAGES_IN_SELECTED_EVENT, null, List.of(message));
             changeSupport.firePropertyChange(AllChatsViewModel.CHAT_RECEIVED_MESSAGES_EVENT, true, getSelectedChat());

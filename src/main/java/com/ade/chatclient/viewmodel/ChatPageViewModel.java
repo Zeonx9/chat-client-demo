@@ -60,8 +60,8 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     public ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
 
-        model.addListener("gotMessages", runLaterListener(this::fillMessageHistory));
-        model.addListener("newMessagesInSelected", runLaterListener(this::newSelectedMessages));
+        model.addListener(GOT_MESSAGES_EVENT, runLaterListener(this::fillMessageHistory));
+        model.addListener(NEW_MESSAGES_IN_SELECTED_EVENT, runLaterListener(this::newSelectedMessages));
     }
 
     /**
