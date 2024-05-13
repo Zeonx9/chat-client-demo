@@ -9,6 +9,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -21,6 +22,7 @@ public class UserListCellFactory extends ListCell<User> {
     @FXML private StackPane photoPane;
     @FXML private Label realNameLabel;
     @FXML private Label userNameLabel;
+    @FXML private Circle onlineStatus;
     private Function<String, CompletableFuture<Image>> imageRequest;
 
     public void init(Function<String, CompletableFuture<Image>> imageRequest) {
@@ -51,6 +53,12 @@ public class UserListCellFactory extends ListCell<User> {
                             Platform.runLater(() -> {
                                 photoPane.getChildren().clear();
                                 photoPane.getChildren().addAll(children);
+                                if (item.getIsOnline() != null && item.getIsOnline()) {
+                                    onlineStatus.setOpacity(100);
+                                }
+                                else {
+                                    onlineStatus.setOpacity(0);
+                                }
                                 setGraphic(layout);
                             });
                         });

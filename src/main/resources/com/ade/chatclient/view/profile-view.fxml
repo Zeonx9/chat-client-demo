@@ -3,10 +3,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="250.0" prefWidth="350.0" styleClass="switch-pane" stylesheets="@../styles/ChatPageViewStyleDark.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.ProfileView">
     <StackPane fx:id="photoPane" layoutX="90.0" layoutY="35.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="135.0" AnchorPane.topAnchor="10.0" />
+    <Circle fx:id="onlineStatus" fill="#3e46ff" layoutX="200.0" layoutY="82.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
     <Label fx:id="fullNameLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="147.0" layoutY="141.0" styleClass="fullName" text="Full Name" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0">
         <font>
           <Font size="14.0" />

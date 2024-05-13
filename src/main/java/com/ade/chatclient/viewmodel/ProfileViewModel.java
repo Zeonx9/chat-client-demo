@@ -6,6 +6,8 @@ import com.ade.chatclient.domain.User;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.view.components.UserPhoto;
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -30,6 +32,7 @@ public class ProfileViewModel extends AbstractChildViewModel<ClientModel> {
     private final StringProperty birthDateProperty = new SimpleStringProperty();
     private final StringProperty phoneNumberProperty = new SimpleStringProperty();
     private final StringProperty companyNameProperty = new SimpleStringProperty();
+    private final DoubleProperty opacityProperty = new SimpleDoubleProperty();
     private final ObservableList<Node> chatIconNodes = FXCollections.observableArrayList();
     @Setter
     private User user;
@@ -66,6 +69,12 @@ public class ProfileViewModel extends AbstractChildViewModel<ClientModel> {
                         log.info("set user Personal data {}: {}", user.getUsername(), user.getThumbnailPhotoId());
                         chatIconNodes.clear();
                         chatIconNodes.addAll(children);
+                        if (user.getIsOnline() != null && user.getIsOnline()) {
+                            opacityProperty.set(100);
+                        }
+                        else {
+                            opacityProperty.set(0);
+                        }
                         log.info("after set, pane children size: {}", chatIconNodes.size());
                     });
                 });
