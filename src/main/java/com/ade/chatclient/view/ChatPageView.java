@@ -79,6 +79,11 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         viewModel.sendMessage();
     }
 
+    @FXML
+    protected void onUploadPhotoButtonClicked() {
+        return;
+    }
+
     /**
      * Метод вызывает функцию смены Pane внутри placeHolder на окно со всеми чатами пользователя
      */

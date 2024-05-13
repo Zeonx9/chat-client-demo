@@ -4,6 +4,7 @@ import com.ade.chatclient.application.structure.AbstractDialogModel;
 import com.ade.chatclient.domain.EditProfileResult;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.view.components.UserPhoto;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -21,6 +22,7 @@ import lombok.Setter;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -65,7 +67,14 @@ public class EditProfileDialogModel extends AbstractDialogModel<EditProfileResul
         phoneNumberProperty.set(mySelf.getPhoneNumber());
 
         chatIconNodes.clear();
-        UserPhoto.setPaneContent(chatIconNodes, mySelf, 40, imageRequest);
+        Objects.requireNonNull(UserPhoto.getPaneContent(mySelf, 40, imageRequest))
+                .thenAccept(children -> {
+                    Platform.runLater(() -> {
+                        chatIconNodes.clear();
+                        chatIconNodes.addAll(children);
+                    });
+                });
+//        UserPhoto.setPaneContent(chatIconNodes, mySelf, 40, imageRequest);
     }
 
     public void openFileChooser() {

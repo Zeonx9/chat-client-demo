@@ -415,3 +415,18 @@
     -fx-font-size: 14;
     -fx-text-fill: #FFFFFF;
 }
+
+.addPhotoBtn {
+    -fx-background-image: url("../img/add_photo_btn_blue.png");
+    -fx-background-color: transparent;
+}
+
+.addPhotoBtn:hover {
+    -fx-background-image: url("../img/add_photo_btn_dark.png");
+    -fx-background-color: transparent;
+}
+
+.addPhotoBtn:focused {
+    -fx-background-image: url("../img/add_photo_btn_dark.png");
+    -fx-background-color: transparent;
+}

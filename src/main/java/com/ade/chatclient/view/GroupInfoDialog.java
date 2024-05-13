@@ -6,6 +6,7 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.GroupChatInfo;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.view.components.UserPhoto;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -14,6 +15,7 @@ import javafx.scene.layout.StackPane;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -41,7 +43,13 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogMo
         listMembers.getItems().setAll(chat.getMembers());
         listMembers.setCellFactory(param -> viewModel.getUserListCellFactory());
 
-        UserPhoto.setPaneContent(photoPane.getChildren(), chat, null, 40, viewModel.getImageRequest());
+        Objects.requireNonNull(UserPhoto.getPaneContent(chat, null, 40, viewModel.getImageRequest()))
+                .thenAccept(children -> {
+                    Platform.runLater(() -> {
+                        photoPane.getChildren().clear();
+                        photoPane.getChildren().addAll(children);
+                    });
+                });
     }
 
     public void setImageRequest(Function<String, CompletableFuture<Image>> imageRequest) {

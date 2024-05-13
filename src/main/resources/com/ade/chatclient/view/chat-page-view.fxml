@@ -31,10 +31,14 @@
         <AnchorPane fx:id="messageField">
             <TextField fx:id="messageTextField" minWidth="350.0" prefHeight="30.0" prefWidth="350.0" promptText="Write a message . . ." styleClass="messageInput" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                 <padding>
-                    <Insets left="20.0" right="30.0" />
+                    <Insets left="40.0" right="30.0" />
                 </padding>
             </TextField>
             <Button fx:id="sendButton" focusTraversable="false" mnemonicParsing="false" onAction="#onSendButtonClicked" prefHeight="24.0" prefWidth="24.0" styleClass="sendMessageBtn" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="3.0" />
+         <Button fx:id="uploadPhotoButton" focusTraversable="false" layoutX="37.0" layoutY="3.0" maxHeight="24.0" mnemonicParsing="false" onAction="#onUploadPhotoButtonClicked" prefHeight="24.0" prefWidth="24.0" styleClass="addPhotoBtn" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="3.0">
+            <font>
+               <Font size="7.0" />
+            </font></Button>
         </AnchorPane>
     </VBox>
 

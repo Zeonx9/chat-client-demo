@@ -7,10 +7,14 @@
 
 <AnchorPane fx:id="layout" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.cellfactory.MessageListCellFactory">
    <VBox fx:id="wrapper" styleClass="messageLayout">
-       <AnchorPane fx:id="messagePane" styleClass="messagePane">
+       <VBox fx:id="messagePane" styleClass="messagePane">
+<!--         <ImageView fx:id="photoPane" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />-->
            <Label fx:id="messageText" maxWidth="350.0" styleClass="messageText" text="Label" wrapText="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-       </AnchorPane>
-      <Label fx:id="dataText" layoutY="13.0" styleClass="dataText" text="Label" style="-fx-font-size: 10">
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+       </VBox>
+      <Label fx:id="dataText" layoutY="13.0" style="-fx-font-size: 10" styleClass="dataText" text="Label">
          <VBox.margin>
             <Insets bottom="10.0" top="5.0" />
          </VBox.margin>

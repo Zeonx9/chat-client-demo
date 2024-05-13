@@ -7,12 +7,16 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import lombok.RequiredArgsConstructor;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * Фабрика ячеек списка сообщений, предназначена для генерации и настройки ячеек в ListView, определяет, как они будут выглядеть для дальнейшей автоматической генерации
@@ -20,13 +24,16 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class MessageListCellFactory extends ListCell<Message> {
     private Long selfId;
+    private Function<String, CompletableFuture<Image>> request;
     @FXML private VBox wrapper;
     @FXML private AnchorPane layout;
-    @FXML private AnchorPane messagePane;
+    @FXML private VBox messagePane;
+    @FXML private ImageView photoPane;
     @FXML private Label messageText;
     @FXML private Label dataText;
-    public void init(Long selfId) {
+    public void init(Long selfId, Function<String, CompletableFuture<Image>> imageRequest) {
         this.selfId = selfId;
+        this.request = imageRequest;
     }
 
     /**
@@ -68,6 +75,24 @@ public class MessageListCellFactory extends ListCell<Message> {
                 messageText.setStyle("-fx-text-fill: #FFFFFF");
             }
         }
+
+        if (item.getAttachmentId() != null) {
+            CompletableFuture<Image> future = request.apply(item.getAttachmentId());
+            future.thenAccept(image -> {
+                ImageView imageView = new ImageView(image);
+                imageView.setFitWidth(200);
+                imageView.setFitHeight(200);
+
+                messagePane.getChildren().clear();
+                messagePane.getChildren().add(imageView);
+                messagePane.getChildren().add(messageText);
+            });
+        }
+        else {
+            messagePane.getChildren().clear();
+            messagePane.getChildren().add(messageText);
+        }
+
         setGraphic(layout);
     }
 

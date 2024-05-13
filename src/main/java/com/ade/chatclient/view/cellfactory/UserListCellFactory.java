@@ -2,6 +2,7 @@ package com.ade.chatclient.view.cellfactory;
 
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.view.components.UserPhoto;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -44,10 +45,17 @@ public class UserListCellFactory extends ListCell<User> {
         realNameLabel.setText(prepareUserToBeShown(item));
         userNameLabel.setText(item.getUsername());
 
-        UserPhoto.setPaneContent(photoPane.getChildren(), item, 20, imageRequest);
+        photoPane.getChildren().clear();
+        UserPhoto.getPaneContent(item, 20, imageRequest)
+                        .thenAccept(children -> {
+                            Platform.runLater(() -> {
+                                photoPane.getChildren().clear();
+                                photoPane.getChildren().addAll(children);
+                                setGraphic(layout);
+                            });
+                        });
 
         setGraphic(layout);
-
     }
 
 

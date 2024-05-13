@@ -15,6 +15,7 @@ import com.ade.chatclient.view.GroupInfoDialog;
 import com.ade.chatclient.view.UserInfoDialog;
 import com.ade.chatclient.view.cellfactory.MessageListCellFactory;
 import com.ade.chatclient.view.components.UserPhoto;
+import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -112,7 +113,14 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
                 selectedChatInfoProperty.setValue(members.size() + " members");
             }
 
-            UserPhoto.setPaneContent(chatIconNodes, model.getSelectedChat(), model.getMyself().getId(), 20, model::getPhotoById);
+            chatIconNodes.clear();
+            Objects.requireNonNull(UserPhoto.getPaneContent(model.getSelectedChat(), model.getMyself().getId(), 20, model::getPhotoById))
+                    .thenAccept(children -> {
+                        Platform.runLater(() -> {
+                            chatIconNodes.clear();
+                            chatIconNodes.addAll(children);
+                        });
+                    });
         }
     }
 
@@ -155,6 +163,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
      * Метод осуществляет переключение на вью с личным кабинетом пользователя
      */
     public void openProfilePane() {
+        viewHandler.getViewModelProvider().createProfileViewModel().setUser(model.getMyself());
         paneSwitcher.switchTo(Views.USER_SETTINGS_VIEW);
     }
 
@@ -211,7 +220,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
                 MessageListCellFactory.class,
                 "message-list-cell-factory.fxml"
         );
-        factory.init(model.getMyself().getId());
+        factory.init(model.getMyself().getId(), model::getPhotoById);
         return factory;
     }
 
@@ -223,7 +232,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
             List<User> members = model.getSelectedChat().getMembers();
             for (User user: members)
                 if (!user.equals(model.getMyself()))
-                    viewHandler.getViewModelProvider().getProfileViewModel().setUser(user);
+                    viewHandler.getViewModelProvider().createProfileViewModel().setUser(user);
 
             UserInfoDialog userInfoDialog = UserInfoDialog.getInstance();
             userInfoDialog.setProfilePane(viewHandler);

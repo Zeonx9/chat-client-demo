@@ -6,7 +6,9 @@ import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ProfileView extends AbstractView<ProfileViewModel> {
     @FXML private Label fullNameLabel;
     @FXML private Label loginLabel;

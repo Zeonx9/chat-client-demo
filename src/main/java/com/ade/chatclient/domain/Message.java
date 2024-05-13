@@ -19,6 +19,7 @@ public class Message {
     private User author;
     private Long chatId;
     private Boolean isAuxiliary;
+    private String attachmentId;
 
     @Override
     public boolean equals(Object o) {

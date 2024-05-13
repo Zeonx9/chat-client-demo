@@ -3,6 +3,7 @@ package com.ade.chatclient.view.cellfactory;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.view.components.UserPhoto;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -57,8 +58,6 @@ public class ChatListCellFactory extends ListCell<Chat> {
         lastMsgLabel.setText(prepareLastMessage(item));
         lastMessageDateLabel.setText(prepareLastMessageDate(item));
 
-        UserPhoto.setPaneContent(photoPane.getChildren(), item, selfId, 20, imageRequest);
-
         if (item.getUnreadCount() != 0) {
             countUnreadMessages.setText(String.valueOf(item.getUnreadCount()));
             countUnreadMessages.setStyle("-fx-background-color: #3E46FF");
@@ -67,6 +66,16 @@ public class ChatListCellFactory extends ListCell<Chat> {
             countUnreadMessages.setText("");
             countUnreadMessages.setStyle("-fx-background-color: transparent");
         }
+
+        photoPane.getChildren().clear();
+        Objects.requireNonNull(UserPhoto.getPaneContent(item, selfId, 20, imageRequest))
+                .thenAccept(children -> {
+                    Platform.runLater(() -> {
+                        photoPane.getChildren().clear();
+                        photoPane.getChildren().addAll(children);
+                        setGraphic(layout);
+                    });
+                });
 
         setGraphic(layout);
     }

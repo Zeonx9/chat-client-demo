@@ -2,8 +2,6 @@ package com.ade.chatclient.view.components;
 
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -21,31 +19,59 @@ import java.util.function.Function;
 @Slf4j
 public class UserPhoto {
 
-    public static void setPaneContent(ObservableList<Node> pane, Chat chat, Long selfId, int size, Function<String, CompletableFuture<Image>> imageRequest) {
+//    public static void setPaneContent(ObservableList<Node> pane, Chat chat, Long selfId, int size, Function<String, CompletableFuture<Image>> imageRequest) {
+//        if (ifIconPresent(chat)) {
+//            chat.getMembers().forEach(member -> {
+//                if (!Objects.equals(member.getId(), selfId))
+//                    UserPhoto.setPaneContent(pane, member, size, imageRequest);
+//            });
+//        }
+//        else {
+//            Circle circle = new Circle(size, Color.rgb(145, 145, 145));
+//            Label label = new Label(prepareInitialsToBeShown(chat, selfId));
+//            label.setStyle("-fx-text-fill: #FFFFFF");
+//            pane.clear();
+//            pane.addAll(circle, label);
+//        }
+//    }
+
+    public static CompletableFuture<List<Node>> getPaneContent(Chat chat, Long selfId, int size, Function<String, CompletableFuture<Image>> imageRequest) {
         if (ifIconPresent(chat)) {
-            chat.getMembers().forEach(member -> {
+            for (User member : chat.getMembers()) {
                 if (!Objects.equals(member.getId(), selfId))
-                    UserPhoto.setPaneContent(pane, member, size, imageRequest);
-            });
+                    return getPaneContent(member, size, imageRequest);
+            }
         }
         else {
             Circle circle = new Circle(size, Color.rgb(145, 145, 145));
             Label label = new Label(prepareInitialsToBeShown(chat, selfId));
             label.setStyle("-fx-text-fill: #FFFFFF");
-            pane.addAll(circle, label);
+
+            List<Node> nodeList = new ArrayList<>();
+            nodeList.add(circle);
+            nodeList.add(label);
+
+            return CompletableFuture.completedFuture(nodeList);
         }
+        return null;
     }
 
-    public static void setPaneContent(ObservableList<Node> pane, User user, int size, Function<String, CompletableFuture<Image>> imageRequest) {
+    public static CompletableFuture<List<Node>> getPaneContent(User user, int size, Function<String, CompletableFuture<Image>> imageRequest) {
         if (!ifIconPresent(user)) {
             Circle circle = new Circle(size, Color.rgb(145, 145, 145));
             Label label = new Label(prepareInitialsToBeShown(user));
             label.setStyle("-fx-text-fill: #FFFFFF");
-            pane.addAll(circle, label);
+
+            List<Node> nodeList = new ArrayList<>();
+            nodeList.add(circle);
+            nodeList.add(label);
+
+            return CompletableFuture.completedFuture(nodeList);
         } else {
+
             CompletableFuture<Image> future = imageRequest.apply(user.getThumbnailPhotoId());
-            future.thenAccept(image -> {
-//                log.info("got image with id = " + user.getThumbnailPhotoId());
+
+            return future.thenApply(image -> {
                 ImageView imageView = new ImageView(image);
                 imageView.setFitWidth(size * 2);
                 imageView.setFitHeight(size * 2);
@@ -53,10 +79,14 @@ public class UserPhoto {
                 circle.setCenterX(size);
                 circle.setCenterY(size);
                 imageView.setClip(circle);
-                Platform.runLater(() -> pane.addAll(imageView));
+
+                List<Node> nodeList = new ArrayList<>();
+                nodeList.add(imageView);
+                return nodeList;
             });
         }
     }
+
 
     private static boolean ifIconPresent(User user) {
         return user.getThumbnailPhotoId() != null;
