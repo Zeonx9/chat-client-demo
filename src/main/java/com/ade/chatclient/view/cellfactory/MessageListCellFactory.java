@@ -50,50 +50,79 @@ public class MessageListCellFactory extends ListCell<Message> {
             return;
         }
 
-        Settings settings = SettingsManager.getSettings();
+        if (item.getIsAuxiliary() != null && item.getIsAuxiliary()) {
+            messageText.setText(prepareMessageToBeShown(item));
+            dataText.setText("");
 
-        messageText.setText(prepareMessageToBeShown(item));
-        dataText.setText(prepareMessageDataToBeShown(item));
+            AnchorPane.clearConstraints(wrapper);
 
-        AnchorPane.clearConstraints(wrapper);
-
-        if (item.getAuthor().getId().equals(selfId)) {
-            AnchorPane.setRightAnchor(wrapper, 0.0);
-            wrapper.setAlignment(Pos.CENTER_RIGHT);
-            messagePane.setStyle("-fx-background-color: #3E46FF");
+            messagePane.setStyle("-fx-background-color: #212229");
             messageText.setStyle("-fx-text-fill: #FFFFFF");
-        }
-        else {
-            AnchorPane.setLeftAnchor(wrapper, 0.0);
-            wrapper.setAlignment(Pos.CENTER_LEFT);
-            if (Objects.equals(settings.getTheme(), "Light")) {
-                messagePane.setStyle("-fx-background-color: #FFFFFF");
-                messageText.setStyle("-fx-text-fill: #212229");
-            }
-            else {
-                messagePane.setStyle("-fx-background-color: #212229");
-                messageText.setStyle("-fx-text-fill: #FFFFFF");
-            }
-        }
+            messageText.setAlignment(Pos.CENTER);
 
-        if (item.getAttachmentId() != null) {
-            CompletableFuture<Image> future = request.apply(item.getAttachmentId());
-            future.thenAccept(image -> {
-                ImageView imageView = new ImageView(image);
-                imageView.setFitWidth(200);
-                imageView.setFitHeight(200);
-
-                messagePane.getChildren().clear();
-                messagePane.getChildren().add(imageView);
-                messagePane.getChildren().add(messageText);
-            });
-        }
-        else {
             messagePane.getChildren().clear();
             messagePane.getChildren().add(messageText);
-        }
+            messagePane.setAlignment(Pos.CENTER);
+            VBox wrapper1 = new VBox(wrapper);
+            wrapper.setMaxWidth(300);
+            wrapper1.setAlignment(Pos.CENTER);
 
-        setGraphic(layout);
+            setGraphic(wrapper1);
+        }
+        else {
+            Settings settings = SettingsManager.getSettings();
+
+            messageText.setText(prepareMessageToBeShown(item));
+            dataText.setText(prepareMessageDataToBeShown(item));
+
+            AnchorPane.clearConstraints(wrapper);
+
+            if (item.getAuthor().getId().equals(selfId)) {
+                AnchorPane.setRightAnchor(wrapper, 0.0);
+                wrapper.setAlignment(Pos.CENTER_RIGHT);
+                messagePane.setStyle("-fx-background-color: #3E46FF");
+                messageText.setStyle("-fx-text-fill: #FFFFFF");
+            } else {
+                AnchorPane.setLeftAnchor(wrapper, 0.0);
+                wrapper.setAlignment(Pos.CENTER_LEFT);
+                if (Objects.equals(settings.getTheme(), "Light")) {
+                    messagePane.setStyle("-fx-background-color: #FFFFFF");
+                    messageText.setStyle("-fx-text-fill: #212229");
+                } else {
+                    messagePane.setStyle("-fx-background-color: #212229");
+                    messageText.setStyle("-fx-text-fill: #FFFFFF");
+                }
+            }
+
+            if (item.getAttachmentId() != null) {
+                CompletableFuture<Image> future = request.apply(item.getAttachmentId());
+                future.thenAccept(image -> {
+                    ImageView imageView = new ImageView(image);
+
+                    double oldWidth = image.getWidth();
+                    double oldHeight = image.getHeight();
+
+                    double ratioX = (double) 350 / oldWidth;
+                    double ratioY = (double) 500 / oldHeight;
+                    double ratio = Math.min(ratioX, ratioY);
+
+                    int newWidthInt = (int) (oldWidth * ratio);
+                    int newHeightInt = (int) (oldHeight * ratio);
+
+                    imageView.setFitWidth(newWidthInt);
+                    imageView.setFitHeight(newHeightInt);
+
+                    messagePane.getChildren().clear();
+                    messagePane.getChildren().add(imageView);
+                    messagePane.getChildren().add(messageText);
+                });
+            } else {
+                messagePane.getChildren().clear();
+                messagePane.getChildren().add(messageText);
+            }
+
+            setGraphic(layout);
+        }
     }
 
     /**

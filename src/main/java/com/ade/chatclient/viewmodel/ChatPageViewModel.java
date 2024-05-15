@@ -23,9 +23,11 @@ import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import lombok.Getter;
 
 import java.beans.PropertyChangeEvent;
+import java.io.File;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -52,8 +54,10 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final StringProperty selectedChatNameProperty = new SimpleStringProperty();
     private final StringProperty selectedChatInfoProperty = new SimpleStringProperty();
     private final StringProperty openViewNameProperty = new SimpleStringProperty();
+    private final DoubleProperty fileUploadStatusProperty = new SimpleDoubleProperty(0);
     private BottomScroller<Message> scroller;
     private PaneSwitcher paneSwitcher;
+    private File file = null;
 
     public static final String GOT_MESSAGES_EVENT = "gotMessages";
     public static final String NEW_MESSAGES_IN_SELECTED_EVENT = "newMessagesInSelected";
@@ -177,7 +181,9 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
 
         String message = messageTextProperty.get();
         if (message.length() <= 250) {
-            model.sendMessageToChat(message, null);
+            model.sendMessageToChat(message, file);
+            file = null;
+            fileUploadStatusProperty.set(0);
         }
         else {
             int startIndex = 0;
@@ -188,7 +194,10 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
                     if (lastSpaceIndex != -1 && lastSpaceIndex > startIndex)
                         endIndex = lastSpaceIndex;
                 }
-                    model.sendMessageToChat(message.substring(startIndex, endIndex), null);
+
+                model.sendMessageToChat(message.substring(startIndex, endIndex), file);
+                file = null;
+                fileUploadStatusProperty.set(0);
                 try {
                     TimeUnit.MILLISECONDS.sleep(50);
                 } catch (InterruptedException e) {
@@ -258,4 +267,17 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         Optional<GroupRequest> answer = dialog.showAndWait();
         answer.ifPresent(model::createGroupChat);
     }
+
+    public void openFileChooser() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Выберите изображение");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Изображения (*.png, *.jpg, *.jpeg)", "*.png", "*.jpg", "*.jpeg");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showOpenDialog(null);
+        if (file != null) {
+            this.file = file;
+            fileUploadStatusProperty.set(100);
+        }
+    }
+
 }

@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
 import lombok.Getter;
 
 /**
@@ -34,6 +35,7 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
     @FXML private Button sendButton;
     @FXML private StackPane photoPane;
     @FXML private AnchorPane infoArea;
+    @FXML private Circle attachmentStatus;
     @Getter
     @FXML private Pane placeHolder;
 
@@ -66,6 +68,8 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
         infoArea.opacityProperty().bind(viewModel.getInfoAreaOpacityProperty());
         infoArea.disableProperty().bind(viewModel.getInfoAreaDisableProperty());
 
+        attachmentStatus.opacityProperty().bind(viewModel.getFileUploadStatusProperty());
+
         Bindings.bindContentBidirectional(photoPane.getChildren(), viewModel.getChatIconNodes());
 
         viewModel.openChatPane();
@@ -81,7 +85,7 @@ public class ChatPageView extends AbstractView<ChatPageViewModel> {
 
     @FXML
     protected void onUploadPhotoButtonClicked() {
-        return;
+        viewModel.openFileChooser();
     }
 
     /**

@@ -20,8 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.io.File;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -46,16 +44,16 @@ public class EditProfileDialogModel extends AbstractDialogModel<EditProfileResul
             return null;
         }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate birthDate = birthdayProperty.getValue() != null ?
-                LocalDate.parse(birthdayProperty.getValue(), formatter) : null;
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+//        LocalDate birthDate = birthdayProperty.getValue() != null ?
+//                LocalDate.parse(birthdayProperty.getValue(), formatter) : null;
 
         User updatedUser = User.builder()
                 .realName(firstNameProperty.getValue())
                 .surname(surnameProperty.getValue())
                 .patronymic(patronymicProperty.getValue())
-                .phoneNumber(phoneNumberProperty.getValue())
-                .dateOfBirth(birthDate).build();
+                .phoneNumber(phoneNumberProperty.getValue()).build();
+//                .dateOfBirth(birthDate).build();
 
         return EditProfileResult.builder().user(updatedUser).file(file).build();
     }

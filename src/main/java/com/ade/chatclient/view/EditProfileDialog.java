@@ -14,7 +14,7 @@ public class EditProfileDialog extends AbstractDialog<EditProfileResult, EditPro
     @FXML private TextField surnameTextField;
     @FXML private TextField patronymicTextField;
     @FXML private TextField phoneNumberTextField;
-    @FXML private TextField birthdayTextField;
+//    @FXML private TextField birthdayTextField;
     @FXML private StackPane photoPane;
 
     public static EditProfileDialog getInstance(User user) {
@@ -27,7 +27,7 @@ public class EditProfileDialog extends AbstractDialog<EditProfileResult, EditPro
         surnameTextField.textProperty().bindBidirectional(viewModel.getSurnameProperty());
         patronymicTextField.textProperty().bindBidirectional(viewModel.getPatronymicProperty());
         phoneNumberTextField.textProperty().bindBidirectional(viewModel.getPhoneNumberProperty());
-        birthdayTextField.textProperty().bindBidirectional(viewModel.getBirthdayProperty());
+//        birthdayTextField.textProperty().bindBidirectional(viewModel.getBirthdayProperty());
         Bindings.bindContentBidirectional(photoPane.getChildren(), viewModel.getChatIconNodes());
 
         viewModel.setUserPersonalData();
