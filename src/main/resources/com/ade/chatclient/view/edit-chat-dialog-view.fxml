@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane fx:id="dialogPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" styleClass="switch-pane" stylesheets="@../styles/ChatPageViewStyleDark.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.EditChatDialog">
+   <content>
+       <AnchorPane maxHeight="200.0" prefHeight="300.0" prefWidth="300.0">
+           <Label alignment="CENTER" styleClass="header" text="Edit profile" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
+           <StackPane fx:id="photoPane" layoutX="50.0" layoutY="20.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="40.0" />
+           <Button focusTraversable="false" layoutX="170.0" layoutY="96.0" mnemonicParsing="false" onAction="#onChangePhotoClicked" prefHeight="40.0" prefWidth="40.0" styleClass="showPhotoBtn" AnchorPane.rightAnchor="90.0" AnchorPane.topAnchor="85.0" />
+           <Label layoutX="41.0" layoutY="173.0" styleClass="loginText" text="Enter new chat name" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="140.0" />
+           <TextField fx:id="firstNameTextField" layoutX="30.0" layoutY="177.0" prefHeight="40.0" prefWidth="220.0" styleClass="textInput" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="165.0" />
+           <Button layoutX="30.0" layoutY="117.0" maxWidth="100.0" mnemonicParsing="false" onAction="#onOkClicked" prefHeight="30.0" prefWidth="100.0" styleClass="simpleButton" text="Edit chat" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="230.0" />
+       </AnchorPane>
+   </content>
+    <ButtonType fx:constant="CLOSE" />
+</DialogPane>

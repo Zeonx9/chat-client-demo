@@ -1,8 +1,9 @@
 package com.ade.chatclient.viewmodel;
 
 import com.ade.chatclient.application.structure.AbstractDialogModel;
-import com.ade.chatclient.domain.EditProfileResult;
-import com.ade.chatclient.domain.User;
+import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.domain.EditChatResult;
+import com.ade.chatclient.dtos.ChangeGroupName;
 import com.ade.chatclient.view.components.UserPhoto;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -26,41 +27,32 @@ import java.util.function.Function;
 
 @Getter
 @RequiredArgsConstructor
-public class EditProfileDialogModel extends AbstractDialogModel<EditProfileResult> {
+public class EditChatDialogModel extends AbstractDialogModel<EditChatResult> {
     private final ObservableList<Node> chatIconNodes = FXCollections.observableArrayList();
-    private final StringProperty firstNameProperty = new SimpleStringProperty();
-    private final StringProperty surnameProperty = new SimpleStringProperty();
-    private final StringProperty patronymicProperty = new SimpleStringProperty();
-    private final StringProperty phoneNumberProperty = new SimpleStringProperty();
-    private final StringProperty birthdayProperty = new SimpleStringProperty();
+    private final StringProperty chatNameProperty = new SimpleStringProperty();
     private final Function<String, CompletableFuture<Image>> imageRequest;
-    @Setter
-    private static User mySelf = new User();
     private File file;
+    @Setter
+    private static Long mySelfId;
+    @Setter
+    private static Chat currentChat;
 
     @Override
-    public EditProfileResult resultConverter(ButtonType buttonType) {
+    public EditChatResult resultConverter(ButtonType buttonType) {
         if (buttonType != ButtonType.OK) {
             return null;
         }
 
-        User updatedUser = User.builder()
-                .realName(firstNameProperty.getValue())
-                .surname(surnameProperty.getValue())
-                .patronymic(patronymicProperty.getValue())
-                .phoneNumber(phoneNumberProperty.getValue()).build();
+        ChangeGroupName changeGroupName = new ChangeGroupName(chatNameProperty.getValue());
 
-        return EditProfileResult.builder().user(updatedUser).file(file).build();
+        return EditChatResult.builder().chatId(currentChat.getId())
+                .changeGroupName(changeGroupName).file(file).build();
     }
 
-    public void setUserPersonalData() {
-        firstNameProperty.set(mySelf.getRealName());
-        surnameProperty.set(mySelf.getSurname());
-        patronymicProperty.set(mySelf.getPatronymic());
-        phoneNumberProperty.set(mySelf.getPhoneNumber());
-
+    public void setChatData() {
+        chatNameProperty.set(currentChat.getChatName(mySelfId));
         chatIconNodes.clear();
-        Objects.requireNonNull(UserPhoto.getPaneContent(mySelf, 40, imageRequest))
+        Objects.requireNonNull(UserPhoto.getPaneContent(currentChat, mySelfId, 40, imageRequest))
                 .thenAccept(children -> {
                     Platform.runLater(() -> {
                         chatIconNodes.clear();
@@ -91,6 +83,4 @@ public class EditProfileDialogModel extends AbstractDialogModel<EditProfileResul
             chatIconNodes.add(imageView);
         }
     }
-
-
 }

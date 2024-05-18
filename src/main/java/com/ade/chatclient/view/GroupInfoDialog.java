@@ -1,11 +1,11 @@
 package com.ade.chatclient.view;
 
 import com.ade.chatclient.application.structure.AbstractDialog;
-import com.ade.chatclient.application.structure.EmptyDialogModel;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.GroupChatInfo;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.view.components.UserPhoto;
+import com.ade.chatclient.viewmodel.GroupInfoDialogModel;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -24,7 +24,7 @@ import java.util.function.Function;
  */
 @Setter
 @Getter
-public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogModel<GroupChatInfo>> {
+public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, GroupInfoDialogModel> {
     @FXML private Label systemMessage;
     @FXML private Label countMembers;
     @FXML private Label groupName;
@@ -57,9 +57,7 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogMo
     }
 
     public static GroupInfoDialog getInstance(){
-        GroupInfoDialog instance = AbstractDialog.getInstance(GroupInfoDialog.class, "group-info-dialog-view.fxml", "CellFactoryStyle");
-        instance.init(new EmptyDialogModel<>());
-        return instance;
+        return AbstractDialog.getInstance(GroupInfoDialog.class, "group-info-dialog-view.fxml", "CellFactoryStyle");
     }
 
     @Override
@@ -72,7 +70,7 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, EmptyDialogMo
 
     @FXML private void onAddUsersButtonClicked() {systemMessage.setText("This function is not available now");}
 
-    @FXML private void onEditGroupButtonClicked() {systemMessage.setText("This function is not available now");}
+    @FXML private void onEditGroupButtonClicked() {viewModel.showEditGroupDialogAndWait();}
 
     @FXML private void onLeaveGroupButtonClicked() {systemMessage.setText("This function is not available now");}
 }
