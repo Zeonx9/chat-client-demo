@@ -62,9 +62,9 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, GroupInfoDial
         return "Group info";
     }
 
-    @FXML private void onAddUsersButtonClicked() {systemMessage.setText("This function is not available now");}
+    @FXML private void onAddUsersButtonClicked() {viewModel.showAddUserToChatDialogAndWait();}
 
     @FXML private void onEditGroupButtonClicked() {viewModel.showEditGroupDialogAndWait();}
 
-    @FXML private void onLeaveGroupButtonClicked() {systemMessage.setText("This function is not available now");}
+    @FXML private void onLeaveGroupButtonClicked() {viewModel.leaveGroup();}
 }

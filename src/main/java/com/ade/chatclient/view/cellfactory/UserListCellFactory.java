@@ -4,14 +4,17 @@ import com.ade.chatclient.domain.User;
 import com.ade.chatclient.view.components.UserPhoto;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
+import lombok.Getter;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -24,9 +27,17 @@ public class UserListCellFactory extends ListCell<User> {
     @FXML private Label userNameLabel;
     @FXML private Circle onlineStatus;
     private Function<String, CompletableFuture<Image>> imageRequest;
+    private Consumer<Long> onDeleteUserClick;
+    @Getter
+    @FXML public Button deleteButton;
 
     public void init(Function<String, CompletableFuture<Image>> imageRequest) {
         this.imageRequest = imageRequest;
+//        this.isGroupMembers = isGroupMembers;
+    }
+
+    public void addOnDeleteListener(Consumer<Long> onDeleteUserClick) {
+        this.onDeleteUserClick = onDeleteUserClick;
     }
 
     /**
@@ -43,6 +54,8 @@ public class UserListCellFactory extends ListCell<User> {
             setGraphic(null);
             return;
         }
+
+        setId(String.valueOf(item.getId()));
 
         realNameLabel.setText(prepareUserToBeShown(item));
         userNameLabel.setText(item.getUsername());
@@ -62,6 +75,15 @@ public class UserListCellFactory extends ListCell<User> {
                                 setGraphic(layout);
                             });
                         });
+
+        if (onDeleteUserClick != null) {
+            deleteButton.setOpacity(100);
+            deleteButton.setOnMouseClicked(event -> {
+                onDeleteUserClick.accept(item.getId());
+            });
+        } else {
+            deleteButton.setOpacity(0);
+        }
 
         setGraphic(layout);
     }

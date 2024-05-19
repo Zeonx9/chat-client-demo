@@ -9,4 +9,5 @@
     <Circle fx:id="onlineStatus" fill="#3e46ff" layoutX="54.0" layoutY="38.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
     <Label fx:id="realNameLabel" layoutX="60.0" layoutY="15.0" styleClass="realNameLabel" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="7.0" />
     <Label fx:id="userNameLabel" layoutY="37.4" styleClass="userNameLabel" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="80.0" />
+    <Button fx:id="deleteButton" focusTraversable="false" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="deleteUserBtn" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="90.0" AnchorPane.topAnchor="10.0" />
 </AnchorPane>
