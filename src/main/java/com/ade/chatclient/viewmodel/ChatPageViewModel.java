@@ -250,8 +250,8 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         else {
             GroupInfoDialog dialog = GroupInfoDialog.getInstance();
             dialog.init(new GroupInfoDialogModel(model));
-            dialog.setChat(model.getSelectedChat());
             dialog.setImageRequest(model::getPhotoById);
+            dialog.setChat(model.getSelectedChat());
             dialog.showAndWait();
         }
     }

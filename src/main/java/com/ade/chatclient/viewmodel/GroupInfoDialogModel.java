@@ -48,8 +48,12 @@ public class GroupInfoDialogModel extends AbstractDialogModel<GroupChatInfo> {
         dialog.init(new EditChatDialogModel(model::getPhotoById));
 
         Optional<EditChatResult> answer = dialog.showAndWait();
-        //TODO
-        // answer.ifPresent(model::тут_функция_для_изменения_инфы_о_чате);
-        // ответ я даю вот такой: EditChatResult
+
+        answer.ifPresent(result -> {
+            model.editGroupName(result.getChangeGroupName().getGroupName());
+            //TODO answer.ifPresent(model::тут_функция_для_изменения_фото), ответ я даю вот такой: EditChatResult
+        });
+
+
     }
 }

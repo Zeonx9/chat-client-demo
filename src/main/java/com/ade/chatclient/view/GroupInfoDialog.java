@@ -44,12 +44,10 @@ public class GroupInfoDialog extends AbstractDialog<GroupChatInfo, GroupInfoDial
         listMembers.setCellFactory(param -> viewModel.getUserListCellFactory());
 
         Objects.requireNonNull(UserPhoto.getPaneContent(chat, null, 40, viewModel.getImageRequest()))
-                .thenAccept(children -> {
-                    Platform.runLater(() -> {
-                        photoPane.getChildren().clear();
-                        photoPane.getChildren().addAll(children);
-                    });
-                });
+                .thenAccept(children -> Platform.runLater(() -> {
+                    photoPane.getChildren().clear();
+                    photoPane.getChildren().addAll(children);
+                }));
     }
 
     public void setImageRequest(Function<String, CompletableFuture<Image>> imageRequest) {

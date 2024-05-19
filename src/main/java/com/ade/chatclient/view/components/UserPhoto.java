@@ -19,39 +19,42 @@ import java.util.function.Function;
 @Slf4j
 public class UserPhoto {
 
-//    public static void setPaneContent(ObservableList<Node> pane, Chat chat, Long selfId, int size, Function<String, CompletableFuture<Image>> imageRequest) {
-//        if (ifIconPresent(chat)) {
-//            chat.getMembers().forEach(member -> {
-//                if (!Objects.equals(member.getId(), selfId))
-//                    UserPhoto.setPaneContent(pane, member, size, imageRequest);
-//            });
-//        }
-//        else {
-//            Circle circle = new Circle(size, Color.rgb(145, 145, 145));
-//            Label label = new Label(prepareInitialsToBeShown(chat, selfId));
-//            label.setStyle("-fx-text-fill: #FFFFFF");
-//            pane.clear();
-//            pane.addAll(circle, label);
-//        }
-//    }
-
     public static CompletableFuture<List<Node>> getPaneContent(Chat chat, Long selfId, int size, Function<String, CompletableFuture<Image>> imageRequest) {
-        if (ifIconPresent(chat)) {
+        if (chat.getIsPrivate()) {
             for (User member : chat.getMembers()) {
                 if (!Objects.equals(member.getId(), selfId))
                     return getPaneContent(member, size, imageRequest);
             }
         }
         else {
-            Circle circle = new Circle(size, Color.rgb(145, 145, 145));
-            Label label = new Label(prepareInitialsToBeShown(chat, selfId));
-            label.setStyle("-fx-text-fill: #FFFFFF");
+            if (chat.getGroup().getGroupPhotoId() != null) {
+                CompletableFuture<Image> future = imageRequest.apply(chat.getGroup().getGroupPhotoId());
 
-            List<Node> nodeList = new ArrayList<>();
-            nodeList.add(circle);
-            nodeList.add(label);
+                return future.thenApply(image -> {
+                    ImageView imageView = new ImageView(image);
+                    imageView.setFitWidth(size * 2);
+                    imageView.setFitHeight(size * 2);
+                    Circle circle = new Circle(size);
+                    circle.setCenterX(size);
+                    circle.setCenterY(size);
+                    imageView.setClip(circle);
 
-            return CompletableFuture.completedFuture(nodeList);
+                    List<Node> nodeList = new ArrayList<>();
+                    nodeList.add(imageView);
+                    return nodeList;
+                });
+            }
+            else {
+                Circle circle = new Circle(size, Color.rgb(145, 145, 145));
+                Label label = new Label(prepareInitialsToBeShown(chat, selfId));
+                label.setStyle("-fx-text-fill: #FFFFFF");
+
+                List<Node> nodeList = new ArrayList<>();
+                nodeList.add(circle);
+                nodeList.add(label);
+
+                return CompletableFuture.completedFuture(nodeList);
+            }
         }
         return null;
     }
