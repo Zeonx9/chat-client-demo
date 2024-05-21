@@ -13,6 +13,10 @@ public interface ChatApi {
 
     CompletableFuture<Chat> editGroupName(long chatId, ChangeGroupName changeGroupName);
 
+    CompletableFuture<Chat> addUser(long chatId, long userId);
+
+    CompletableFuture<Chat> removeUser(long chatId, long userId);
+
     void createNewGroupChat(GroupRequest groupRequest);
 
     CompletableFuture<Chat> createNewPrivateChat(Long selfId, Long userId);

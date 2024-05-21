@@ -295,4 +295,20 @@ public class ClientModelImpl implements ClientModel {
                 );
     }
 
+    @Override
+    public void addUserToGroupChat(long userId) {
+        chatRepository.addUser(selectedChat.getId(), userId).thenApply(chat -> {
+            changeSupport.firePropertyChange(GroupInfoDialogModel.NEW_GROUP_CHAT_INFO, null, chat);
+            return chat;
+        });
+    }
+
+    @Override
+    public void removeUserFromGroupChat(long userId) {
+        chatRepository.removeUser(selectedChat.getId(), userId).thenApply(chat -> {
+            changeSupport.firePropertyChange(GroupInfoDialogModel.NEW_GROUP_CHAT_INFO, null, chat);
+            return chat;
+        });
+    }
+
 }

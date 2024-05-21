@@ -25,10 +25,13 @@ import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.beans.PropertyChangeEvent;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+
+import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
 
 @Getter
 public class GroupInfoDialogModel extends AbstractDialogModel<GroupChatInfo> {
@@ -42,9 +45,18 @@ public class GroupInfoDialogModel extends AbstractDialogModel<GroupChatInfo> {
     private final ClientModel model;
     private User creator = null;
 
+    public static final String NEW_GROUP_CHAT_INFO = "newGroupChatInfo";
+
     public GroupInfoDialogModel(ClientModel model) {
         super();
         this.model = model;
+        model.addListener(NEW_GROUP_CHAT_INFO, runLaterListener(this::addUserToChatListener));
+    }
+
+    private void addUserToChatListener(PropertyChangeEvent event) {
+        @SuppressWarnings("unchecked")
+        Chat newChat = (Chat) event.getNewValue();
+        setChat(newChat);
     }
 
     @Override
@@ -77,7 +89,7 @@ public class GroupInfoDialogModel extends AbstractDialogModel<GroupChatInfo> {
         if (Objects.equals(creator.getId(), model.getMyself().getId())) {
             factory.addOnDeleteListener(userId -> {
                 System.out.println("DELETE: clicked user with id = " + userId);
-                //TODO тут удалить пользователя
+                model.removeUserFromGroupChat(userId);
             });
         }
         return factory;
@@ -96,7 +108,7 @@ public class GroupInfoDialogModel extends AbstractDialogModel<GroupChatInfo> {
     }
 
     public void leaveGroup() {
-        //TODO запрос на выход из группы (модель сюда прокинута, так что можно получить майселф)
+        model.removeUserFromGroupChat(model.getMyself().getId());
     }
 
     public void showAddUserToChatDialogAndWait() {
@@ -107,7 +119,7 @@ public class GroupInfoDialogModel extends AbstractDialogModel<GroupChatInfo> {
 
         Optional<User> answer = dialog.showAndWait();
         answer.ifPresent(user -> {
-            //TODO тут запрос на добавление пользователя
+            model.addUserToGroupChat(user.getId());
             System.out.println("Add user with id:" + user.getId());
         });
     }

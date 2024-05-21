@@ -145,4 +145,8 @@ public interface ClientModel {
     CompletableFuture<Image> getPhotoById(String photoId);
 
     void editGroupName(String chatName);
+
+    void addUserToGroupChat(long userId);
+
+    void removeUserFromGroupChat(long userId);
 }
