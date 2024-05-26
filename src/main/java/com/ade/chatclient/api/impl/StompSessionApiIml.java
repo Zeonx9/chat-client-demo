@@ -87,7 +87,7 @@ public class StompSessionApiIml implements StompSessionApi {
         Consumer<Message> handler = (message) -> {
             log.info(
                     "message received: msg=[text='{}', authorId={}, time={}]",
-                    message.getText(), message.getAuthor().getId(), message.getDateTime()
+                    message.getText(), message.getAuthor() != null ? message.getAuthor().getId() : null, message.getDateTime()
             );
             messageConsumer.accept(message);
         };

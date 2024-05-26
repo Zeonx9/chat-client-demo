@@ -106,12 +106,41 @@ public class ChatRepositoryImpl implements ChatRepository {
         });
     }
 
+    @Override
+    public CompletableFuture<Chat> addUser(long chatId, long userId) {
+        return chatApi.addUser(chatId, userId).thenApply(chat -> {
+            updateGroupChatInfo(chatId, chat);
+            return chat;
+        });
+    }
+
+    @Override
+    public CompletableFuture<Chat> removeUser(long chatId, long userId) {
+        return chatApi.removeUser(chatId, userId).thenApply(chat ->{
+            updateGroupChatInfo(chatId, chat);
+            return chat;
+        });
+    }
+
+
     private void updateGroupChatInfo(long chatId, Chat newChat) {
         chatById.get(chatId).setGroup(newChat.getGroup());
         orderedChats.forEach(chat -> {
             if (chat.getId() == chatId) {
                 chat.setGroup(newChat.getGroup());
+                chat.setMembers(newChat.getMembers());
             }
         });
+    }
+
+    @Override
+    public void updateOnlineForChatMembers(long userId, boolean connect) {
+        for (Chat chat : orderedChats) {
+           chat.getMembers().forEach(member -> {
+               if (member.getId() == userId){
+                   member.setIsOnline(connect);
+               }
+           });
+        }
     }
 }

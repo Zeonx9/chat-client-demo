@@ -34,6 +34,24 @@ public class ChatApiImpl extends BaseRestApi implements ChatApi {
     }
 
     @Override
+    public CompletableFuture<Chat> addUser(long chatId, long userId) {
+        return handler.sendPut(
+                String.format("/chats/%d/new_member/%d", chatId, userId),
+                null,
+                Chat.class
+        );
+    }
+
+    @Override
+    public CompletableFuture<Chat> removeUser(long chatId, long userId) {
+        return handler.sendPut(
+                String.format("/chats/%d/delete_member/%d", chatId, userId),
+                null,
+                Chat.class
+        );
+    }
+
+    @Override
     public void createNewGroupChat(GroupRequest groupRequest) {
         handler.sendPost(
                 "/group_chat",

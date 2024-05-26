@@ -5,6 +5,7 @@ import com.ade.chatclient.application.structure.AbstractChildViewModel;
 import com.ade.chatclient.application.util.ListViewSelector;
 import com.ade.chatclient.application.util.ViewModelUtils;
 import com.ade.chatclient.domain.Chat;
+import com.ade.chatclient.dtos.ConnectEvent;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.view.cellfactory.ChatListCellFactory;
 import javafx.beans.property.ListProperty;
@@ -17,9 +18,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.beans.PropertyChangeEvent;
+import java.util.Objects;
 
-import static com.ade.chatclient.application.util.ViewModelUtils.listReplacer;
-import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
+import static com.ade.chatclient.application.util.ViewModelUtils.*;
 
 /**
  * Класс, который связывает model с AllChatsView.
@@ -42,6 +43,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     public static final String NEW_CHAT_CREATED_EVENT = "NewChatCreated";
     public static final String SELECTED_CHAT_MODIFIED_EVENT = "selectedChatModified";
     public static final String CHAT_RECEIVED_MESSAGES_EVENT = "chatReceivedMessages";
+    public static final String UPDATE_MEMBERS_ONLINE = "UpdateMembersOnline";
 
     public AllChatsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
@@ -51,6 +53,7 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         model.addListener(NEW_CHAT_CREATED_EVENT, runLaterListener(this::newChatCreated));
         model.addListener(SELECTED_CHAT_MODIFIED_EVENT, runLaterListener(this::selectedChatModified));
         model.addListener(CHAT_RECEIVED_MESSAGES_EVENT, runLaterListener(this::raiseChat));
+        model.addListener(UPDATE_MEMBERS_ONLINE, runLaterListener(this::updateUsersOnline));
     }
 
 
@@ -86,6 +89,22 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
             chatListProperty.add(0, chat);
             selected = chat;
             selector.select(0);
+        }
+    }
+
+    private void updateUsersOnline(PropertyChangeEvent event) {
+        synchronized (chatListProperty) {
+            ConnectEvent connectEvent = (ConnectEvent) event.getNewValue();
+            for (int i = 0; i < chatListProperty.getSize(); i++) {
+                int finalI = i;
+                chatListProperty.get(i).getMembers().forEach(member -> {
+                    if (Objects.equals(member.getId(), connectEvent.getUserId())){
+                        member.setIsOnline(connectEvent.getConnect());
+                        chatListProperty.set(finalI, chatListProperty.get(finalI));
+                    }
+                });
+
+            }
         }
     }
 
