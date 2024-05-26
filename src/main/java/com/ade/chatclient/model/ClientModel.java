@@ -142,6 +142,8 @@ public interface ClientModel {
 
     void uploadUserProfilePhoto(File photo);
 
+    void uploadGroupChatPhoto(File photo);
+
     CompletableFuture<Image> getPhotoById(String photoId);
 
     void editGroupName(String chatName);

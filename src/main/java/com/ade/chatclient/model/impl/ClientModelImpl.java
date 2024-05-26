@@ -251,6 +251,17 @@ public class ClientModelImpl implements ClientModel {
     }
 
     @Override
+    public void uploadGroupChatPhoto(File photo) {
+        chatRepository.editGroupChatPhoto(selectedChat.getId(), Path.of(photo.toString()))
+                .thenAccept(chat -> {
+                            changeSupport.firePropertyChange(AllChatsViewModel.UPDATE_CHAT_INFO, null, chat);
+                            changeSupport.firePropertyChange(ChatPageViewModel.GROUP_PHOTO, null, chat);
+                            changeSupport.firePropertyChange(GroupInfoDialogModel.NEW_GROUP_CHAT_INFO, null, chat);
+                        }
+                );
+    }
+
+    @Override
     public CompletableFuture<Image> getPhotoById(String photoId) {
         return fileRepository.getFile(photoId).thenApply(bytes -> new Image(new ByteArrayInputStream(bytes)));
     }
@@ -297,10 +308,13 @@ public class ClientModelImpl implements ClientModel {
     @Override
     public void editGroupName(String chatName) {
         chatRepository.editGroupName(selectedChat.getId(), ChangeGroupName.builder().groupName(chatName).build())
-                .thenAccept(chat -> changeSupport.firePropertyChange(
-                        ChatPageViewModel.GROUP_CHAT_NAME_UPDATE,
-                        null,
-                        chat.getGroup().getName())
+                .thenAccept(chat -> {
+                    changeSupport.firePropertyChange(AllChatsViewModel.UPDATE_CHAT_INFO, null, chat);
+                    changeSupport.firePropertyChange(
+                                    ChatPageViewModel.GROUP_CHAT_NAME_UPDATE,
+                                    null,
+                                    chat.getGroup().getName());
+                        }
                 );
     }
 
