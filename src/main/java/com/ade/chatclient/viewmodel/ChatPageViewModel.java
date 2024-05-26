@@ -183,11 +183,11 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
      * Метод отправляет введенное пользователем сообщение, если оно длинное, то делит его на части
      */
     public void sendMessage() {
-        if (Objects.equals(messageTextProperty.getValue(), null) || messageTextProperty.get().isBlank()) {
+        if ((Objects.equals(messageTextProperty.getValue(), null) || messageTextProperty.get().isBlank()) && file == null) {
             return;
         }
 
-        String message = messageTextProperty.get();
+        String message = (messageTextProperty.get() != null) ? messageTextProperty.get() : "";
         if (message.length() <= 250) {
             model.sendMessageToChat(message, file);
             file = null;
