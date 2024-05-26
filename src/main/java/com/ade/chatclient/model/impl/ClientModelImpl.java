@@ -280,7 +280,7 @@ public class ClientModelImpl implements ClientModel {
             chatRepository.moveChatUp(getSelectedChat());
         } else {
             Chat chatOfMessage = chatRepository.getChatById(message.getChatId());
-            chatOfMessage.incrementUnreadCount();
+            if (message.getAuthor() != null) chatOfMessage.incrementUnreadCount();
             chatOfMessage.setLastMessage(message);
             changeSupport.firePropertyChange(AllChatsViewModel.CHAT_RECEIVED_MESSAGES_EVENT, false, chatOfMessage);
             chatRepository.moveChatUp(chatOfMessage);
