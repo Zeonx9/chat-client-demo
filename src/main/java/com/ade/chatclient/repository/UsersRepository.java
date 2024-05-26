@@ -13,4 +13,6 @@ public interface UsersRepository extends Searchable<User> {
     void clearUsers();
 
     List<User> getUsers();
+
+    User updateOnlineStatus(long userId, boolean connect);
 }

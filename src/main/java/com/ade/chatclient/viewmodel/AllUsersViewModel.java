@@ -13,6 +13,9 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
 import lombok.Getter;
 
+import java.beans.PropertyChangeEvent;
+import java.util.Objects;
+
 import static com.ade.chatclient.application.util.ViewModelUtils.listReplacer;
 import static com.ade.chatclient.application.util.ViewModelUtils.runLaterListener;
 import static com.ade.chatclient.application.Views.ALL_CHATS_VIEW;
@@ -26,10 +29,24 @@ public class AllUsersViewModel extends AbstractChildViewModel<ClientModel> {
     private final ListProperty<User> usersListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     public static final String ALL_USERS_EVENT = "AllUsers";
+    public static final String UPDATE_USER_ONLINE = "UpdateUserOnline";
     public AllUsersViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
         //заменяет значение usersListProperty новым значением (лист юзеров)
         model.addListener(ALL_USERS_EVENT, runLaterListener(listReplacer(usersListProperty)));
+        model.addListener(UPDATE_USER_ONLINE,  runLaterListener(this::updateUserOnline));
+    }
+
+    private void updateUserOnline(PropertyChangeEvent event) {
+        synchronized (usersListProperty) {
+            User user = (User) event.getNewValue();
+            for (int i = 0; i < usersListProperty.getSize(); i++) {
+                if (Objects.equals(usersListProperty.get(i).getId(), user.getId())) {
+                    usersListProperty.set(i, user);
+                    return;
+                }
+            }
+        }
     }
 
     /**

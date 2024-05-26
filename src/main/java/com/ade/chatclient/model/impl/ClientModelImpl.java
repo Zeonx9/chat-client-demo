@@ -282,6 +282,15 @@ public class ClientModelImpl implements ClientModel {
     }
 
     private void acceptNewConnectEvent(ConnectEvent event) {
+        if (Objects.equals(event.getUserId(), getMyself().getId())) {
+            return;
+        }
+        changeSupport.firePropertyChange(AllUsersViewModel.UPDATE_USER_ONLINE,
+                null,
+                usersRepository.updateOnlineStatus(event.getUserId(), event.getConnect()));
+
+        chatRepository.updateOnlineForChatMembers(event.getUserId(), event.getConnect());
+        changeSupport.firePropertyChange(AllChatsViewModel.UPDATE_MEMBERS_ONLINE, null, event);
 
     }
 

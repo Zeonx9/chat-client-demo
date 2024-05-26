@@ -31,4 +31,6 @@ public interface ChatRepository extends Searchable<Chat>{
     CompletableFuture<Chat> addUser(long chatId, long userId);
 
     CompletableFuture<Chat> removeUser(long chatId, long userId);
+
+    void updateOnlineForChatMembers(long userId, boolean connect);
 }

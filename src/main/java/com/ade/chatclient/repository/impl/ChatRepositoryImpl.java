@@ -132,4 +132,15 @@ public class ChatRepositoryImpl implements ChatRepository {
             }
         });
     }
+
+    @Override
+    public void updateOnlineForChatMembers(long userId, boolean connect) {
+        for (Chat chat : orderedChats) {
+           chat.getMembers().forEach(member -> {
+               if (member.getId() == userId){
+                   member.setIsOnline(connect);
+               }
+           });
+        }
+    }
 }
