@@ -59,37 +59,43 @@ public class UserPhoto {
         return null;
     }
 
-    public static CompletableFuture<List<Node>> getPaneContent(User user, int size, Function<String, CompletableFuture<Image>> imageRequest) {
+    public static CompletableFuture<List<Node>> getPaneContent(
+            User user,
+            int size,
+            Function<String, CompletableFuture<Image>> imageRequest
+    ) {
         if (!ifIconPresent(user)) {
-            Circle circle = new Circle(size, Color.rgb(145, 145, 145));
-            Label label = new Label(prepareInitialsToBeShown(user));
-            label.setStyle("-fx-text-fill: #FFFFFF");
-
-            List<Node> nodeList = new ArrayList<>();
-            nodeList.add(circle);
-            nodeList.add(label);
-
-            return CompletableFuture.completedFuture(nodeList);
+            return CompletableFuture.completedFuture(generateUserTextThumbnail(user, size));
         } else {
-
             CompletableFuture<Image> future = imageRequest.apply(user.getThumbnailPhotoId());
-
-            return future.thenApply(image -> {
-                ImageView imageView = new ImageView(image);
-                imageView.setFitWidth(size * 2);
-                imageView.setFitHeight(size * 2);
-                Circle circle = new Circle(size);
-                circle.setCenterX(size);
-                circle.setCenterY(size);
-                imageView.setClip(circle);
-
-                List<Node> nodeList = new ArrayList<>();
-                nodeList.add(imageView);
-                return nodeList;
-            });
+            return future.thenApply(image -> generateUserThumbnail(image, size));
         }
     }
 
+    private static List<Node> generateUserTextThumbnail(User user, Integer size) {
+        Circle circle = new Circle(size, Color.rgb(145, 145, 145));
+        Label label = new Label(prepareInitialsToBeShown(user));
+        label.setStyle("-fx-text-fill: #FFFFFF");
+
+        List<Node> nodeList = new ArrayList<>();
+        nodeList.add(circle);
+        nodeList.add(label);
+        return nodeList;
+    }
+
+    private static List<Node> generateUserThumbnail(Image image, Integer size) {
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(size * 2);
+        imageView.setFitHeight(size * 2);
+        Circle circle = new Circle(size);
+        circle.setCenterX(size);
+        circle.setCenterY(size);
+        imageView.setClip(circle);
+
+        List<Node> nodeList = new ArrayList<>();
+        nodeList.add(imageView);
+        return nodeList;
+    }
 
     private static boolean ifIconPresent(User user) {
         return user.getThumbnailPhotoId() != null;

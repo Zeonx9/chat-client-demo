@@ -66,12 +66,7 @@ public class UserListCellFactory extends ListCell<User> {
                             Platform.runLater(() -> {
                                 photoPane.getChildren().clear();
                                 photoPane.getChildren().addAll(children);
-                                if (item.getIsOnline() != null && item.getIsOnline()) {
-                                    onlineStatus.setOpacity(100);
-                                }
-                                else {
-                                    onlineStatus.setOpacity(0);
-                                }
+                                setOnlineStatus(item);
                                 setGraphic(layout);
                             });
                         });
@@ -98,5 +93,12 @@ public class UserListCellFactory extends ListCell<User> {
         return user.getRealName() + " " + user.getSurname();
     }
 
-
+    private void setOnlineStatus(User item) {
+        if (item.getIsOnline() != null && item.getIsOnline()) {
+            onlineStatus.setOpacity(100);
+        }
+        else {
+            onlineStatus.setOpacity(0);
+        }
+    }
 }

@@ -72,25 +72,27 @@ public class EditProfileDialogModel extends AbstractDialogModel<EditProfileResul
     public void openFileChooser() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Выберите изображение");
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Изображения (*.png, *.jpg, *.jpeg)", "*.png", "*.jpg", "*.jpeg");
+        FileChooser.ExtensionFilter extFilter = new FileChooser
+                .ExtensionFilter("Изображения (*.png, *.jpg, *.jpeg)", "*.png", "*.jpg", "*.jpeg");
         fileChooser.getExtensionFilters().add(extFilter);
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
             this.file = file;
 
-            Image image = new Image(file.toURI().toString());
-            ImageView imageView = new ImageView(image);
-            imageView.setFitWidth(40 * 2);
-            imageView.setFitHeight(40 * 2);
-            Circle circle = new Circle(40);
-            circle.setCenterX(40);
-            circle.setCenterY(40);
-            imageView.setClip(circle);
-
             chatIconNodes.clear();
-            chatIconNodes.add(imageView);
+            chatIconNodes.add(prepareImageToShow(new Image(file.toURI().toString())));
         }
     }
 
+    private ImageView prepareImageToShow(Image image) {
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(40 * 2);
+        imageView.setFitHeight(40 * 2);
+        Circle circle = new Circle(40);
+        circle.setCenterX(40);
+        circle.setCenterY(40);
+        imageView.setClip(circle);
+        return imageView;
+    }
 
 }

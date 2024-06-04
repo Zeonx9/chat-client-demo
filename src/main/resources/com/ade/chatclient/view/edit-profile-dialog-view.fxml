@@ -3,24 +3,34 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane fx:id="dialogPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="300.0" styleClass="switch-pane" stylesheets="@../styles/ChatPageViewStyleDark.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.EditProfileDialog">
+<DialogPane fx:id="dialogPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="300.0"
+            styleClass="switch-pane" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@../styles/ChatPageViewStyleDark.css"
+            fx:controller="com.ade.chatclient.view.EditProfileDialog">
    <content>
        <AnchorPane prefHeight="400.0" prefWidth="300.0">
-           <Label alignment="CENTER" styleClass="header" text="Edit profile" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
-           <StackPane fx:id="photoPane" layoutX="50.0" layoutY="20.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="40.0" />
-           <Button focusTraversable="false" layoutX="121.0" layoutY="5.0" mnemonicParsing="false" onAction="#onChangePhotoClicked" prefHeight="40.0" prefWidth="40.0" styleClass="showPhotoBtn" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="100.0" />
+           <Label alignment="CENTER" styleClass="header" text="Edit profile"
+                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
+           <StackPane fx:id="photoPane" layoutX="50.0" layoutY="20.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="80.0"
+                      AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="40.0" />
+           <Button focusTraversable="false" layoutX="121.0" layoutY="5.0" mnemonicParsing="false" onAction="#onChangePhotoClicked" prefHeight="40.0"
+                   prefWidth="40.0" styleClass="showPhotoBtn" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="100.0" />
            <Label layoutX="41.0" layoutY="173.0" styleClass="loginText" text="Your first name" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="140.0" />
            <TextField fx:id="firstNameTextField" layoutX="30.0" layoutY="177.0" prefHeight="40.0" prefWidth="220.0" styleClass="textInput" AnchorPane.topAnchor="165.0" />
            <Label layoutX="30.0" layoutY="231.0" styleClass="loginText" text="Your surname" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="215.0" />
            <TextField fx:id="surnameTextField" layoutX="30.0" layoutY="260.0" prefHeight="40.0" prefWidth="220.0" styleClass="textInput" AnchorPane.topAnchor="240.0" />
            <Label layoutX="30.0" layoutY="312.0" styleClass="loginText" text="Your patronymic" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="290.0" />
-           <TextField fx:id="patronymicTextField" layoutX="30.0" layoutY="330.0" prefHeight="40.0" prefWidth="220.0" styleClass="textInput" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="315.0" />
+           <TextField fx:id="patronymicTextField" layoutX="30.0" layoutY="330.0" prefHeight="40.0" prefWidth="220.0" styleClass="textInput"
+                      AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="315.0" />
            <Label layoutX="40.0" layoutY="310.0" styleClass="loginText" text="Your phone number" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="365.0" />
-           <TextField fx:id="phoneNumberTextField" layoutX="40.0" layoutY="335.0" prefHeight="40.0" prefWidth="220.0" styleClass="textInput" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="390.0" />
-<!--           <Label layoutX="40.0" layoutY="385.0" styleClass="loginText" text="Your birthday" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="440.0" />-->
-<!--           <TextField fx:id="birthdayTextField" layoutX="40.0" layoutY="410.0" prefHeight="40.0" prefWidth="220.0" styleClass="textInput" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="465.0" />-->
-           <Button layoutX="123.0" layoutY="533.0" maxWidth="200.0" mnemonicParsing="false" onAction="#onOkClicked" prefHeight="30.0" prefWidth="200.0" styleClass="simpleButton" text="Edit profile" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="530.0" />
+           <TextField fx:id="phoneNumberTextField" layoutX="40.0" layoutY="335.0" prefHeight="40.0" prefWidth="220.0" styleClass="textInput"
+                      AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="390.0" />
+           <Button layoutX="123.0" layoutY="533.0" maxWidth="200.0" mnemonicParsing="false" onAction="#onOkClicked" prefHeight="30.0" prefWidth="200.0"
+                   styleClass="simpleButton" text="Edit profile" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="530.0" />
        </AnchorPane>
    </content>
     <ButtonType fx:constant="CLOSE" />
 </DialogPane>
+
+
+
