@@ -44,6 +44,8 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
     public static final String SELECTED_CHAT_MODIFIED_EVENT = "selectedChatModified";
     public static final String CHAT_RECEIVED_MESSAGES_EVENT = "chatReceivedMessages";
     public static final String UPDATE_MEMBERS_ONLINE = "UpdateMembersOnline";
+    public static final String UPDATE_CHAT_INFO = "updateChatInfo";
+    public static final String REMOVE_CHAT = "removeChat";
 
     public AllChatsViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
@@ -54,9 +56,18 @@ public class AllChatsViewModel extends AbstractChildViewModel<ClientModel> {
         model.addListener(SELECTED_CHAT_MODIFIED_EVENT, runLaterListener(this::selectedChatModified));
         model.addListener(CHAT_RECEIVED_MESSAGES_EVENT, runLaterListener(this::raiseChat));
         model.addListener(UPDATE_MEMBERS_ONLINE, runLaterListener(this::updateUsersOnline));
+        model.addListener(UPDATE_CHAT_INFO, runLaterListener(this::updateChatInfo));
     }
 
+    private void updateChatInfo(PropertyChangeEvent event) {
+        synchronized (chatListProperty) {
+            Chat chat = (Chat) event.getNewValue();
+            int index = chatListProperty.indexOf(chat);
+            chatListProperty.set(index, chat);
+        }
 
+    }
+    
     /**
      * Перемещает чат в начало списка чатов. Если этот чат не открыт в данный момент, то воспроизводит звук уведомления.
      * Если в чет пришло новое сообщения, а он в это момент не открыт, то счетчик новых сообщений увеличится

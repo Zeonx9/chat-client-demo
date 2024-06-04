@@ -16,7 +16,7 @@ public class RepositoryFactory {
 
     public ChatRepository provideChatRepository() {
         if (chatRepository == null) {
-            chatRepository = new ChatRepositoryImpl(apiFactory.provideChatApi());
+            chatRepository = new ChatRepositoryImpl(apiFactory.provideChatApi(), apiFactory.provideFileApi());
         }
         return chatRepository;
     }

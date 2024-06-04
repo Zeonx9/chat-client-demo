@@ -102,8 +102,8 @@ public class GroupInfoDialogModel extends AbstractDialogModel<GroupChatInfo> {
         Optional<EditChatResult> answer = dialog.showAndWait();
 
         answer.ifPresent(result -> {
-            model.editGroupName(result.getChangeGroupName().getGroupName());
-            //TODO answer.ifPresent(model::тут_функция_для_изменения_фото), ответ я даю вот такой: EditChatResult
+            if (result.getChangeGroupName() != null) model.editGroupName(result.getChangeGroupName().getGroupName());
+            if (result.getFile() != null) model.uploadGroupChatPhoto(result.getFile());
         });
     }
 

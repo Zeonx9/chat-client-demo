@@ -2,6 +2,7 @@ package com.ade.chatclient.api.impl;
 
 import com.ade.chatclient.api.FileApi;
 import com.ade.chatclient.application.AsyncRequestHandler;
+import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
 
 import java.nio.file.Path;
@@ -26,4 +27,11 @@ public class FileApiImpl extends BaseRestApi implements FileApi {
     public CompletableFuture<String> uploadPhoto(Path path) {
         return handler.sendPostResource("/upload", path, String.class);
     }
+
+
+    @Override
+    public CompletableFuture<Chat> uploadGroupChatPhoto(long chatId, Path path) {
+        return handler.sendPostResource(String.format("/chats/%d/group_photo", chatId), path, Chat.class);
+    }
+
 }
