@@ -2,13 +2,16 @@ package com.ade.chatclient.view.cellfactory;
 
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
+import com.ade.chatclient.domain.User;
 import com.ade.chatclient.view.components.UserPhoto;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,6 +34,7 @@ public class ChatListCellFactory extends ListCell<Chat> {
     @FXML private Label lastMsgLabel;
     @FXML private Label lastMessageDateLabel;
     @FXML private Label countUnreadMessages;
+    @FXML private Circle onlineStatus;
     private Function<String, CompletableFuture<Image>> imageRequest;
 
     public void init(Long selfId, Function<String, CompletableFuture<Image>> imageRequest) {
@@ -57,8 +61,6 @@ public class ChatListCellFactory extends ListCell<Chat> {
         lastMsgLabel.setText(prepareLastMessage(item));
         lastMessageDateLabel.setText(prepareLastMessageDate(item));
 
-        UserPhoto.setPaneContent(photoPane.getChildren(), item, selfId, 20, imageRequest);
-
         if (item.getUnreadCount() != 0) {
             countUnreadMessages.setText(String.valueOf(item.getUnreadCount()));
             countUnreadMessages.setStyle("-fx-background-color: #3E46FF");
@@ -67,6 +69,30 @@ public class ChatListCellFactory extends ListCell<Chat> {
             countUnreadMessages.setText("");
             countUnreadMessages.setStyle("-fx-background-color: transparent");
         }
+
+        photoPane.getChildren().clear();
+        Objects.requireNonNull(UserPhoto.getPaneContent(item, selfId, 20, imageRequest))
+                .thenAccept(children -> {
+                    Platform.runLater(() -> {
+                        photoPane.getChildren().clear();
+                        photoPane.getChildren().addAll(children);
+                        if (item.getIsPrivate()) {
+                            for (User member : item.getMembers()) {
+                                if (!Objects.equals(member.getId(), selfId))
+                                    if (member.getIsOnline() != null && member.getIsOnline()) {
+                                        onlineStatus.setOpacity(100);
+                                    }
+                                    else {
+                                        onlineStatus.setOpacity(0);
+                                    }
+                             }
+                        }
+                        else {
+                            onlineStatus.setOpacity(0);
+                        }
+                        setGraphic(layout);
+                    });
+                });
 
         setGraphic(layout);
     }

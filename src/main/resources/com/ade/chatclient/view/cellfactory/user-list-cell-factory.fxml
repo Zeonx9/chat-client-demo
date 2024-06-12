@@ -2,9 +2,12 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 
-<AnchorPane fx:id="layout" maxHeight="50.0" maxWidth="350.0" minHeight="50.0" minWidth="350.0" prefHeight="50.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.cellfactory.UserListCellFactory">
+<AnchorPane fx:id="layout" maxHeight="50.0" maxWidth="350.0" minHeight="50.0" minWidth="350.0" prefHeight="50.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.cellfactory.UserListCellFactory">
     <StackPane fx:id="photoPane" prefHeight="36.0" prefWidth="36.0" styleClass="photoPane" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="7.0" />
-    <Label fx:id="realNameLabel" styleClass="realNameLabel" layoutX="60.0" layoutY="15.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="7.0" />
-    <Label fx:id="userNameLabel" styleClass="userNameLabel" layoutY="37.4"  AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="80.0" />
+    <Circle fx:id="onlineStatus" fill="#3e46ff" layoutX="54.0" layoutY="38.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+    <Label fx:id="realNameLabel" layoutX="60.0" layoutY="15.0" styleClass="realNameLabel" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="7.0" />
+    <Label fx:id="userNameLabel" layoutY="37.4" styleClass="userNameLabel" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="80.0" />
+    <Button fx:id="deleteButton" focusTraversable="false" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="deleteUserBtn" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="90.0" AnchorPane.topAnchor="10.0" />
 </AnchorPane>

@@ -7,10 +7,7 @@ import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Company;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
-import com.ade.chatclient.dtos.ChangePasswordRequest;
-import com.ade.chatclient.dtos.ConnectEvent;
-import com.ade.chatclient.dtos.GroupRequest;
-import com.ade.chatclient.dtos.ReadNotification;
+import com.ade.chatclient.dtos.*;
 import com.ade.chatclient.model.ClientModel;
 import com.ade.chatclient.repository.*;
 import com.ade.chatclient.viewmodel.*;
@@ -22,7 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
@@ -59,6 +57,7 @@ public class ClientModelImpl implements ClientModel {
 
     @Override
     public void clearModel() {
+        stopWebSocketConnection();
         setSelectedChat(null);
         chatRepository.clearChats();
         usersRepository.clearUsers();
@@ -109,11 +108,20 @@ public class ClientModelImpl implements ClientModel {
     }
 
     @Override
-    public void sendMessageToChat(String text) {
+    public void sendMessageToChat(String text, File photo) {
         if (selectedChat == null) {
             return;
         }
-        messageRepository.sendMessageToChat(text, getSelectedChat().getId());
+        if (photo == null) {
+            messageRepository.sendMessageToChat(text, getSelectedChat().getId(), null);
+        } else {
+            uploadPhoto(photo).thenAccept(photoId ->
+                    messageRepository.sendMessageToChat(text, getSelectedChat().getId(), photoId));
+        }
+    }
+
+    private CompletableFuture<String> uploadPhoto(File photo) {
+        return fileRepository.uploadPhoto(Path.of(photo.toString()));
     }
 
     @Override
@@ -243,6 +251,17 @@ public class ClientModelImpl implements ClientModel {
     }
 
     @Override
+    public void uploadGroupChatPhoto(File photo) {
+        chatRepository.editGroupChatPhoto(selectedChat.getId(), Path.of(photo.toString()))
+                .thenAccept(chat -> {
+                            changeSupport.firePropertyChange(AllChatsViewModel.UPDATE_CHAT_INFO, null, chat);
+                            changeSupport.firePropertyChange(ChatPageViewModel.GROUP_PHOTO, null, chat);
+                            changeSupport.firePropertyChange(GroupInfoDialogModel.NEW_GROUP_CHAT_INFO, null, chat);
+                        }
+                );
+    }
+
+    @Override
     public CompletableFuture<Image> getPhotoById(String photoId) {
         return fileRepository.getFile(photoId).thenApply(bytes -> new Image(new ByteArrayInputStream(bytes)));
     }
@@ -254,14 +273,14 @@ public class ClientModelImpl implements ClientModel {
     }
 
     private void acceptNewMessage(Message message) {
-        if (Objects.equals(message.getChatId(), getSelectedChat().getId())) {
+        if (getSelectedChat() != null && Objects.equals(message.getChatId(), getSelectedChat().getId())) {
             getSelectedChat().setLastMessage(message);
             changeSupport.firePropertyChange(ChatPageViewModel.NEW_MESSAGES_IN_SELECTED_EVENT, null, List.of(message));
             changeSupport.firePropertyChange(AllChatsViewModel.CHAT_RECEIVED_MESSAGES_EVENT, true, getSelectedChat());
             chatRepository.moveChatUp(getSelectedChat());
         } else {
             Chat chatOfMessage = chatRepository.getChatById(message.getChatId());
-            chatOfMessage.incrementUnreadCount();
+            if (message.getAuthor() != null) chatOfMessage.incrementUnreadCount();
             chatOfMessage.setLastMessage(message);
             changeSupport.firePropertyChange(AllChatsViewModel.CHAT_RECEIVED_MESSAGES_EVENT, false, chatOfMessage);
             chatRepository.moveChatUp(chatOfMessage);
@@ -274,7 +293,45 @@ public class ClientModelImpl implements ClientModel {
     }
 
     private void acceptNewConnectEvent(ConnectEvent event) {
+        if (Objects.equals(event.getUserId(), getMyself().getId())) {
+            return;
+        }
+        changeSupport.firePropertyChange(AllUsersViewModel.UPDATE_USER_ONLINE,
+                null,
+                usersRepository.updateOnlineStatus(event.getUserId(), event.getConnect()));
 
+        chatRepository.updateOnlineForChatMembers(event.getUserId(), event.getConnect());
+        changeSupport.firePropertyChange(AllChatsViewModel.UPDATE_MEMBERS_ONLINE, null, event);
+
+    }
+
+    @Override
+    public void editGroupName(String chatName) {
+        chatRepository.editGroupName(selectedChat.getId(), ChangeGroupName.builder().groupName(chatName).build())
+                .thenAccept(chat -> {
+                    changeSupport.firePropertyChange(AllChatsViewModel.UPDATE_CHAT_INFO, null, chat);
+                    changeSupport.firePropertyChange(
+                                    ChatPageViewModel.GROUP_CHAT_NAME_UPDATE,
+                                    null,
+                                    chat.getGroup().getName());
+                        }
+                );
+    }
+
+    @Override
+    public void addUserToGroupChat(long userId) {
+        chatRepository.addUser(selectedChat.getId(), userId).thenApply(chat -> {
+            changeSupport.firePropertyChange(GroupInfoDialogModel.NEW_GROUP_CHAT_INFO, null, chat);
+            return chat;
+        });
+    }
+
+    @Override
+    public void removeUserFromGroupChat(long userId) {
+        chatRepository.removeUser(selectedChat.getId(), userId).thenApply(chat -> {
+            changeSupport.firePropertyChange(GroupInfoDialogModel.NEW_GROUP_CHAT_INFO, null, chat);
+            return chat;
+        });
     }
 
 }

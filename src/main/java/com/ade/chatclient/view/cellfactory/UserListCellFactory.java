@@ -2,14 +2,19 @@ package com.ade.chatclient.view.cellfactory;
 
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.view.components.UserPhoto;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
+import lombok.Getter;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -20,10 +25,19 @@ public class UserListCellFactory extends ListCell<User> {
     @FXML private StackPane photoPane;
     @FXML private Label realNameLabel;
     @FXML private Label userNameLabel;
+    @FXML private Circle onlineStatus;
     private Function<String, CompletableFuture<Image>> imageRequest;
+    private Consumer<Long> onDeleteUserClick;
+    @Getter
+    @FXML public Button deleteButton;
 
     public void init(Function<String, CompletableFuture<Image>> imageRequest) {
         this.imageRequest = imageRequest;
+//        this.isGroupMembers = isGroupMembers;
+    }
+
+    public void addOnDeleteListener(Consumer<Long> onDeleteUserClick) {
+        this.onDeleteUserClick = onDeleteUserClick;
     }
 
     /**
@@ -41,13 +55,32 @@ public class UserListCellFactory extends ListCell<User> {
             return;
         }
 
+        setId(String.valueOf(item.getId()));
+
         realNameLabel.setText(prepareUserToBeShown(item));
         userNameLabel.setText(item.getUsername());
 
-        UserPhoto.setPaneContent(photoPane.getChildren(), item, 20, imageRequest);
+        photoPane.getChildren().clear();
+        UserPhoto.getPaneContent(item, 20, imageRequest)
+                        .thenAccept(children -> {
+                            Platform.runLater(() -> {
+                                photoPane.getChildren().clear();
+                                photoPane.getChildren().addAll(children);
+                                setOnlineStatus(item);
+                                setGraphic(layout);
+                            });
+                        });
+
+        if (onDeleteUserClick != null) {
+            deleteButton.setOpacity(100);
+            deleteButton.setOnMouseClicked(event -> {
+                onDeleteUserClick.accept(item.getId());
+            });
+        } else {
+            deleteButton.setOpacity(0);
+        }
 
         setGraphic(layout);
-
     }
 
 
@@ -60,5 +93,12 @@ public class UserListCellFactory extends ListCell<User> {
         return user.getRealName() + " " + user.getSurname();
     }
 
-
+    private void setOnlineStatus(User item) {
+        if (item.getIsOnline() != null && item.getIsOnline()) {
+            onlineStatus.setOpacity(100);
+        }
+        else {
+            onlineStatus.setOpacity(0);
+        }
+    }
 }

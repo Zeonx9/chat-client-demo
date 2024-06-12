@@ -1,5 +1,6 @@
 package com.ade.chatclient.api;
 
+import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
 
 import java.nio.file.Path;
@@ -8,5 +9,9 @@ import java.util.concurrent.CompletableFuture;
 public interface FileApi {
     CompletableFuture<byte[]> fetchImage(String fileId);
 
-    CompletableFuture<User> uploadFile(long userId, Path path);
+    CompletableFuture<User> uploadUserPhoto(long userId, Path path);
+
+    CompletableFuture<String> uploadPhoto(Path path);
+
+    CompletableFuture<Chat> uploadGroupChatPhoto(long chatId, Path path);
 }

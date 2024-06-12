@@ -49,4 +49,15 @@ public class UsersRepositoryImpl implements UsersRepository {
     public List<User> search(String request) {
         return allUsers.stream().filter(user -> byUserName(user, processingSearchString(request))).toList();
     }
+
+    @Override
+    public User updateOnlineStatus(long userId, boolean connect) {
+        for (User user : allUsers) {
+            if (user.getId() == userId) {
+                user.setIsOnline(connect);
+                return user;
+            }
+        }
+        return null;
+    }
 }

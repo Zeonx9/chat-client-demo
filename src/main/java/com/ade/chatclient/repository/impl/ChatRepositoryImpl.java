@@ -1,13 +1,17 @@
 package com.ade.chatclient.repository.impl;
 
 import com.ade.chatclient.api.ChatApi;
+import com.ade.chatclient.api.FileApi;
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
+import com.ade.chatclient.dtos.ChangeGroupName;
 import com.ade.chatclient.dtos.GroupRequest;
+import com.ade.chatclient.dtos.UnreadCounterDto;
 import com.ade.chatclient.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -16,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChatRepositoryImpl implements ChatRepository {
     private final ChatApi chatApi;
+    private final FileApi fileApi;
     @Setter
     private Long selfId;
     private Map<Long, Chat> chatById = new HashMap<>();
@@ -24,15 +29,18 @@ public class ChatRepositoryImpl implements ChatRepository {
     @Override
     public CompletableFuture<List<Chat>> fetchChats() {
         if (chatById.isEmpty()) {
-            var futureCounters = chatApi.getListOfUnreadCounters(selfId);
-            return chatApi.fetchChatsOfUser(selfId).thenCombine(futureCounters, (chats, counters) -> {
-                orderedChats = chats;
-                chatById = chats.stream().collect(Collectors.toMap(Chat::getId, Function.identity()));
-                for (var counter : counters) {
-                    chatById.get(counter.getChatId()).setUnreadCount(counter.getCount());
-                }
-                return chats;
-            });
+            return chatApi.fetchChatsOfUser(selfId)
+                    .thenCompose(chats -> chatApi.getListOfUnreadCounters(selfId)
+                            .thenApply(counters -> {
+                                orderedChats = chats;
+                                chatById = chats.stream().collect(Collectors.toMap(Chat::getId, Function.identity()));
+                                for (UnreadCounterDto counter : counters) {
+                                    if (chatById.containsKey(counter.getChatId())) {
+                                        chatById.get(counter.getChatId()).setUnreadCount(counter.getCount());
+                                    }
+                                }
+                                return chats;
+                            }));
         } else {
             return CompletableFuture.completedFuture(orderedChats);
         }
@@ -91,5 +99,58 @@ public class ChatRepositoryImpl implements ChatRepository {
                 return chat.getGroup().getName().toLowerCase().startsWith(processedString);
             }
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public CompletableFuture<Chat> editGroupName(long chatId, ChangeGroupName changeGroupName) {
+        return chatApi.editGroupName(chatId, changeGroupName).thenApply(chat -> {
+            updateGroupChatInfo(chatId, chat);
+            return chat;
+        });
+    }
+
+    @Override
+    public CompletableFuture<Chat> editGroupChatPhoto(long chatId, Path path) {
+        return fileApi .uploadGroupChatPhoto(chatId, path).thenApply(chat -> {
+            updateGroupChatInfo(chatId, chat);
+            return chat;
+        });
+    }
+
+    @Override
+    public CompletableFuture<Chat> addUser(long chatId, long userId) {
+        return chatApi.addUser(chatId, userId).thenApply(chat -> {
+            updateGroupChatInfo(chatId, chat);
+            return chat;
+        });
+    }
+
+    @Override
+    public CompletableFuture<Chat> removeUser(long chatId, long userId) {
+        return chatApi.removeUser(chatId, userId).thenApply(chat ->{
+            updateGroupChatInfo(chatId, chat);
+            return chat;
+        });
+    }
+
+    private void updateGroupChatInfo(long chatId, Chat newChat) {
+        chatById.get(chatId).setGroup(newChat.getGroup());
+        orderedChats.forEach(chat -> {
+            if (chat.getId() == chatId) {
+                chat.setGroup(newChat.getGroup());
+                chat.setMembers(newChat.getMembers());
+            }
+        });
+    }
+
+    @Override
+    public void updateOnlineForChatMembers(long userId, boolean connect) {
+        for (Chat chat : orderedChats) {
+           chat.getMembers().forEach(member -> {
+               if (member.getId() == userId){
+                   member.setIsOnline(connect);
+               }
+           });
+        }
     }
 }

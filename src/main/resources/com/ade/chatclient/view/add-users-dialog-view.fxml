@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+<DialogPane fx:id="dialogPane" prefHeight="600.0" prefWidth="350.0" styleClass="switch-pane" stylesheets="@../styles/CellFactoryStyleDark.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ade.chatclient.view.AddUsersDialog">
+    <content>
+        <Pane prefHeight="273.0" prefWidth="400.0">
+            <AnchorPane prefHeight="200.0" prefWidth="350.0">
+                <StackPane fx:id="photoPane" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="135.0" AnchorPane.topAnchor="10.0" />
+                <Label fx:id="groupName" alignment="CENTER" prefHeight="20.0" styleClass="groupName" text="Label" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />
+                <Label fx:id="countMembers" alignment="CENTER" prefHeight="20.0" styleClass="countMembers" text="Label" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" height="10.0" stroke="TRANSPARENT" strokeType="INSIDE" styleClass="rectangle" width="350.0" AnchorPane.topAnchor="145.0" />
+                <Label alignment="CENTER" prefHeight="20.0" styleClass="groupName" text="Choose user to add" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="160.0" />
+                <ListView fx:id="listMembers" prefHeight="250.0" prefWidth="300.0" style="-fx-background-color: transparent;" styleClass="cellFactoryListView" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="190.0" />
+            </AnchorPane>
+        </Pane>
+    </content>
+    <ButtonType fx:constant="CLOSE" />
+</DialogPane>

@@ -6,6 +6,7 @@ import com.ade.chatclient.application.structure.AbstractViewModel;
 import com.ade.chatclient.application.util.BottomScroller;
 import com.ade.chatclient.application.util.PaneSwitcher;
 import com.ade.chatclient.application.util.ViewModelUtils;
+import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.Message;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.dtos.GroupRequest;
@@ -15,6 +16,7 @@ import com.ade.chatclient.view.GroupInfoDialog;
 import com.ade.chatclient.view.UserInfoDialog;
 import com.ade.chatclient.view.cellfactory.MessageListCellFactory;
 import com.ade.chatclient.view.components.UserPhoto;
+import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,9 +24,11 @@ import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import lombok.Getter;
 
 import java.beans.PropertyChangeEvent;
+import java.io.File;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -51,17 +55,36 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
     private final StringProperty selectedChatNameProperty = new SimpleStringProperty();
     private final StringProperty selectedChatInfoProperty = new SimpleStringProperty();
     private final StringProperty openViewNameProperty = new SimpleStringProperty();
+    private final DoubleProperty fileUploadStatusProperty = new SimpleDoubleProperty(0);
     private BottomScroller<Message> scroller;
     private PaneSwitcher paneSwitcher;
+    private File file = null;
 
     public static final String GOT_MESSAGES_EVENT = "gotMessages";
     public static final String NEW_MESSAGES_IN_SELECTED_EVENT = "newMessagesInSelected";
+    public static final String GROUP_CHAT_NAME_UPDATE = "groupChatNameUpdate";
+    public static final String GROUP_PHOTO = "groupPhoto";
 
     public ChatPageViewModel(ViewHandler viewHandler, ClientModel model) {
         super(viewHandler, model);
 
-        model.addListener("gotMessages", runLaterListener(this::fillMessageHistory));
-        model.addListener("newMessagesInSelected", runLaterListener(this::newSelectedMessages));
+        model.addListener(GOT_MESSAGES_EVENT, runLaterListener(this::fillMessageHistory));
+        model.addListener(NEW_MESSAGES_IN_SELECTED_EVENT, runLaterListener(this::newSelectedMessages));
+        model.addListener(GROUP_CHAT_NAME_UPDATE, runLaterListener(this::groupChatNameUpdate));
+        model.addListener(GROUP_PHOTO, runLaterListener(this::groupChatPhotoUpdate));
+
+    }
+
+    private void groupChatPhotoUpdate(PropertyChangeEvent event) {
+        fillChatInfo();
+    }
+
+    private void groupChatNameUpdate(PropertyChangeEvent event) {
+        synchronized (selectedChatNameProperty) {
+            @SuppressWarnings("unchecked")
+            String newChatName = (String) event.getNewValue();
+            selectedChatNameProperty.setValue(newChatName);
+        }
     }
 
     /**
@@ -102,7 +125,14 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
                 selectedChatInfoProperty.setValue(members.size() + " members");
             }
 
-            UserPhoto.setPaneContent(chatIconNodes, model.getSelectedChat(), model.getMyself().getId(), 20, model::getPhotoById);
+            chatIconNodes.clear();
+            Objects.requireNonNull(UserPhoto.getPaneContent(model.getSelectedChat(), model.getMyself().getId(), 20, model::getPhotoById))
+                    .thenAccept(children -> {
+                        Platform.runLater(() -> {
+                            chatIconNodes.clear();
+                            chatIconNodes.addAll(children);
+                        });
+                    });
         }
     }
 
@@ -145,6 +175,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
      * Метод осуществляет переключение на вью с личным кабинетом пользователя
      */
     public void openProfilePane() {
+        viewHandler.getViewModelProvider().createProfileViewModel().setUser(model.getMyself());
         paneSwitcher.switchTo(Views.USER_SETTINGS_VIEW);
     }
 
@@ -152,13 +183,15 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
      * Метод отправляет введенное пользователем сообщение, если оно длинное, то делит его на части
      */
     public void sendMessage() {
-        if (Objects.equals(messageTextProperty.getValue(), null) || messageTextProperty.get().isBlank()) {
+        if ((Objects.equals(messageTextProperty.getValue(), null) || messageTextProperty.get().isBlank()) && file == null) {
             return;
         }
 
-        String message = messageTextProperty.get();
+        String message = (messageTextProperty.get() != null) ? messageTextProperty.get() : "";
         if (message.length() <= 250) {
-            model.sendMessageToChat(message);
+            model.sendMessageToChat(message, file);
+            file = null;
+            fileUploadStatusProperty.set(0);
         }
         else {
             int startIndex = 0;
@@ -169,7 +202,10 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
                     if (lastSpaceIndex != -1 && lastSpaceIndex > startIndex)
                         endIndex = lastSpaceIndex;
                 }
-                    model.sendMessageToChat(message.substring(startIndex, endIndex));
+
+                model.sendMessageToChat(message.substring(startIndex, endIndex), file);
+                file = null;
+                fileUploadStatusProperty.set(0);
                 try {
                     TimeUnit.MILLISECONDS.sleep(50);
                 } catch (InterruptedException e) {
@@ -201,7 +237,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
                 MessageListCellFactory.class,
                 "message-list-cell-factory.fxml"
         );
-        factory.init(model.getMyself().getId());
+        factory.init(model.getMyself().getId(), model::getPhotoById);
         return factory;
     }
 
@@ -213,7 +249,7 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
             List<User> members = model.getSelectedChat().getMembers();
             for (User user: members)
                 if (!user.equals(model.getMyself()))
-                    viewHandler.getViewModelProvider().getProfileViewModel().setUser(user);
+                    viewHandler.getViewModelProvider().createProfileViewModel().setUser(user);
 
             UserInfoDialog userInfoDialog = UserInfoDialog.getInstance();
             userInfoDialog.setProfilePane(viewHandler);
@@ -221,8 +257,9 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         }
         else {
             GroupInfoDialog dialog = GroupInfoDialog.getInstance();
-            dialog.setChat(model.getSelectedChat());
+            dialog.init(new GroupInfoDialogModel(model));
             dialog.setImageRequest(model::getPhotoById);
+            dialog.setChat(model.getSelectedChat());
             dialog.showAndWait();
         }
     }
@@ -239,4 +276,17 @@ public class ChatPageViewModel extends AbstractViewModel<ClientModel> {
         Optional<GroupRequest> answer = dialog.showAndWait();
         answer.ifPresent(model::createGroupChat);
     }
+
+    public void openFileChooser() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Выберите изображение");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Изображения (*.png, *.jpg, *.jpeg)", "*.png", "*.jpg", "*.jpeg");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showOpenDialog(null);
+        if (file != null) {
+            this.file = file;
+            fileUploadStatusProperty.set(100);
+        }
+    }
+
 }

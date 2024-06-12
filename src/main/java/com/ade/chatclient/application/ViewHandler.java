@@ -70,7 +70,8 @@ public class ViewHandler {
         root.getStylesheets().add(String.valueOf(ClientApplication.class.getResource("styles/" + viewType.cssFile + settings.getTheme() + ".css")));
 
         AbstractView<AbstractViewModel<?>> view = fxmlLoader.getController();
-        view.init(getViewModel(viewType));
+        AbstractViewModel<?> viewModel = getViewModel(viewType);
+        view.init(viewModel);
 
         // создать сцену для нового вью и установить его на stage
         Scene scene = new Scene(root);
@@ -93,7 +94,8 @@ public class ViewHandler {
 
 
         AbstractView<AbstractChildViewModel<?>> pane = fxmlLoader.getController();
-        pane.init((AbstractChildViewModel<?>) getViewModel(paneType));
+        AbstractViewModel<?> viewModel = getViewModel(paneType);
+        pane.init((AbstractChildViewModel<?>) viewModel);
         pane.getViewModel().setPlaceHolder(placeHolder);
         pane.getViewModel().actionInParentOnOpen();
 

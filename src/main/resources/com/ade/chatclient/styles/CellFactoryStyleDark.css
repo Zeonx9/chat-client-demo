@@ -191,3 +191,18 @@
 .rectangle {
     -fx-fill: #2f303b;
 }
+
+.deleteUserBtn {
+    -fx-background-image: url("../img/delete_user_btn.png");
+    -fx-background-color: transparent;
+}
+
+.deleteUserBtn:hover {
+    -fx-background-image: url("../img/delete_user_btn_focused.png");
+    -fx-background-color: transparent;
+}
+
+.deleteUserBtn:focused {
+    -fx-background-image: url("../img/delete_user_btn_focused.png");
+    -fx-background-color: transparent;
+}

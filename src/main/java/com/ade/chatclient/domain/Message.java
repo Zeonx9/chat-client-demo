@@ -3,6 +3,8 @@ package com.ade.chatclient.domain;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -19,6 +21,13 @@ public class Message {
     private User author;
     private Long chatId;
     private Boolean isAuxiliary;
+    private String attachmentId;
+
+
+    public void setDateTime(LocalDateTime dateTime) {
+        var utcTime = ZonedDateTime.of(dateTime, ZoneId.of("UTC"));
+        this.dateTime = utcTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+    }
 
     @Override
     public boolean equals(Object o) {

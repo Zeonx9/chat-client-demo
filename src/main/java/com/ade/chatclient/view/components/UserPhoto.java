@@ -2,8 +2,6 @@ package com.ade.chatclient.view.components;
 
 import com.ade.chatclient.domain.Chat;
 import com.ade.chatclient.domain.User;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -21,41 +19,82 @@ import java.util.function.Function;
 @Slf4j
 public class UserPhoto {
 
-    public static void setPaneContent(ObservableList<Node> pane, Chat chat, Long selfId, int size, Function<String, CompletableFuture<Image>> imageRequest) {
-        if (ifIconPresent(chat)) {
-            chat.getMembers().forEach(member -> {
+    public static CompletableFuture<List<Node>> getPaneContent(Chat chat, Long selfId, int size, Function<String, CompletableFuture<Image>> imageRequest) {
+        if (chat.getIsPrivate()) {
+            for (User member : chat.getMembers()) {
                 if (!Objects.equals(member.getId(), selfId))
-                    UserPhoto.setPaneContent(pane, member, size, imageRequest);
-            });
+                    return getPaneContent(member, size, imageRequest);
+            }
         }
         else {
-            Circle circle = new Circle(size, Color.rgb(145, 145, 145));
-            Label label = new Label(prepareInitialsToBeShown(chat, selfId));
-            label.setStyle("-fx-text-fill: #FFFFFF");
-            pane.addAll(circle, label);
+            if (chat.getGroup().getGroupPhotoId() != null) {
+                CompletableFuture<Image> future = imageRequest.apply(chat.getGroup().getGroupPhotoId());
+
+                return future.thenApply(image -> {
+                    ImageView imageView = new ImageView(image);
+                    imageView.setFitWidth(size * 2);
+                    imageView.setFitHeight(size * 2);
+                    Circle circle = new Circle(size);
+                    circle.setCenterX(size);
+                    circle.setCenterY(size);
+                    imageView.setClip(circle);
+
+                    List<Node> nodeList = new ArrayList<>();
+                    nodeList.add(imageView);
+                    return nodeList;
+                });
+            }
+            else {
+                Circle circle = new Circle(size, Color.rgb(145, 145, 145));
+                Label label = new Label(prepareInitialsToBeShown(chat, selfId));
+                label.setStyle("-fx-text-fill: #FFFFFF");
+
+                List<Node> nodeList = new ArrayList<>();
+                nodeList.add(circle);
+                nodeList.add(label);
+
+                return CompletableFuture.completedFuture(nodeList);
+            }
+        }
+        return null;
+    }
+
+    public static CompletableFuture<List<Node>> getPaneContent(
+            User user,
+            int size,
+            Function<String, CompletableFuture<Image>> imageRequest
+    ) {
+        if (!ifIconPresent(user)) {
+            return CompletableFuture.completedFuture(generateUserTextThumbnail(user, size));
+        } else {
+            CompletableFuture<Image> future = imageRequest.apply(user.getThumbnailPhotoId());
+            return future.thenApply(image -> generateUserThumbnail(image, size));
         }
     }
 
-    public static void setPaneContent(ObservableList<Node> pane, User user, int size, Function<String, CompletableFuture<Image>> imageRequest) {
-        if (!ifIconPresent(user)) {
-            Circle circle = new Circle(size, Color.rgb(145, 145, 145));
-            Label label = new Label(prepareInitialsToBeShown(user));
-            label.setStyle("-fx-text-fill: #FFFFFF");
-            pane.addAll(circle, label);
-        } else {
-            CompletableFuture<Image> future = imageRequest.apply(user.getThumbnailPhotoId());
-            future.thenAccept(image -> {
-//                log.info("got image with id = " + user.getThumbnailPhotoId());
-                ImageView imageView = new ImageView(image);
-                imageView.setFitWidth(size * 2);
-                imageView.setFitHeight(size * 2);
-                Circle circle = new Circle(size);
-                circle.setCenterX(size);
-                circle.setCenterY(size);
-                imageView.setClip(circle);
-                Platform.runLater(() -> pane.addAll(imageView));
-            });
-        }
+    private static List<Node> generateUserTextThumbnail(User user, Integer size) {
+        Circle circle = new Circle(size, Color.rgb(145, 145, 145));
+        Label label = new Label(prepareInitialsToBeShown(user));
+        label.setStyle("-fx-text-fill: #FFFFFF");
+
+        List<Node> nodeList = new ArrayList<>();
+        nodeList.add(circle);
+        nodeList.add(label);
+        return nodeList;
+    }
+
+    private static List<Node> generateUserThumbnail(Image image, Integer size) {
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(size * 2);
+        imageView.setFitHeight(size * 2);
+        Circle circle = new Circle(size);
+        circle.setCenterX(size);
+        circle.setCenterY(size);
+        imageView.setClip(circle);
+
+        List<Node> nodeList = new ArrayList<>();
+        nodeList.add(imageView);
+        return nodeList;
     }
 
     private static boolean ifIconPresent(User user) {

@@ -18,4 +18,5 @@ public class GroupChatInfo {
     private String name;
     private LocalDate creationDate;
     private User creator;
+    private String groupPhotoId;
 }

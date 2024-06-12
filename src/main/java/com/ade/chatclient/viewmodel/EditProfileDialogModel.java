@@ -4,6 +4,7 @@ import com.ade.chatclient.application.structure.AbstractDialogModel;
 import com.ade.chatclient.domain.EditProfileResult;
 import com.ade.chatclient.domain.User;
 import com.ade.chatclient.view.components.UserPhoto;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -19,8 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.io.File;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -44,16 +44,11 @@ public class EditProfileDialogModel extends AbstractDialogModel<EditProfileResul
             return null;
         }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate birthDate = birthdayProperty.getValue() != null ?
-                LocalDate.parse(birthdayProperty.getValue(), formatter) : null;
-
         User updatedUser = User.builder()
                 .realName(firstNameProperty.getValue())
                 .surname(surnameProperty.getValue())
                 .patronymic(patronymicProperty.getValue())
-                .phoneNumber(phoneNumberProperty.getValue())
-                .dateOfBirth(birthDate).build();
+                .phoneNumber(phoneNumberProperty.getValue()).build();
 
         return EditProfileResult.builder().user(updatedUser).file(file).build();
     }
@@ -65,31 +60,39 @@ public class EditProfileDialogModel extends AbstractDialogModel<EditProfileResul
         phoneNumberProperty.set(mySelf.getPhoneNumber());
 
         chatIconNodes.clear();
-        UserPhoto.setPaneContent(chatIconNodes, mySelf, 40, imageRequest);
+        Objects.requireNonNull(UserPhoto.getPaneContent(mySelf, 40, imageRequest))
+                .thenAccept(children -> {
+                    Platform.runLater(() -> {
+                        chatIconNodes.clear();
+                        chatIconNodes.addAll(children);
+                    });
+                });
     }
 
     public void openFileChooser() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Выберите изображение");
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Изображения (*.png, *.jpg, *.jpeg)", "*.png", "*.jpg", "*.jpeg");
+        FileChooser.ExtensionFilter extFilter = new FileChooser
+                .ExtensionFilter("Изображения (*.png, *.jpg, *.jpeg)", "*.png", "*.jpg", "*.jpeg");
         fileChooser.getExtensionFilters().add(extFilter);
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
             this.file = file;
 
-            Image image = new Image(file.toURI().toString());
-            ImageView imageView = new ImageView(image);
-            imageView.setFitWidth(40 * 2);
-            imageView.setFitHeight(40 * 2);
-            Circle circle = new Circle(40);
-            circle.setCenterX(40);
-            circle.setCenterY(40);
-            imageView.setClip(circle);
-
             chatIconNodes.clear();
-            chatIconNodes.add(imageView);
+            chatIconNodes.add(prepareImageToShow(new Image(file.toURI().toString())));
         }
     }
 
+    private ImageView prepareImageToShow(Image image) {
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(40 * 2);
+        imageView.setFitHeight(40 * 2);
+        Circle circle = new Circle(40);
+        circle.setCenterX(40);
+        circle.setCenterY(40);
+        imageView.setClip(circle);
+        return imageView;
+    }
 
 }

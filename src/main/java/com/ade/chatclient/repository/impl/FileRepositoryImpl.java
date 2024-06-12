@@ -5,6 +5,7 @@ import com.ade.chatclient.api.FileApi;
 import com.ade.chatclient.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -29,5 +30,10 @@ public class FileRepositoryImpl implements FileRepository {
     @Override
     public void clear() {
         allFiles.clear();
+    }
+
+    @Override
+    public CompletableFuture<String> uploadPhoto(Path path) {
+        return fileApi.uploadPhoto(path);
     }
 }

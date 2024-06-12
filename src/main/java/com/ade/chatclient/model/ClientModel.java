@@ -70,7 +70,7 @@ public interface ClientModel {
      *
      * @param text текст сообщения
      */
-    void sendMessageToChat(String text);
+    void sendMessageToChat(String text, File photo);
 
     /**
      * Отправляет GET запрос на получение списка всех чатов авторизованного пользователя и уведомляет об изменениях через лисенер "gotChats"
@@ -142,5 +142,13 @@ public interface ClientModel {
 
     void uploadUserProfilePhoto(File photo);
 
+    void uploadGroupChatPhoto(File photo);
+
     CompletableFuture<Image> getPhotoById(String photoId);
+
+    void editGroupName(String chatName);
+
+    void addUserToGroupChat(long userId);
+
+    void removeUserFromGroupChat(long userId);
 }

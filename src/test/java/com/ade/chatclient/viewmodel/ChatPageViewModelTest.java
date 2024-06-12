@@ -37,7 +37,7 @@ public class ChatPageViewModelTest {
         underTest.getMessageTextProperty().set(message);
 
         underTest.sendMessage();
-        verify(model, atLeastOnce()).sendMessageToChat(message);
+        verify(model, atLeastOnce()).sendMessageToChat(message, null);
     }
 
 }

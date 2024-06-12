@@ -85,6 +85,7 @@ public class UserSettingsViewModel extends AbstractChildViewModel<ClientModel> {
 
     public void showEditProfileDialogAndWait() {
         systemMessageProperty.set("");
+
         EditProfileDialog dialog = EditProfileDialog.getInstance(model.getMyself());
         dialog.init(new EditProfileDialogModel(model::getPhotoById));
 
